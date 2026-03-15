@@ -1,7 +1,5 @@
 # Malaysia Calendar API
 
-> Malaysia 最完整的日曆 API — 公共假期 + 學校日曆 + 考試時間 + MCP Server
-
 Malaysia's most complete calendar API — public holidays, school calendar, exam schedules, and MCP server for AI tools.
 
 **Data source**: Official government gazette (JPM BKPP), JAKIM, KPM, MPM. Not scraped from third-party websites.
