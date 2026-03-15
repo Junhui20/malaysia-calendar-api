@@ -7,3 +7,8 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Local dev tools (Impeccable skills etc.)
+.claude/skills/
+secret.md
+remaining-plan.md

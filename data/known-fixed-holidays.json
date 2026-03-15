@@ -1,0 +1,45 @@
+{
+  "_description": "Known fixed-date holidays that must appear every year. Used as regression test in validation pipeline.",
+  "holidays": [
+    {
+      "nameMs": "Hari Kebangsaan",
+      "nameEn": "National Day",
+      "monthDay": "08-31",
+      "states": ["*"],
+      "type": "federal",
+      "gazetteLevel": "P"
+    },
+    {
+      "nameMs": "Hari Malaysia",
+      "nameEn": "Malaysia Day",
+      "monthDay": "09-16",
+      "states": ["*"],
+      "type": "federal",
+      "gazetteLevel": "P"
+    },
+    {
+      "nameMs": "Hari Pekerja",
+      "nameEn": "Labour Day",
+      "monthDay": "05-01",
+      "states": ["*"],
+      "type": "federal",
+      "gazetteLevel": "P"
+    },
+    {
+      "nameMs": "Hari Krismas",
+      "nameEn": "Christmas Day",
+      "monthDay": "12-25",
+      "states": ["*"],
+      "type": "federal",
+      "gazetteLevel": "P"
+    },
+    {
+      "nameMs": "Hari Wilayah Persekutuan",
+      "nameEn": "Federal Territory Day",
+      "monthDay": "02-01",
+      "states": ["kuala-lumpur", "wp-putrajaya", "wp-labuan"],
+      "type": "state",
+      "gazetteLevel": "N"
+    }
+  ]
+}

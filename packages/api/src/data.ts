@@ -1,6 +1,8 @@
 import type { Holiday, State, SchoolTerm, SchoolHoliday, Exam } from "@mycal/core";
 
 import statesData from "../../../data/states.json";
+import holidays2024 from "../../../data/holidays/2024.json";
+import holidays2025 from "../../../data/holidays/2025.json";
 import holidays2026 from "../../../data/holidays/2026.json";
 import schoolTerms2026 from "../../../data/school/terms-2026.json";
 import schoolHolidays2026 from "../../../data/school/holidays-2026.json";
@@ -9,6 +11,8 @@ import exams2026 from "../../../data/school/exams-2026.json";
 export const states: readonly State[] = statesData as State[];
 
 const holidaysByYear: Record<number, readonly Holiday[]> = {
+  2024: holidays2024 as unknown as Holiday[],
+  2025: holidays2025 as unknown as Holiday[],
   2026: holidays2026 as unknown as Holiday[],
 };
 

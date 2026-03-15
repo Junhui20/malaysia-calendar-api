@@ -1,0 +1,1432 @@
+openapi: 3.1.0
+info:
+  title: Malaysia Calendar API
+  version: 0.1.0
+  description: >
+    A comprehensive API for Malaysian public holidays, school terms, business day
+    calculations, and state-level calendar data. Data is sourced from official
+    government gazettes (JPM, JAKIM, state governments) and covers federal and
+    state holidays, Islamic observances, replacement holidays, school calendars,
+    and exam schedules.
+  contact:
+    name: Malaysia Calendar API
+    url: https://api.mycal.my
+  license:
+    name: MIT
+    identifier: MIT
+
+servers:
+  - url: https://mycal-api.huijun00100101.workers.dev/v1
+    description: Production
+
+tags:
+  - name: Holidays
+    description: Public and state holidays, date checks, and lookups
+  - name: States
+    description: Malaysian state metadata and resolution
+  - name: Business Days
+    description: Working day calculations
+  - name: School
+    description: School terms, holidays, and exam schedules
+  - name: Feeds
+    description: Calendar feeds (iCal, RSS)
+
+paths:
+  /holidays:
+    get:
+      operationId: listHolidays
+      summary: List holidays
+      description: >
+        Returns holidays for a given year, optionally filtered by state, month,
+        type, or status.
+      tags:
+        - Holidays
+      parameters:
+        - $ref: "#/components/parameters/YearParam"
+        - $ref: "#/components/parameters/StateParam"
+        - name: month
+          in: query
+          description: Filter by month (1-12).
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+            example: 2
+        - name: type
+          in: query
+          description: Filter by holiday type.
+          required: false
+          schema:
+            $ref: "#/components/schemas/HolidayType"
+        - name: status
+          in: query
+          description: Filter by holiday status.
+          required: false
+          schema:
+            $ref: "#/components/schemas/HolidayStatus"
+      responses:
+        "200":
+          description: List of holidays matching the filters.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Holiday"
+                  meta:
+                    type: object
+                    required:
+                      - total
+                      - year
+                      - lastUpdated
+                    properties:
+                      total:
+                        type: integer
+                        example: 23
+                      year:
+                        type: integer
+                        example: 2026
+                      state:
+                        type: string
+                        nullable: true
+                        example: "SGR"
+                      lastUpdated:
+                        type: string
+                        format: date-time
+                        example: "2026-01-15T08:00:00Z"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /holidays/today:
+    get:
+      operationId: getHolidaysToday
+      summary: Check today's holidays
+      description: Returns whether today is a holiday and lists any holidays that fall on today.
+      tags:
+        - Holidays
+      parameters:
+        - $ref: "#/components/parameters/StateParam"
+      responses:
+        "200":
+          description: Today's holiday information.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - date
+                      - holidays
+                      - isHoliday
+                    properties:
+                      date:
+                        type: string
+                        format: date
+                        example: "2026-02-01"
+                      holidays:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Holiday"
+                      isHoliday:
+                        type: boolean
+                        example: true
+                  meta:
+                    type: object
+                    properties:
+                      state:
+                        type: string
+                        nullable: true
+                        example: "KUL"
+
+  /holidays/next:
+    get:
+      operationId: getNextHolidays
+      summary: Get upcoming holidays
+      description: Returns the next upcoming holidays from today.
+      tags:
+        - Holidays
+      parameters:
+        - $ref: "#/components/parameters/StateParam"
+        - name: type
+          in: query
+          description: Filter by holiday type.
+          required: false
+          schema:
+            $ref: "#/components/schemas/HolidayType"
+        - name: limit
+          in: query
+          description: Number of upcoming holidays to return.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+            default: 1
+            example: 3
+      responses:
+        "200":
+          description: Upcoming holidays.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Holiday"
+                  meta:
+                    type: object
+                    required:
+                      - afterDate
+                    properties:
+                      afterDate:
+                        type: string
+                        format: date
+                        example: "2026-03-15"
+                      state:
+                        type: string
+                        nullable: true
+                        example: "JHR"
+
+  /holidays/between:
+    get:
+      operationId: getHolidaysBetween
+      summary: Get holidays in a date range
+      description: Returns all holidays between two dates, optionally filtered by state.
+      tags:
+        - Holidays
+      parameters:
+        - name: start
+          in: query
+          description: Start date (inclusive).
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-01-01"
+        - name: end
+          in: query
+          description: End date (inclusive).
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-06-30"
+        - $ref: "#/components/parameters/StateParam"
+      responses:
+        "200":
+          description: Holidays within the date range.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Holiday"
+                  meta:
+                    type: object
+                    required:
+                      - total
+                      - start
+                      - end
+                    properties:
+                      total:
+                        type: integer
+                        example: 12
+                      start:
+                        type: string
+                        format: date
+                        example: "2026-01-01"
+                      end:
+                        type: string
+                        format: date
+                        example: "2026-06-30"
+                      state:
+                        type: string
+                        nullable: true
+                        example: "PNG"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /holidays/check:
+    get:
+      operationId: checkDate
+      summary: Check a specific date
+      description: >
+        Returns detailed information about a specific date including whether it
+        is a holiday, weekend, working day, or school day for the given state.
+      tags:
+        - Holidays
+      parameters:
+        - name: date
+          in: query
+          description: Date to check.
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-02-01"
+        - name: state
+          in: query
+          description: State code (required for weekend and school day resolution).
+          required: true
+          schema:
+            type: string
+            example: "SGR"
+      responses:
+        "200":
+          description: Detailed date check result.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: "#/components/schemas/CheckDateResult"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /states:
+    get:
+      operationId: listStates
+      summary: List all states
+      description: Returns all Malaysian states and federal territories with their metadata.
+      tags:
+        - States
+      responses:
+        "200":
+          description: All states.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/State"
+                  meta:
+                    type: object
+                    required:
+                      - total
+                    properties:
+                      total:
+                        type: integer
+                        example: 16
+
+  /states/resolve:
+    get:
+      operationId: resolveState
+      summary: Resolve a state query
+      description: >
+        Resolves a free-text query (alias, abbreviation, or name) to a canonical
+        state code. Returns 404 with suggestions if no exact match is found.
+      tags:
+        - States
+      parameters:
+        - name: q
+          in: query
+          description: State name, alias, or abbreviation to resolve.
+          required: true
+          schema:
+            type: string
+            example: "KL"
+      responses:
+        "200":
+          description: Resolved state.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - canonical
+                      - name
+                      - type
+                      - group
+                    properties:
+                      canonical:
+                        type: string
+                        example: "KUL"
+                      name:
+                        type: string
+                        example: "Kuala Lumpur"
+                      type:
+                        type: string
+                        enum:
+                          - state
+                          - federal_territory
+                        example: "federal_territory"
+                      group:
+                        type: string
+                        enum:
+                          - A
+                          - B
+                        example: "A"
+        "404":
+          description: State not found. Suggestions may be provided.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /business-days:
+    get:
+      operationId: getBusinessDays
+      summary: Count business days in a range
+      description: >
+        Calculates the number of business (working) days between two dates for a
+        given state, accounting for weekends and public holidays.
+      tags:
+        - Business Days
+      parameters:
+        - name: start
+          in: query
+          required: true
+          description: Start date (inclusive).
+          schema:
+            type: string
+            format: date
+            example: "2026-03-01"
+        - name: end
+          in: query
+          required: true
+          description: End date (inclusive).
+          schema:
+            type: string
+            format: date
+            example: "2026-03-31"
+        - name: state
+          in: query
+          required: true
+          description: State code for weekend and holiday resolution.
+          schema:
+            type: string
+            example: "SGR"
+      responses:
+        "200":
+          description: Business day calculation result.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    $ref: "#/components/schemas/BusinessDaysResult"
+                  meta:
+                    type: object
+                    required:
+                      - start
+                      - end
+                      - state
+                    properties:
+                      start:
+                        type: string
+                        format: date
+                        example: "2026-03-01"
+                      end:
+                        type: string
+                        format: date
+                        example: "2026-03-31"
+                      state:
+                        type: string
+                        example: "SGR"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /business-days/add:
+    get:
+      operationId: addBusinessDays
+      summary: Add business days to a date
+      description: >
+        Calculates the resulting date after adding a number of business days to a
+        start date, skipping weekends and public holidays.
+      tags:
+        - Business Days
+      parameters:
+        - name: date
+          in: query
+          required: true
+          description: Start date.
+          schema:
+            type: string
+            format: date
+            example: "2026-03-15"
+        - name: days
+          in: query
+          required: true
+          description: Number of business days to add.
+          schema:
+            type: integer
+            minimum: 1
+            example: 5
+        - name: state
+          in: query
+          required: true
+          description: State code for weekend and holiday resolution.
+          schema:
+            type: string
+            example: "SGR"
+      responses:
+        "200":
+          description: Calculated result date.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - startDate
+                      - businessDays
+                      - resultDate
+                    properties:
+                      startDate:
+                        type: string
+                        format: date
+                        example: "2026-03-15"
+                      businessDays:
+                        type: integer
+                        example: 5
+                      resultDate:
+                        type: string
+                        format: date
+                        example: "2026-03-22"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /school/terms:
+    get:
+      operationId: getSchoolTerms
+      summary: Get school terms
+      description: >
+        Returns school term dates and durations for a given year. Optionally
+        filter by group or resolve group from state code.
+      tags:
+        - School
+      parameters:
+        - $ref: "#/components/parameters/YearParam"
+        - $ref: "#/components/parameters/GroupParam"
+        - $ref: "#/components/parameters/StateParam"
+      responses:
+        "200":
+          description: School terms.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SchoolTerm"
+                  meta:
+                    type: object
+                    required:
+                      - year
+                      - total
+                    properties:
+                      year:
+                        type: integer
+                        example: 2026
+                      group:
+                        type: string
+                        enum:
+                          - A
+                          - B
+                        nullable: true
+                        example: "A"
+                      total:
+                        type: integer
+                        example: 2
+
+  /school/holidays:
+    get:
+      operationId: getSchoolHolidays
+      summary: Get school holidays
+      description: Returns school holiday periods for a given year.
+      tags:
+        - School
+      parameters:
+        - $ref: "#/components/parameters/YearParam"
+        - $ref: "#/components/parameters/GroupParam"
+        - $ref: "#/components/parameters/StateParam"
+      responses:
+        "200":
+          description: School holidays.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SchoolHoliday"
+                  meta:
+                    type: object
+                    required:
+                      - year
+                      - total
+                    properties:
+                      year:
+                        type: integer
+                        example: 2026
+                      group:
+                        type: string
+                        enum:
+                          - A
+                          - B
+                        nullable: true
+                        example: "B"
+                      total:
+                        type: integer
+                        example: 5
+
+  /school/exams:
+    get:
+      operationId: getSchoolExams
+      summary: Get exam schedules
+      description: Returns national exam schedules for a given year.
+      tags:
+        - School
+      parameters:
+        - $ref: "#/components/parameters/YearParam"
+        - name: type
+          in: query
+          description: Filter by exam type.
+          required: false
+          schema:
+            $ref: "#/components/schemas/ExamType"
+      responses:
+        "200":
+          description: Exam schedules.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Exam"
+                  meta:
+                    type: object
+                    required:
+                      - year
+                      - total
+                    properties:
+                      year:
+                        type: integer
+                        example: 2026
+                      total:
+                        type: integer
+                        example: 5
+
+  /school/is-school-day:
+    get:
+      operationId: isSchoolDay
+      summary: Check if a date is a school day
+      description: >
+        Returns whether a specific date is a school day, including details about
+        the current term, any school holiday, and public holiday status.
+      tags:
+        - School
+      parameters:
+        - name: date
+          in: query
+          required: true
+          description: Date to check.
+          schema:
+            type: string
+            format: date
+            example: "2026-03-16"
+        - $ref: "#/components/parameters/StateParam"
+        - $ref: "#/components/parameters/GroupParam"
+      responses:
+        "200":
+          description: School day check result.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - date
+                      - dayOfWeek
+                      - isSchoolDay
+                      - isPublicHoliday
+                      - isWeekend
+                      - group
+                    properties:
+                      date:
+                        type: string
+                        format: date
+                        example: "2026-03-16"
+                      dayOfWeek:
+                        type: string
+                        example: "Monday"
+                      isSchoolDay:
+                        type: boolean
+                        example: true
+                      isPublicHoliday:
+                        type: boolean
+                        example: false
+                      isWeekend:
+                        type: boolean
+                        example: false
+                      group:
+                        type: string
+                        enum:
+                          - A
+                          - B
+                        example: "A"
+                      term:
+                        type: object
+                        nullable: true
+                        properties:
+                          term:
+                            type: integer
+                            enum:
+                              - 1
+                              - 2
+                            example: 1
+                          startDate:
+                            type: string
+                            format: date
+                          endDate:
+                            type: string
+                            format: date
+                      holiday:
+                        type: object
+                        nullable: true
+                        properties:
+                          name:
+                            type: string
+                            example: "Cuti Pertengahan Penggal 1"
+                          startDate:
+                            type: string
+                            format: date
+                          endDate:
+                            type: string
+                            format: date
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /feed/ical/{state}:
+    get:
+      operationId: getIcalFeed
+      summary: iCal calendar feed
+      description: Returns an iCalendar (.ics) feed of holidays for the specified state.
+      tags:
+        - Feeds
+      parameters:
+        - name: state
+          in: path
+          required: true
+          description: State code.
+          schema:
+            type: string
+            example: "SGR"
+        - $ref: "#/components/parameters/YearParam"
+      responses:
+        "200":
+          description: iCalendar feed.
+          content:
+            text/calendar:
+              schema:
+                type: string
+                example: |
+                  BEGIN:VCALENDAR
+                  VERSION:2.0
+                  PRODID:-//MyCal//Malaysia Calendar API//EN
+                  BEGIN:VEVENT
+                  DTSTART:20260201
+                  SUMMARY:Hari Wilayah Persekutuan
+                  END:VEVENT
+                  END:VCALENDAR
+
+  /feed/rss:
+    get:
+      operationId: getRssFeed
+      summary: RSS feed
+      description: Returns an RSS feed of upcoming holidays.
+      tags:
+        - Feeds
+      responses:
+        "200":
+          description: RSS feed.
+          content:
+            application/rss+xml:
+              schema:
+                type: string
+
+components:
+  parameters:
+    YearParam:
+      name: year
+      in: query
+      description: Calendar year. Defaults to the current year.
+      required: false
+      schema:
+        type: integer
+        example: 2026
+
+    StateParam:
+      name: state
+      in: query
+      description: >
+        Malaysian state code (e.g. SGR, JHR, KUL). When provided, results are
+        filtered to include holidays applicable to that state.
+      required: false
+      schema:
+        type: string
+        example: "SGR"
+
+    GroupParam:
+      name: group
+      in: query
+      description: >
+        School calendar group. Group A covers Johor, Kedah, Kelantan, and
+        Terengganu. Group B covers all other states.
+      required: false
+      schema:
+        type: string
+        enum:
+          - A
+          - B
+        example: "A"
+
+  schemas:
+    HolidayType:
+      type: string
+      enum:
+        - federal
+        - state
+        - islamic
+        - islamic_state
+        - replacement
+        - adhoc
+      example: "federal"
+
+    HolidayStatus:
+      type: string
+      enum:
+        - confirmed
+        - tentative
+        - announced
+        - cancelled
+      example: "confirmed"
+
+    ExamType:
+      type: string
+      enum:
+        - spm
+        - stpm
+        - muet
+        - pt3
+        - stam
+        - other
+      example: "spm"
+
+    LocalizedName:
+      type: object
+      required:
+        - ms
+        - en
+      properties:
+        ms:
+          type: string
+          example: "Hari Kebangsaan"
+        en:
+          type: string
+          example: "National Day"
+        zh:
+          type: string
+          example: "国庆日"
+
+    Holiday:
+      type: object
+      required:
+        - id
+        - date
+        - name
+        - type
+        - status
+        - states
+        - isPublicHoliday
+        - gazetteLevel
+        - source
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          example: "hari-kebangsaan-2026"
+        date:
+          type: string
+          format: date
+          example: "2026-08-31"
+        endDate:
+          type: string
+          format: date
+          example: "2026-09-01"
+        name:
+          $ref: "#/components/schemas/LocalizedName"
+        type:
+          $ref: "#/components/schemas/HolidayType"
+        status:
+          $ref: "#/components/schemas/HolidayStatus"
+        states:
+          type: array
+          items:
+            type: string
+          example:
+            - "JHR"
+            - "SGR"
+            - "KUL"
+            - "PNG"
+        isPublicHoliday:
+          type: boolean
+          example: true
+        gazetteLevel:
+          type: string
+          enum:
+            - P
+            - "N"
+          description: >
+            P = Persekutuan (federal gazette), N = Negeri (state gazette).
+          example: "P"
+        isReplacementFor:
+          type: string
+          description: ID of the original holiday this replaces.
+          example: "hari-raya-aidilfitri-2026"
+        hijriDate:
+          type: string
+          description: Hijri calendar date if applicable.
+          example: "1 Syawal 1448"
+        gazetteRef:
+          type: string
+          description: Reference to the official gazette.
+          example: "P.U.(B) 123/2026"
+        source:
+          type: string
+          enum:
+            - jpm
+            - jakim
+            - state-gov
+            - community
+            - admin
+          example: "jpm"
+        confirmedAt:
+          type: string
+          format: date-time
+          example: "2025-12-01T00:00:00Z"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-11-01T00:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-12-01T00:00:00Z"
+
+    State:
+      type: object
+      required:
+        - code
+        - aliases
+        - name
+        - type
+        - weekendHistory
+        - group
+      properties:
+        code:
+          type: string
+          example: "JHR"
+        aliases:
+          type: array
+          items:
+            type: string
+          example:
+            - "johor"
+            - "johor bahru"
+            - "johor darul takzim"
+        name:
+          type: object
+          required:
+            - ms
+            - en
+          properties:
+            ms:
+              type: string
+              example: "Johor"
+            en:
+              type: string
+              example: "Johor"
+        type:
+          type: string
+          enum:
+            - state
+            - federal_territory
+          example: "state"
+        weekendHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/WeekendConfig"
+        group:
+          type: string
+          enum:
+            - A
+            - B
+          example: "A"
+
+    WeekendConfig:
+      type: object
+      required:
+        - from
+        - to
+        - weekendDays
+        - group
+      properties:
+        from:
+          type: string
+          format: date
+          description: Start date of this weekend configuration.
+          example: "2014-01-01"
+        to:
+          type:
+            - string
+            - "null"
+          format: date
+          description: End date of this configuration, or null if current.
+          example: null
+        weekendDays:
+          type: array
+          items:
+            type: integer
+          description: >
+            Day-of-week numbers that are weekend days (0 = Sunday, 5 = Friday, 6 = Saturday).
+          example:
+            - 5
+            - 6
+        group:
+          type: string
+          enum:
+            - A
+            - B
+          example: "A"
+
+    SchoolTerm:
+      type: object
+      required:
+        - id
+        - year
+        - term
+        - group
+        - segments
+        - totalSchoolDays
+        - startDate
+        - endDate
+      properties:
+        id:
+          type: string
+          example: "2026-term-1-A"
+        year:
+          type: integer
+          example: 2026
+        term:
+          type: integer
+          enum:
+            - 1
+            - 2
+          example: 1
+        group:
+          type: string
+          enum:
+            - A
+            - B
+          example: "A"
+        segments:
+          type: array
+          items:
+            type: object
+            required:
+              - startDate
+              - endDate
+              - schoolDays
+            properties:
+              startDate:
+                type: string
+                format: date
+                example: "2026-01-04"
+              endDate:
+                type: string
+                format: date
+                example: "2026-03-13"
+              schoolDays:
+                type: integer
+                example: 50
+        totalSchoolDays:
+          type: integer
+          example: 100
+        startDate:
+          type: string
+          format: date
+          example: "2026-01-04"
+        endDate:
+          type: string
+          format: date
+          example: "2026-05-29"
+
+    SchoolHoliday:
+      type: object
+      required:
+        - id
+        - year
+        - group
+        - type
+        - name
+        - startDate
+        - endDate
+        - days
+      properties:
+        id:
+          type: string
+          example: "2026-cuti-pertengahan-A"
+        year:
+          type: integer
+          example: 2026
+        group:
+          type: string
+          enum:
+            - A
+            - B
+          example: "A"
+        type:
+          type: string
+          enum:
+            - cuti_penggal_1
+            - cuti_pertengahan
+            - cuti_penggal_2
+            - cuti_akhir
+            - cuti_perayaan_kpm
+          example: "cuti_pertengahan"
+        name:
+          type: object
+          required:
+            - ms
+            - en
+          properties:
+            ms:
+              type: string
+              example: "Cuti Pertengahan Penggal 1"
+            en:
+              type: string
+              example: "Mid-Term 1 Break"
+        startDate:
+          type: string
+          format: date
+          example: "2026-03-14"
+        endDate:
+          type: string
+          format: date
+          example: "2026-03-22"
+        days:
+          type: integer
+          example: 9
+        states:
+          type: array
+          items:
+            type: string
+          description: If set, this holiday only applies to these states.
+          example:
+            - "JHR"
+            - "KDH"
+        excludeStates:
+          type: array
+          items:
+            type: string
+          description: If set, this holiday does not apply to these states.
+        remarks:
+          type: string
+          description: Additional notes about this school holiday.
+
+    Exam:
+      type: object
+      required:
+        - id
+        - year
+        - name
+        - fullName
+        - type
+        - startDate
+        - status
+        - source
+      properties:
+        id:
+          type: string
+          example: "spm-2026"
+        year:
+          type: integer
+          example: 2026
+        name:
+          type: string
+          example: "SPM"
+        fullName:
+          type: object
+          required:
+            - ms
+            - en
+          properties:
+            ms:
+              type: string
+              example: "Sijil Pelajaran Malaysia"
+            en:
+              type: string
+              example: "Malaysian Certificate of Education"
+        type:
+          $ref: "#/components/schemas/ExamType"
+        startDate:
+          type: string
+          format: date
+          example: "2026-10-19"
+        endDate:
+          type: string
+          format: date
+          example: "2026-11-27"
+        status:
+          type: string
+          enum:
+            - confirmed
+            - tentative
+          example: "confirmed"
+        resultsDate:
+          type: string
+          format: date
+          example: "2027-03-15"
+        source:
+          type: string
+          enum:
+            - kpm
+            - mpm
+          example: "mpm"
+
+    BusinessDaysResult:
+      type: object
+      required:
+        - totalDays
+        - businessDays
+        - holidays
+        - weekendDays
+        - holidayList
+      properties:
+        totalDays:
+          type: integer
+          description: Total calendar days in the range.
+          example: 31
+        businessDays:
+          type: integer
+          description: Number of working days.
+          example: 22
+        holidays:
+          type: integer
+          description: Number of public holidays in the range.
+          example: 1
+        weekendDays:
+          type: integer
+          description: Number of weekend days in the range.
+          example: 8
+        holidayList:
+          type: array
+          items:
+            $ref: "#/components/schemas/Holiday"
+
+    CheckDateResult:
+      type: object
+      required:
+        - isHoliday
+        - isWeekend
+        - isWorkingDay
+        - isSchoolDay
+        - holidays
+        - school
+        - state
+      properties:
+        isHoliday:
+          type: boolean
+          example: true
+        isWeekend:
+          type: boolean
+          example: false
+        isWorkingDay:
+          type: boolean
+          example: false
+        isSchoolDay:
+          type: boolean
+          example: false
+        holidays:
+          type: array
+          items:
+            $ref: "#/components/schemas/Holiday"
+        school:
+          type: object
+          required:
+            - group
+          properties:
+            group:
+              type: string
+              enum:
+                - A
+                - B
+              example: "B"
+            term:
+              type: object
+              nullable: true
+              properties:
+                term:
+                  type: integer
+                  enum:
+                    - 1
+                    - 2
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+            holiday:
+              type: object
+              nullable: true
+              properties:
+                name:
+                  type: string
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+        state:
+          type: object
+          required:
+            - code
+            - weekendDays
+            - group
+          properties:
+            code:
+              type: string
+              example: "SGR"
+            weekendDays:
+              type: array
+              items:
+                type: integer
+              example:
+                - 6
+                - 0
+            group:
+              type: string
+              enum:
+                - A
+                - B
+              example: "B"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              example: "INVALID_STATE"
+            message:
+              type: string
+              example: "Unknown state code 'XYZ'."
+            suggestions:
+              type: array
+              items:
+                type: string
+              example:
+                - "SGR"
+                - "SBH"
+                - "SWK"
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: "INVALID_PARAMS"
+              message: "Missing required parameter 'start'."
+
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            error:
+              code: "NOT_FOUND"
+              message: "No holiday data available for year 2020."

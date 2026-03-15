@@ -78,3 +78,12 @@ export {
 
 // iCal generation
 export { generateIcal } from "./ical.js";
+
+// Hijri utilities
+export {
+  HIJRI_MONTHS,
+  ISLAMIC_HOLIDAY_DATES,
+  parseHijriDate,
+  formatHijriDate,
+} from "./hijri.js";
+export type { HijriMonth } from "./hijri.js";

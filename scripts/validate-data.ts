@@ -46,7 +46,7 @@ function validateSchemas() {
   }
 
   // Holidays
-  for (const year of [2026]) {
+  for (const year of [2024, 2025, 2026]) {
     const file = `holidays/${year}.json`;
     const data = loadJson(file);
     const result = holidayFileSchema.safeParse(data);
@@ -97,7 +97,7 @@ function validateSchemas() {
 // ─── Layer 2: Temporal Validation ───
 
 function validateTemporal() {
-  for (const year of [2026]) {
+  for (const year of [2024, 2025, 2026]) {
     const holidays = loadJson(`holidays/${year}.json`) as Array<{ id: string; date: string }>;
     for (const h of holidays) {
       const hYear = parseInt(h.date.slice(0, 4), 10);
@@ -115,7 +115,7 @@ function validateCrossSource() {
   const states = loadJson("states.json") as Array<{ code: string }>;
   const stateCodes = new Set(states.map((s) => s.code));
 
-  for (const year of [2026]) {
+  for (const year of [2024, 2025, 2026]) {
     const holidays = loadJson(`holidays/${year}.json`) as Array<{ id: string; states: string[] }>;
     for (const h of holidays) {
       for (const s of h.states) {
@@ -146,7 +146,7 @@ function validateHistorical() {
     { date: "-12-25", nameMs: "Hari Krismas" },
   ];
 
-  for (const year of [2026]) {
+  for (const year of [2024, 2025, 2026]) {
     const holidays = loadJson(`holidays/${year}.json`) as Array<{ date: string; name: { ms: string } }>;
 
     for (const known of KNOWN_FIXED) {
@@ -166,6 +166,46 @@ function validateHistorical() {
   }
 }
 
+// ─── Layer 5: Diff Review (Git-based) ───
+
+function validateDiff() {
+  const { execSync } = require("child_process");
+
+  try {
+    const diff = execSync("git diff HEAD -- data/", { encoding: "utf-8" });
+
+    if (!diff) {
+      report("data/", "Diff", "PASS", "No uncommitted changes in data/");
+      return;
+    }
+
+    // Count changes
+    const additions = (diff.match(/^\+[^+]/gm) || []).length;
+    const deletions = (diff.match(/^-[^-]/gm) || []).length;
+
+    if (deletions > 10) {
+      report("data/", "Diff", "WARN", `${deletions} lines deleted — review for accidental data loss`);
+    }
+
+    if (additions > 50) {
+      report("data/", "Diff", "WARN", `${additions} lines added — large changeset, review carefully`);
+    }
+
+    // Check for suspicious patterns
+    if (diff.includes('"status": "cancelled"')) {
+      report("data/", "Diff", "WARN", "Holiday cancellation detected — verify with official source");
+    }
+
+    if (diff.includes('"date":') && deletions > 0) {
+      report("data/", "Diff", "WARN", "Date change detected — verify it's an official gazette amendment");
+    }
+
+    report("data/", "Diff", "PASS", `${additions} additions, ${deletions} deletions`);
+  } catch {
+    report("data/", "Diff", "PASS", "Git diff not available (not a git repo or no commits)");
+  }
+}
+
 // ─── Run All ───
 
 console.log("🔍 Validating Malaysia Calendar API data...\n");
@@ -174,6 +214,7 @@ validateSchemas();
 validateTemporal();
 validateCrossSource();
 validateHistorical();
+validateDiff();
 
 // ─── Report ───
 

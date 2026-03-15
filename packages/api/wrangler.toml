@@ -6,7 +6,33 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 API_VERSION = "v1"
 
+# Admin API key (override with wrangler secret)
+# ADMIN_API_KEY = "set-via-wrangler-secret"
+
 # KV namespace for holiday data
 # [[kv_namespaces]]
 # binding = "HOLIDAYS_KV"
-# id = "xxx"  # Fill after creating KV namespace
+# id = "xxx"  # Fill after: wrangler kv namespace create HOLIDAYS_KV
+
+# D1 database for webhooks + analytics
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "mycal-db"
+# database_id = "xxx"  # Fill after: wrangler d1 create mycal-db
+
+# R2 bucket for iCal feeds + exports
+# [[r2_buckets]]
+# binding = "FEEDS_BUCKET"
+# bucket_name = "mycal-feeds"
+
+# Observability — Workers Logs
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+
+# Cron trigger for RSS monitoring (every 15 minutes)
+[triggers]
+crons = ["*/15 * * * *"]
