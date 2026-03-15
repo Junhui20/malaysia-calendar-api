@@ -1,0 +1,12 @@
+name = "mycal-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+API_VERSION = "v1"
+
+# KV namespace for holiday data
+# [[kv_namespaces]]
+# binding = "HOLIDAYS_KV"
+# id = "xxx"  # Fill after creating KV namespace

@@ -1,0 +1,72 @@
+name: Report Holiday / Cuti Peristiwa
+description: Report a new or changed public holiday (cuti peristiwa, Islamic date confirmation, etc.)
+title: "[Holiday] "
+labels: ["holiday-report", "needs-verification"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting! Please provide as much detail as possible.
+        Terima kasih atas laporan! Sila berikan maklumat selengkap mungkin.
+
+  - type: input
+    id: holiday-name
+    attributes:
+      label: Holiday Name / Nama Cuti
+      placeholder: "e.g. Cuti Peristiwa Sempena Kemenangan Sukan"
+    validations:
+      required: true
+
+  - type: input
+    id: date
+    attributes:
+      label: Date / Tarikh
+      description: "YYYY-MM-DD format"
+      placeholder: "2026-03-21"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope / Skop
+      options:
+        - All states (seluruh negara)
+        - Specific states (negeri tertentu)
+    validations:
+      required: true
+
+  - type: input
+    id: states
+    attributes:
+      label: Which states? / Negeri mana?
+      description: "Leave blank if all states"
+      placeholder: "e.g. selangor, johor, kuala-lumpur"
+
+  - type: input
+    id: source-url
+    attributes:
+      label: Source URL / Sumber
+      description: "Link to official announcement (news article, government portal, gazette)"
+      placeholder: "https://..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type / Jenis
+      options:
+        - Cuti Peristiwa (ad-hoc holiday)
+        - Islamic date confirmed (rukyah)
+        - Replacement holiday (cuti ganti)
+        - Correction to existing data
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes / Catatan Tambahan
+      placeholder: "Any additional context..."

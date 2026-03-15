@@ -1,0 +1,22 @@
+{
+  "name": "@mycal/mcp-server",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "mycal-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --banner.js '#!/usr/bin/env node'",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@mycal/core": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.0"
+  }
+}

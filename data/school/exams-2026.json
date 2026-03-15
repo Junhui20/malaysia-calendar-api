@@ -1,0 +1,56 @@
+[
+  {
+    "id": "2026-stpm-sem1",
+    "year": 2026,
+    "name": "STPM Semester 1",
+    "fullName": { "ms": "Sijil Tinggi Persekolahan Malaysia (Semester 1)", "en": "Malaysian Higher School Certificate (Semester 1)" },
+    "type": "stpm",
+    "startDate": "2026-01-21",
+    "endDate": "2026-01-28",
+    "status": "confirmed",
+    "source": "mpm"
+  },
+  {
+    "id": "2026-spm-2025-results",
+    "year": 2026,
+    "name": "Keputusan SPM 2025",
+    "fullName": { "ms": "Pengumuman Keputusan SPM 2025", "en": "SPM 2025 Results Announcement" },
+    "type": "spm",
+    "startDate": "2026-03-31",
+    "status": "tentative",
+    "source": "kpm"
+  },
+  {
+    "id": "2026-stpm-sem2",
+    "year": 2026,
+    "name": "STPM Semester 2",
+    "fullName": { "ms": "Sijil Tinggi Persekolahan Malaysia (Semester 2)", "en": "Malaysian Higher School Certificate (Semester 2)" },
+    "type": "stpm",
+    "startDate": "2026-06-29",
+    "endDate": "2026-07-05",
+    "status": "confirmed",
+    "source": "mpm"
+  },
+  {
+    "id": "2026-spm",
+    "year": 2026,
+    "name": "SPM 2026",
+    "fullName": { "ms": "Sijil Pelajaran Malaysia", "en": "Malaysian Certificate of Education" },
+    "type": "spm",
+    "startDate": "2026-11-01",
+    "endDate": "2026-12-15",
+    "status": "tentative",
+    "source": "kpm"
+  },
+  {
+    "id": "2026-stpm-sem3",
+    "year": 2026,
+    "name": "STPM Semester 3",
+    "fullName": { "ms": "Sijil Tinggi Persekolahan Malaysia (Semester 3)", "en": "Malaysian Higher School Certificate (Semester 3)" },
+    "type": "stpm",
+    "startDate": "2026-11-01",
+    "endDate": "2026-11-30",
+    "status": "tentative",
+    "source": "mpm"
+  }
+]
