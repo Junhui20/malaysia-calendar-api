@@ -2,6 +2,7 @@
   "name": "malaysia-calendar-api",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.32.1",
   "description": "Malaysia's most complete calendar API — public holidays, school calendar, exam schedules, MCP server",
   "license": "MIT",
   "engines": {
