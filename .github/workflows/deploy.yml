@@ -29,6 +29,7 @@ jobs:
         run: npx tsx scripts/validate-data.ts
 
       - name: Deploy to Cloudflare Workers
-        run: npx wrangler deploy --project-dir packages/api
+        working-directory: packages/api
+        run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
