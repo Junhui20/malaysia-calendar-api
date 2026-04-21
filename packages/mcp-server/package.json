@@ -9,7 +9,7 @@
     "url": "git+https://github.com/Junhui20/malaysia-calendar-api.git",
     "directory": "packages/mcp-server"
   },
-  "homepage": "https://mycal.pages.dev/docs/mcp-server/what-is-mcp/",
+  "homepage": "https://mycal-web.pages.dev/docs/mcp-server/what-is-mcp/",
   "bugs": "https://github.com/Junhui20/malaysia-calendar-api/issues",
   "type": "module",
   "bin": {

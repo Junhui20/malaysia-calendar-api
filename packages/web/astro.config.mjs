@@ -3,7 +3,7 @@ import starlight from "@astrojs/starlight";
 import react from "@astrojs/react";
 
 export default defineConfig({
-  site: "https://mycal.pages.dev",
+  site: "https://mycal-web.pages.dev",
   integrations: [
     react(),
     starlight({

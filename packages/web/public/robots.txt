@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mycal.pages.dev/sitemap-index.xml
+Sitemap: https://mycal-web.pages.dev/sitemap-index.xml
