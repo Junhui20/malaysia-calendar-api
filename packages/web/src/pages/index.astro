@@ -1,0 +1,343 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+
+const demoCards = [
+  {
+    href: "/demo/holiday-check",
+    title: "Holiday Checker",
+    desc: "Check if any date is a holiday, weekend, or working day for any state.",
+  },
+  {
+    href: "/demo/long-weekends",
+    title: "Long Weekend Planner",
+    desc: "Find all 3+ day long weekends in the year for your state.",
+  },
+  {
+    href: "/demo/business-days",
+    title: "Business Day Calculator",
+    desc: "Count working days between dates, or add N business days to any date.",
+  },
+  {
+    href: "/demo/ical",
+    title: "iCal Feed Generator",
+    desc: "Subscribe your Google / Apple / Outlook calendar to live holiday feeds.",
+  },
+];
+
+const features = [
+  { title: "16 States + 3 FTs", desc: "Every state with correct weekend config. Kedah/Kelantan/Terengganu use Fri-Sat." },
+  { title: "Smart Aliases", desc: "KL, JB, Penang, n9, kk — all auto-resolve to canonical state codes." },
+  { title: "Cuti Ganti", desc: "Replacement holidays auto-calculated when holidays fall on weekends." },
+  { title: "School Calendar", desc: "KPM terms, holidays, and cuti perayaan for both Kumpulan A and B." },
+  { title: "Exam Dates", desc: "SPM, STPM, MUET, and PT3 schedules from KPM and MPM." },
+  { title: "iCal Subscription", desc: "Drop-in feed for Google Calendar, Apple Calendar, and Outlook." },
+  { title: "MCP Server", desc: "12 ready-to-use tools for Claude, ChatGPT, and other AI agents." },
+  { title: "TypeScript SDK", desc: "Fully typed client with Result pattern — no try/catch required." },
+  { title: "Trilingual", desc: "Bahasa Melayu, English, and Chinese names for every holiday." },
+];
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="container-narrow">
+      <div class="hero-label">Open Source · Free · Real-time</div>
+      <h1>
+        Malaysia<br />
+        <span>Calendar API</span>
+      </h1>
+      <p class="hero-sub">
+        Public holidays, school calendar, exam schedules, and business day calculator for all 16
+        states. Powered by official government gazette data.
+      </p>
+      <div class="hero-actions">
+        <a href="/demo" class="btn btn-accent">Try the demo</a>
+        <a href="/docs/getting-started/quickstart" class="btn btn-secondary">Read the docs</a>
+      </div>
+      <div class="hero-pills">
+        <span class="tag tag-accent">49 holidays in 2026</span>
+        <span class="tag">v1 stable</span>
+        <span class="tag">MIT license</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-label">Interactive Demos</h2>
+      <h3 class="section-title">Try it in your browser</h3>
+      <div class="demo-grid">
+        {
+          demoCards.map((card) => (
+            <a href={card.href} class="demo-card">
+              <span class="demo-arrow">→</span>
+              <h4>{card.title}</h4>
+              <p>{card.desc}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-narrow">
+      <h2 class="section-label">Quick Example</h2>
+      <h3 class="section-title">One request. One answer.</h3>
+      <pre class="code-block"><span class="cmt">// Is March 21, 2026 a working day in Selangor?</span>
+<span class="cmt">// GET /v1/holidays/check?date=2026-03-21&state=selangor</span>
+{`{
+  "date": "2026-03-21",
+  "dayOfWeek": "Saturday",
+  "isHoliday": true,
+  "isWeekend": true,
+  "isWorkingDay": false,
+  "isSchoolDay": false,
+  "holidays": [{
+    "id": "2026-hari-raya-aidilfitri-1",
+    "name": {
+      "ms": "Hari Raya Aidilfitri",
+      "en": "Eid al-Fitr",
+      "zh": "开斋节"
+    },
+    "type": "islamic",
+    "status": "confirmed"
+  }]
+}`}</pre>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-label">Features</h2>
+      <h3 class="section-title">Everything you need. Nothing you don't.</h3>
+      <div class="features-grid">
+        {
+          features.map((f) => (
+            <div class="feature">
+              <h4>{f.title}</h4>
+              <p>{f.desc}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section cta-section">
+    <div class="container-narrow cta-inner">
+      <h3>Ready to build?</h3>
+      <p>Three ways to get started — pick what fits.</p>
+      <div class="cta-grid">
+        <a href="/docs/getting-started/quickstart" class="cta-card">
+          <strong>REST API</strong>
+          <span>curl or fetch</span>
+        </a>
+        <a href="/docs/sdk/installation" class="cta-card">
+          <strong>TypeScript SDK</strong>
+          <span>npm i @mycal/sdk</span>
+        </a>
+        <a href="/docs/mcp-server/what-is-mcp" class="cta-card">
+          <strong>MCP Server</strong>
+          <span>for Claude + ChatGPT</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: clamp(3rem, 9vw, 6rem) 0 clamp(2rem, 5vw, 3rem);
+  }
+
+  .hero-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+    background: var(--accent-soft);
+    padding: 0.32rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 1.25rem;
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    margin-bottom: 1rem;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: clamp(1.02rem, 2.5vw, 1.2rem);
+    color: var(--text-secondary);
+    max-width: 560px;
+    line-height: 1.55;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.65rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-pills {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .section {
+    padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    line-height: 1.2;
+  }
+
+  .demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .demo-card {
+    position: relative;
+    display: block;
+    padding: 1.5rem 1.5rem 1.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .demo-card:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    transform: translateY(-2px);
+  }
+
+  .demo-arrow {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    color: var(--text-tertiary);
+    font-size: 1.2rem;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  .demo-card:hover .demo-arrow {
+    color: var(--accent);
+    transform: translateX(3px);
+  }
+
+  .demo-card h4 {
+    font-size: 1.02rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  .demo-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+  }
+
+  .feature h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  .feature p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  .cta-section {
+    background: var(--bg-subtle);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+
+  .cta-inner h3 {
+    font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+  }
+
+  .cta-inner > p {
+    color: var(--text-secondary);
+    margin-bottom: 1.75rem;
+  }
+
+  .cta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .cta-card {
+    padding: 1.1rem 1.25rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .cta-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    color: var(--text);
+  }
+
+  .cta-card strong {
+    font-weight: 600;
+  }
+
+  .cta-card span {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-tertiary);
+  }
+
+  .cmt {
+    color: oklch(0.55 0.02 260);
+  }
+</style>

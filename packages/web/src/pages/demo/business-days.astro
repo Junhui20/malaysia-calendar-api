@@ -1,0 +1,90 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { BusinessDayCalc } from "~/components/demo/BusinessDayCalc";
+---
+
+<BaseLayout
+  title="Business Day Calculator · MyCal Demo"
+  description="Count working days between dates, or add N business days to any date. State-aware weekends and public holidays."
+>
+  <section class="container-narrow demo-page">
+    <a href="/demo" class="back-link">← All demos</a>
+    <h1>Business Day Calculator</h1>
+    <p class="lead">
+      Count working days in a range, or add N business days to a start date. Useful for SLA
+      calculations, delivery dates, and invoice due dates.
+    </p>
+
+    <BusinessDayCalc client:load />
+
+    <section class="info">
+      <h2>Two modes</h2>
+      <ul>
+        <li>
+          <strong>Count days</strong> — returns the number of business days (non-weekend,
+          non-holiday) between two dates, plus a breakdown of how many of each.
+        </li>
+        <li>
+          <strong>Add days</strong> — returns the date N business days after (or before, with a
+          negative number) the start date.
+        </li>
+      </ul>
+
+      <h3>State-awareness</h3>
+      <p>
+        The calculator respects each state's weekend configuration. A range that includes Friday
+        March 20 2026 counts it as non-working in Kedah but working in Selangor. The API handles
+        Johor's historical Fri–Sat → Sat–Sun transition (2014–2024) automatically.
+      </p>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .demo-page {
+    padding: 3rem 0 4rem;
+  }
+  .back-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+  }
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5rem;
+  }
+  .lead {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.55;
+  }
+  .info {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .info h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .info p,
+  .info ul {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+  .info ul {
+    padding-left: 1.25rem;
+  }
+</style>

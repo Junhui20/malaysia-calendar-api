@@ -1,0 +1,21 @@
+@import "./tokens.css";
+
+:root {
+  --sl-color-accent-low: oklch(0.92 0.05 145);
+  --sl-color-accent: oklch(0.55 0.18 145);
+  --sl-color-accent-high: oklch(0.4 0.18 145);
+  --sl-font: "Space Grotesk", system-ui, sans-serif;
+  --sl-font-mono: "JetBrains Mono", "Menlo", "Consolas", monospace;
+}
+
+:root[data-theme="dark"] {
+  --sl-color-accent-low: oklch(0.28 0.06 145);
+  --sl-color-accent: oklch(0.7 0.18 145);
+  --sl-color-accent-high: oklch(0.85 0.15 145);
+}
+
+.site-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}

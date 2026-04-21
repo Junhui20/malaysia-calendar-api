@@ -1,0 +1,142 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+
+const demos = [
+  {
+    href: "/demo/holiday-check",
+    title: "Holiday Checker",
+    desc: "Check if any date is a holiday, weekend, or working day — for any of the 16 states.",
+    badge: "Most popular",
+  },
+  {
+    href: "/demo/long-weekends",
+    title: "Long Weekend Planner",
+    desc: "Find every 3+ day stretch in the year where you barely have to burn annual leave.",
+    badge: null,
+  },
+  {
+    href: "/demo/business-days",
+    title: "Business Day Calculator",
+    desc: "Two modes: count working days between two dates, or add N business days to any date.",
+    badge: null,
+  },
+  {
+    href: "/demo/ical",
+    title: "iCal Feed Generator",
+    desc: "Get a calendar URL and subscribe in Google, Apple, or Outlook. Auto-syncs forever.",
+    badge: null,
+  },
+];
+---
+
+<BaseLayout
+  title="Demo · MyCal — Malaysia Calendar API"
+  description="Try the Malaysia Calendar API right in your browser. Holiday checker, long weekend planner, business day calculator, and iCal feed."
+>
+  <section class="container demo-hero">
+    <a href="/" class="back-link">← Back</a>
+    <h1>Live demos</h1>
+    <p>Every demo below calls the real production API. No signup, no API key.</p>
+  </section>
+
+  <section class="container demo-grid">
+    {
+      demos.map((d) => (
+        <a href={d.href} class="demo-card">
+          {d.badge && <span class="badge">{d.badge}</span>}
+          <h2>{d.title}</h2>
+          <p>{d.desc}</p>
+          <span class="arrow">Open demo →</span>
+        </a>
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .demo-hero {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+  }
+
+  .back-link:hover {
+    color: var(--text);
+  }
+
+  .demo-hero h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5rem;
+  }
+
+  .demo-hero p {
+    color: var(--text-secondary);
+    max-width: 540px;
+  }
+
+  .demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding-bottom: 3rem;
+  }
+
+  .demo-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .demo-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    color: var(--text);
+  }
+
+  .demo-card h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .demo-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    flex: 1;
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+
+  .demo-card .arrow {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .badge {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.6rem;
+    background: var(--accent-soft);
+    color: var(--accent-text);
+    border-radius: 999px;
+    text-transform: uppercase;
+  }
+</style>
