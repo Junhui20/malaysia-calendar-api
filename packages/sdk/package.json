@@ -1,8 +1,15 @@
 {
   "name": "@catlabtech/mycal-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TypeScript client SDK for the Malaysia Calendar API — public holidays, school calendar, business day calculator",
-  "keywords": ["malaysia", "calendar", "holidays", "cuti", "sdk", "typescript"],
+  "keywords": [
+    "malaysia",
+    "calendar",
+    "holidays",
+    "cuti",
+    "sdk",
+    "typescript"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -20,7 +27,10 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "publishConfig": {
     "access": "public"
   },
