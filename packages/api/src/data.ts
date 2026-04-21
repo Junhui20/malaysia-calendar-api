@@ -1,4 +1,4 @@
-import type { Holiday, State, SchoolTerm, SchoolHoliday, Exam } from "@mycal/core";
+import type { Holiday, State, SchoolTerm, SchoolHoliday, Exam } from "@catlabtech/mycal-core";
 
 import statesData from "../../../data/states.json";
 import holidays2024 from "../../../data/holidays/2024.json";

@@ -6,7 +6,7 @@ import {
   resolveStateCode,
   type HolidayType,
   type HolidayStatus,
-} from "@mycal/core";
+} from "@catlabtech/mycal-core";
 import { getHolidays, states } from "../data.js";
 
 export const holidaysRouter = new Hono();

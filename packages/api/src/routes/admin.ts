@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { holidaySchema } from "@mycal/core";
+import { holidaySchema } from "@catlabtech/mycal-core";
 
 export const adminRouter = new Hono();
 

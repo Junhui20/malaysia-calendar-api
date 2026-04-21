@@ -19,7 +19,7 @@ interface Holiday {
   status: "confirmed" | "tentative" | "announced" | "cancelled";
   states: string[];              // ["*"] = all, otherwise specific codes
   gazetteLevel: "P" | "N";
-  gazetteRef?: string;           // "P.U.(B) 305/2025"
+  gazetteRef?: string;           // "GN-33499"
   hijriDate?: string;            // "1 Syawal 1447"
   isReplacementFor?: string;     // links to original holiday id
   source: "jpm" | "jakim" | "state-gov" | "community" | "admin";

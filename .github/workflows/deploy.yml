@@ -21,10 +21,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Build core
-        run: pnpm --filter @mycal/core build
+        run: pnpm --filter @catlabtech/mycal-core build
 
       - name: Run tests
-        run: pnpm --filter @mycal/core test
+        run: pnpm --filter @catlabtech/mycal-core test
 
       - name: Validate data
         run: npx tsx scripts/validate-data.ts
@@ -52,8 +52,8 @@ jobs:
 
       - name: Build workspace packages
         run: |
-          pnpm --filter @mycal/core build
-          pnpm --filter @mycal/sdk build
+          pnpm --filter @catlabtech/mycal-core build
+          pnpm --filter @catlabtech/mycal-sdk build
 
       - name: Build web
         working-directory: packages/web

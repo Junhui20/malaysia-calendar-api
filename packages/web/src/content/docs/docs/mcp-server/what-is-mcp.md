@@ -26,7 +26,7 @@ Your AI client                     MyCal MCP server           Calendar API
               stdio JSON-RPC                       HTTPS
 ```
 
-The MCP server runs locally via `npx @mycal/mcp-server`. It speaks MCP on one side and HTTPS on the other. Nothing to host yourself.
+The MCP server runs locally via `npx @catlabtech/mycal-mcp-server`. It speaks MCP on one side and HTTPS on the other. Nothing to host yourself.
 
 ## What it can do
 
@@ -51,4 +51,4 @@ Full reference: [Available Tools](/docs/mcp-server/tools/).
 
 - [Claude Desktop](/docs/mcp-server/claude-desktop/)
 - [Claude Code](/docs/mcp-server/claude-code/)
-- Other MCP clients: follow your client's MCP server setup doc, using `npx @mycal/mcp-server` as the command.
+- Other MCP clients: follow your client's MCP server setup doc, using `npx @catlabtech/mycal-mcp-server` as the command.

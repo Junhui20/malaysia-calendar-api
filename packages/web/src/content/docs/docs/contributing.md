@@ -11,7 +11,7 @@ The fastest path is a [GitHub issue](https://github.com/Junhui20/malaysia-calend
 
 1. **The holiday** — name (Malay preferred) and date
 2. **The scope** — federal, state-specific, or ad-hoc
-3. **The gazette reference** — ideally a `P.U.(B) XXX/YYYY` number
+3. **The gazette reference** — ideally a JPM Government Notification number (`GN-xxxxx`) or `P.U.(B) XXX/YYYY` citation
 4. **A link** — the official PDF or announcement page
 
 We'll verify against the gazette and either merge it or explain why it's not eligible.

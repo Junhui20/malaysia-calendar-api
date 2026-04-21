@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { LongWeekend } from "@mycal/core";
+import type { LongWeekend } from "@catlabtech/mycal-core";
 import { StatePicker } from "./StatePicker";
 import { apiBaseUrl } from "~/lib/api";
 import styles from "./demo.module.css";

@@ -12,8 +12,8 @@
   "dependencies": {
     "@astrojs/react": "^4.2.0",
     "@astrojs/starlight": "^0.32.0",
-    "@mycal/core": "workspace:*",
-    "@mycal/sdk": "workspace:*",
+    "@catlabtech/mycal-core": "workspace:*",
+    "@catlabtech/mycal-sdk": "workspace:*",
     "astro": "^5.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

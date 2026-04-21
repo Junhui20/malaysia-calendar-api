@@ -1,16 +1,16 @@
 ---
 title: SDK Installation
-description: Install and configure the @mycal/sdk TypeScript client.
+description: Install and configure the @catlabtech/mycal-sdk TypeScript client.
 ---
 
 ## Install
 
 ```bash
-npm install @mycal/sdk
+npm install @catlabtech/mycal-sdk
 # or
-pnpm add @mycal/sdk
+pnpm add @catlabtech/mycal-sdk
 # or
-yarn add @mycal/sdk
+yarn add @catlabtech/mycal-sdk
 ```
 
 Node 18+ is required. The SDK is ESM-only and uses the platform `fetch`.
@@ -18,7 +18,7 @@ Node 18+ is required. The SDK is ESM-only and uses the platform `fetch`.
 ## Import
 
 ```ts
-import { MyCalClient } from "@mycal/sdk";
+import { MyCalClient } from "@catlabtech/mycal-sdk";
 
 const cal = new MyCalClient();
 ```
@@ -37,7 +37,7 @@ const cal = new MyCalClient({
 
 ## Types
 
-The SDK re-exports types from `@mycal/core` so you don't need a second install for type definitions:
+The SDK re-exports types from `@catlabtech/mycal-core` so you don't need a second install for type definitions:
 
 ```ts
 import type {
@@ -45,7 +45,7 @@ import type {
   State,
   SchoolTerm,
   BusinessDaysResult,
-} from "@mycal/sdk";
+} from "@catlabtech/mycal-sdk";
 ```
 
 Every method returns a `Result<T>` union:

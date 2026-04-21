@@ -25,7 +25,7 @@ import {
   type HolidayType,
   type StateGroup,
   type ExamType,
-} from "@mycal/core";
+} from "@catlabtech/mycal-core";
 
 // ─── Load Data ───
 

@@ -5,7 +5,7 @@ import {
   isWeekend,
   addDays,
   type LongWeekend,
-} from "@mycal/core";
+} from "@catlabtech/mycal-core";
 import { getHolidays, states } from "../data.js";
 
 export const longWeekendsRouter = new Hono();

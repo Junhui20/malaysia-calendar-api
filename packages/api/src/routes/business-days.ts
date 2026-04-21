@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { resolveStateCode, countBusinessDays, addBusinessDays } from "@mycal/core";
+import { resolveStateCode, countBusinessDays, addBusinessDays } from "@catlabtech/mycal-core";
 import { getHolidays, states } from "../data.js";
 
 export const businessDaysRouter = new Hono();

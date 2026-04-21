@@ -8,7 +8,7 @@ import {
   findSchoolTermByDate,
   findSchoolHolidayByDate,
   isSchoolDay as checkSchoolDay,
-} from "@mycal/core";
+} from "@catlabtech/mycal-core";
 import { getHolidays, getSchoolTerms, getSchoolHolidays, states } from "../data.js";
 
 export const checkRouter = new Hono();

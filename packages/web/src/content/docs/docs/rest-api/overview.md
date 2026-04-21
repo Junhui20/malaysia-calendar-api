@@ -13,11 +13,11 @@ All responses are JSON. CORS is open (`Access-Control-Allow-Origin: *`), so you 
 
 ## Authentication
 
-None required. Some admin endpoints (documented separately) are gated by bearer token, but every read endpoint is public.
+None required. Every public endpoint is readable without an API key.
 
 ## Rate limits
 
-60 requests per minute per IP. Exceeding the limit returns HTTP 429 with an envelope:
+100 requests per minute per IP. Exceeding the limit returns HTTP 429 with an envelope:
 
 ```json
 {

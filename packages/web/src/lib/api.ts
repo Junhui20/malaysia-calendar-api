@@ -1,4 +1,4 @@
-import { MyCalClient } from "@mycal/sdk";
+import { MyCalClient } from "@catlabtech/mycal-sdk";
 
 const baseUrl =
   typeof import.meta !== "undefined" && import.meta.env?.PUBLIC_API_URL

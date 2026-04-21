@@ -13,7 +13,7 @@ import type {
   CheckDateResult,
   BusinessDaysResult,
   LocalizedString,
-} from "@mycal/core";
+} from "@catlabtech/mycal-core";
 import type { Result, ApiError } from "./errors.js";
 
 // ─── Client Options ───

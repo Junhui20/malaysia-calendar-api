@@ -170,7 +170,7 @@ Use canonical state codes (lowercase, hyphenated): `johor`, `kedah`, `kelantan`,
 pnpm install
 
 # Build core library
-pnpm --filter @mycal/core build
+pnpm --filter @catlabtech/mycal-core build
 
 # Build all packages
 pnpm build

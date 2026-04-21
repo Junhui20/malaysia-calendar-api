@@ -10,7 +10,7 @@ Claude Code supports MCP servers via the same config format. You can add them at
 Run:
 
 ```bash
-claude mcp add malaysia-calendar --scope user -- npx -y @mycal/mcp-server
+claude mcp add malaysia-calendar --scope user -- npx -y @catlabtech/mycal-mcp-server
 ```
 
 This writes to your global `~/.claude.json` and makes the tools available in every project.
@@ -24,7 +24,7 @@ Create or edit `.mcp.json` in your repo root:
   "mcpServers": {
     "malaysia-calendar": {
       "command": "npx",
-      "args": ["-y", "@mycal/mcp-server"]
+      "args": ["-y", "@catlabtech/mycal-mcp-server"]
     }
   }
 }

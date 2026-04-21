@@ -9,7 +9,7 @@ The production base URL is:
 https://mycal-api.huijun00100101.workers.dev/v1
 ```
 
-No signup, no API key. Rate-limited to 60 requests per minute per IP.
+No signup, no API key. Rate-limited to 100 requests per minute per IP.
 
 ## Your first call
 

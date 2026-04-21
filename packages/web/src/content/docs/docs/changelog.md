@@ -8,8 +8,8 @@ For programmatic access to data changes, hit `GET /v1/changelog`. This page is a
 ## v0.1.0 — Initial release
 
 - REST API with 14 endpoints
-- TypeScript SDK (`@mycal/sdk`)
-- MCP Server (`@mycal/mcp-server`) with 12 tools
+- TypeScript SDK (`@catlabtech/mycal-sdk`)
+- MCP Server (`@catlabtech/mycal-mcp-server`) with 12 tools
 - iCal subscription feeds per state
 - Landing page, interactive demo, and developer docs site
 - Data: 2024, 2025, 2026 public holidays; 2026 school calendar
@@ -33,7 +33,7 @@ For programmatic access to data changes, hit `GET /v1/changelog`. This page is a
 **Islamic holidays:**
 
 - Published with `status: "tentative"` at the start of each year from JAKIM Takwim.
-- Flipped to `"confirmed"` 1–2 days before each holiday once rukyah is completed.
+- Manually flipped to `"confirmed"` 1–2 days before each holiday once JAKIM announces rukyah results.
 
 ## Schema versioning
 
@@ -62,7 +62,7 @@ See `GET /v1/changelog` for the live list. Sample entries:
   {
     "timestamp": "2025-12-01T00:00:00Z",
     "event": "data-ingested",
-    "description": "Ingested JPM gazette P.U.(B) 305/2025 for calendar year 2026"
+    "description": "Ingested JPM gazette GN-33499 for calendar year 2026"
   }
 ]
 ```
