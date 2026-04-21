@@ -1,0 +1,92 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { IcalGenerator } from "~/components/demo/IcalGenerator";
+---
+
+<BaseLayout
+  title="iCal Feed Generator · MyCal Demo"
+  description="Subscribe your Google, Apple, or Outlook calendar to Malaysia public holiday feeds. Auto-syncs when data updates."
+>
+  <section class="container-narrow demo-page">
+    <a href="/demo" class="back-link">← All demos</a>
+    <h1>iCal Feed Generator</h1>
+    <p class="lead">
+      Generate a subscription URL for your calendar app. Your calendar auto-refreshes whenever the
+      holiday data is updated — no manual re-import needed.
+    </p>
+
+    <IcalGenerator client:load />
+
+    <section class="info">
+      <h2>How subscriptions work</h2>
+      <p>
+        Unlike a one-time <code>.ics</code> file import, a subscription feed stays connected.
+        When the API publishes a data update (for example, a newly announced cuti peristiwa),
+        your calendar picks it up on its next poll — typically within hours.
+      </p>
+
+      <h3>Setup guides</h3>
+      <ul>
+        <li><a href="/docs/ical/google-calendar">Google Calendar</a></li>
+        <li><a href="/docs/ical/apple-calendar">Apple Calendar (iOS / macOS)</a></li>
+        <li><a href="/docs/ical/outlook">Outlook</a></li>
+      </ul>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .demo-page {
+    padding: 3rem 0 4rem;
+  }
+  .back-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+  }
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5rem;
+  }
+  .lead {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.55;
+  }
+  .info {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .info h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .info p,
+  .info ul {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+  .info ul {
+    padding-left: 1.25rem;
+  }
+  .info code {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    padding: 0.08rem 0.3rem;
+    background: var(--bg-subtle);
+    border-radius: 3px;
+  }
+</style>

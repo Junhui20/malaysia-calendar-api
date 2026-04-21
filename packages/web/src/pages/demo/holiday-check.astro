@@ -1,0 +1,109 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { HolidayChecker } from "~/components/demo/HolidayChecker";
+---
+
+<BaseLayout
+  title="Holiday Checker · MyCal Demo"
+  description="Check if any date is a public holiday, weekend, or working day for any Malaysian state."
+>
+  <section class="container-narrow demo-page">
+    <a href="/demo" class="back-link">← All demos</a>
+    <h1>Holiday Checker</h1>
+    <p class="lead">
+      Pick a date and a state — get back holiday status, weekend status, working day status, and
+      any overlapping school calendar entries. One API call.
+    </p>
+
+    <HolidayChecker client:load />
+
+    <section class="info">
+      <h2>What's happening</h2>
+      <p>
+        Behind the scenes, this calls <code>GET /v1/holidays/check</code> with your chosen date
+        and state. The API resolves state aliases (so <code>kl</code>, <code>selangor</code>, or
+        <code>sgr</code> all work), looks up the state's current weekend configuration (Kedah,
+        Kelantan, and Terengganu use Fri–Sat), and checks against the federal + state gazette for
+        that date.
+      </p>
+
+      <h3>Try these dates</h3>
+      <ul>
+        <li><code>2026-03-21</code> — Hari Raya Aidilfitri (Saturday, Islamic holiday + weekend)</li>
+        <li><code>2026-08-31</code> — Hari Kebangsaan (Monday, federal holiday)</li>
+        <li><code>2026-01-01</code> — New Year (varies by state)</li>
+        <li><code>2026-09-12</code> — Kedah governor's birthday (state-only)</li>
+      </ul>
+
+      <p>
+        See <a href="/docs/rest-api/holidays">/docs/rest-api/holidays</a> for the full endpoint
+        reference.
+      </p>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .demo-page {
+    padding: 3rem 0 4rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5rem;
+  }
+
+  .lead {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.55;
+  }
+
+  .info {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .info h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .info p,
+  .info ul {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .info ul {
+    padding-left: 1.25rem;
+  }
+
+  .info code {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    padding: 0.08rem 0.3rem;
+    background: var(--bg-subtle);
+    border-radius: 3px;
+  }
+</style>

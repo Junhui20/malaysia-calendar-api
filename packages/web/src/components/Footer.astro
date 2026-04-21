@@ -1,0 +1,100 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>
+      <p class="footer-brand">MyCal</p>
+      <p class="footer-tagline">Malaysia Calendar API · Open source · MIT</p>
+    </div>
+    <div class="footer-grid">
+      <div>
+        <h4>Product</h4>
+        <a href="/demo">Demo</a>
+        <a href="/docs">Docs</a>
+        <a href="/docs/rest-api/overview">API Reference</a>
+      </div>
+      <div>
+        <h4>Developers</h4>
+        <a href="/docs/sdk/installation">SDK</a>
+        <a href="/docs/mcp-server/what-is-mcp">MCP Server</a>
+        <a href="/docs/ical/google-calendar">iCal</a>
+      </div>
+      <div>
+        <h4>Community</h4>
+        <a href="https://github.com/Junhui20/malaysia-calendar-api" target="_blank" rel="noopener">GitHub</a>
+        <a href="/docs/contributing">Contribute</a>
+        <a href="/docs/changelog">Changelog</a>
+      </div>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© {year} MyCal. Data sourced from official Malaysian government publications (JPM, JAKIM, KPM, MPM).</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: 6rem;
+    padding: 3rem 0 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg-subtle);
+  }
+
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding-bottom: 2rem;
+  }
+
+  @media (min-width: 720px) {
+    .footer-inner {
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+
+  .footer-brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .footer-tagline {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 2rem;
+  }
+
+  .footer-grid h4 {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    margin-bottom: 0.75rem;
+  }
+
+  .footer-grid a {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding: 0.25rem 0;
+  }
+
+  .footer-grid a:hover {
+    color: var(--text);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 1.25rem;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+</style>

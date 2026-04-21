@@ -4,6 +4,13 @@ Malaysia's most complete calendar API — public holidays, school calendar, exam
 
 **Data source**: Official government gazette (JPM BKPP), JAKIM, KPM, MPM. Not scraped from third-party websites.
 
+## Links
+
+- **Website + demo**: https://mycal.pages.dev
+- **Developer docs**: https://mycal.pages.dev/docs
+- **API base URL**: https://mycal-api.huijun00100101.workers.dev/v1
+- **GitHub**: https://github.com/Junhui20/malaysia-calendar-api
+
 ## Features
 
 - **49 public holidays** for 2026 from official gazette (Warta Kerajaan) — federal + state-specific
@@ -27,11 +34,15 @@ git clone https://github.com/Junhui20/malaysia-calendar-api.git
 cd MalaysiaCalanderApi
 pnpm install
 
-# Build core library
+# Build shared packages
 pnpm --filter @mycal/core build
+pnpm --filter @mycal/sdk build
 
-# Run API locally
+# Run API locally (http://localhost:8787)
 cd packages/api && npx wrangler dev
+
+# Run web site locally (http://localhost:4321)
+pnpm --filter @mycal/web dev
 
 # Validate data
 pnpm validate
@@ -255,7 +266,8 @@ malaysia-calendar-api/
 │   │       └── school.ts        # School term/holiday/exam logic
 │   ├── api/                     # Hono API on Cloudflare Workers
 │   ├── mcp-server/              # MCP Server (12 tools)
-│   └── sdk/                     # TypeScript client SDK (@mycal/sdk)
+│   ├── sdk/                     # TypeScript client SDK (@mycal/sdk)
+│   └── web/                     # Astro + Starlight — marketing site, demos, docs
 ├── scripts/
 │   ├── validate-data.ts         # 5-layer data validation pipeline
 │   └── sync-to-kv.ts           # JSON -> Cloudflare KV denormalization
@@ -281,25 +293,37 @@ Holiday data includes gazette references (e.g., `P.U.(B) 305/2025`) for traceabi
 
 ## Deploy
 
-This API runs on **Cloudflare Workers** with KV for edge-cached reads.
+Two parts deploy independently:
+
+### API → Cloudflare Workers
 
 ```bash
-# Build all packages
-pnpm build
-
-# Deploy API to Cloudflare Workers
-cd packages/api
-npx wrangler deploy
-
-# Sync data to KV
-npx tsx scripts/sync-to-kv.ts
+pnpm --filter @mycal/core build
+cd packages/api && npx wrangler deploy
 ```
+
+### Website → Cloudflare Pages
+
+```bash
+pnpm --filter @mycal/core build
+pnpm --filter @mycal/sdk build
+pnpm --filter @mycal/web build
+
+# Direct upload via wrangler (requires CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID)
+cd packages/web
+npx wrangler pages deploy dist --project-name=mycal-web
+```
+
+First-time Pages setup:
+1. Create a Pages project named `mycal-web` in the Cloudflare dashboard.
+2. Either connect the GitHub repo for automatic builds, or rely on the GitHub Actions workflow (`.github/workflows/deploy.yml`) to push via `wrangler pages deploy`.
+3. Required GitHub secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
 
 ### CI/CD
 
 GitHub Actions handles:
 1. **PR gate** — Zod schema validation + cross-source checks on every PR
-2. **Deploy** — On merge to main: build, sync KV, purge CDN cache
+2. **Deploy** — On merge to `main`: build and deploy API to Workers + Web to Pages in parallel
 3. **Daily scrape** — Government portal monitoring for updates
 4. **Rukyah monitor** — Islamic date confirmation tracking
 

@@ -1,0 +1,58 @@
+:root {
+  --bg: oklch(0.98 0.005 85);
+  --bg-elevated: oklch(1 0 0);
+  --bg-code: oklch(0.16 0.02 260);
+  --bg-subtle: oklch(0.94 0.01 85);
+  --text: oklch(0.22 0.02 260);
+  --text-secondary: oklch(0.45 0.02 260);
+  --text-tertiary: oklch(0.6 0.02 260);
+  --accent: oklch(0.55 0.18 145);
+  --accent-hover: oklch(0.48 0.2 145);
+  --accent-soft: oklch(0.92 0.05 145);
+  --accent-text: oklch(0.35 0.2 145);
+  --border: oklch(0.88 0.01 85);
+  --border-strong: oklch(0.78 0.01 85);
+  --danger: oklch(0.55 0.2 25);
+  --danger-soft: oklch(0.95 0.04 25);
+  --warning: oklch(0.65 0.15 70);
+  --success: oklch(0.55 0.18 145);
+
+  --font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Menlo", "Consolas", monospace;
+
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+  --space-10: 4rem;
+  --space-12: 6rem;
+
+  --container-width: 1080px;
+  --container-narrow: 720px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: oklch(0.18 0.01 260);
+    --bg-elevated: oklch(0.22 0.01 260);
+    --bg-code: oklch(0.12 0.02 260);
+    --bg-subtle: oklch(0.24 0.01 260);
+    --text: oklch(0.94 0.01 85);
+    --text-secondary: oklch(0.72 0.02 85);
+    --text-tertiary: oklch(0.55 0.02 85);
+    --accent: oklch(0.7 0.18 145);
+    --accent-hover: oklch(0.76 0.18 145);
+    --accent-soft: oklch(0.28 0.06 145);
+    --accent-text: oklch(0.8 0.15 145);
+    --border: oklch(0.32 0.01 260);
+    --border-strong: oklch(0.42 0.01 260);
+    --danger-soft: oklch(0.28 0.06 25);
+  }
+}

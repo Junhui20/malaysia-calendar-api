@@ -1,0 +1,96 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { LongWeekendPlanner } from "~/components/demo/LongWeekendPlanner";
+---
+
+<BaseLayout
+  title="Long Weekend Planner · MyCal Demo"
+  description="Find all long weekends (3+ consecutive non-working days) in Malaysia. Plan your annual leave smarter."
+>
+  <section class="container-narrow demo-page">
+    <a href="/demo" class="back-link">← All demos</a>
+    <h1>Long Weekend Planner</h1>
+    <p class="lead">
+      Find every stretch of 3+ consecutive non-working days. Perfect for planning trips with
+      minimum leave burned.
+    </p>
+
+    <LongWeekendPlanner client:load />
+
+    <section class="info">
+      <h2>What's a long weekend here?</h2>
+      <p>
+        Any run of 3 or more consecutive non-working days for the selected state. The API
+        considers the state's weekend configuration (Kumpulan A states use Fri–Sat, Kumpulan B use
+        Sat–Sun) and all public holidays including <em>cuti ganti</em> (replacement holidays) for
+        holidays that fall on weekends.
+      </p>
+      <p>
+        The <code>bridgeDaysNeeded</code> field tells you how many days of annual leave would
+        extend the run. Zero means it's a freebie.
+      </p>
+
+      <h3>See also</h3>
+      <ul>
+        <li><a href="/docs/rest-api/holidays">/docs/rest-api/holidays</a> — full endpoint list</li>
+        <li><a href="/demo/holiday-check">Holiday Checker demo</a></li>
+      </ul>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .demo-page {
+    padding: 3rem 0 4rem;
+  }
+  .back-link {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+  }
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5rem;
+  }
+  .lead {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.55;
+  }
+  .info {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .info h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .info p,
+  .info ul {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+  .info ul {
+    padding-left: 1.25rem;
+  }
+  .info code {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    padding: 0.08rem 0.3rem;
+    background: var(--bg-subtle);
+    border-radius: 3px;
+  }
+</style>

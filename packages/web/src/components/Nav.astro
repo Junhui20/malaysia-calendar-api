@@ -1,0 +1,99 @@
+---
+const pathname = Astro.url.pathname;
+const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
+
+const links = [
+  { href: "/demo", label: "Demo" },
+  { href: "/docs", label: "Docs" },
+  { href: "https://github.com/Junhui20/malaysia-calendar-api", label: "GitHub", external: true },
+];
+---
+
+<header class="nav">
+  <div class="nav-inner container">
+    <a href="/" class="brand">
+      <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="2" y="4" width="28" height="26" rx="3" fill="var(--accent)" />
+        <rect x="2" y="4" width="28" height="6" rx="3" fill="oklch(0.42 0.2 145)" />
+        <circle cx="9" cy="7" r="1.5" fill="white" />
+        <circle cx="23" cy="7" r="1.5" fill="white" />
+        <path
+          d="M10 16 h3 v3 h-3 z M15 16 h3 v3 h-3 z M20 16 h3 v3 h-3 z M10 21 h3 v3 h-3 z M15 21 h3 v3 h-3 z"
+          fill="white"
+        />
+      </svg>
+      <span>MyCal</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class:list={["nav-link", { active: !link.external && isActive(link.href) }]}
+            {...(link.external ? { target: "_blank", rel: "noopener" } : {})}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in oklch, var(--bg) 85%, transparent);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  .brand:hover {
+    color: var(--text);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-link {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-sm);
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--bg-subtle);
+  }
+
+  .nav-link.active {
+    color: var(--accent-text);
+    background: var(--accent-soft);
+  }
+</style>

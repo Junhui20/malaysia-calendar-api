@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm --filter @mycal/core build)",
+      "Bash(command -v pnpm)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(corepack *)"
+    ]
+  }
+}
