@@ -560,7 +560,7 @@ malaysia-calendar-api/
 │   │   │       ├── exams.ts
 │   │   │       └── is-school-day.ts
 │   │   └── package.json
-│   └── sdk/                        # npm: @mycal/sdk
+│   └── sdk/                        # npm: @catlabtech/mycal-sdk
 │       ├── src/
 │       │   ├── index.ts
 │       │   ├── client.ts
@@ -669,10 +669,10 @@ malaysia-calendar-api/
 
 ### Phase 5: MCP Server + SDK (Week 5-6)
 34. MCP Server: 12 tools using `packages/core` (8 holiday + 4 school)
-35. Publish MCP server to npm (`npx @mycal/mcp-server`)
+35. Publish MCP server to npm (`npx @catlabtech/mycal-mcp-server`)
 36. SDK: TypeScript client with Result<T> pattern, typed errors, built-in cache
 37. SDK includes school calendar methods: `cal.school.terms()`, `cal.school.holidays()`, `cal.school.exams()`, `cal.school.isSchoolDay()`
-38. Publish SDK to npm (`@mycal/sdk`)
+38. Publish SDK to npm (`@catlabtech/mycal-sdk`)
 39. Generate SDK types from OpenAPI spec
     - **Deliverable**: Working MCP server + npm SDK
 

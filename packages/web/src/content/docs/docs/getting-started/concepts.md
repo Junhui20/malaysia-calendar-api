@@ -39,7 +39,7 @@ Every public holiday carries a `gazetteLevel` field:
 - `"P"` — Persekutuan (federal gazette, applies to all states unless a state explicitly opts out)
 - `"N"` — Negeri (state gazette, applies only to listed states)
 
-Plus a `gazetteRef` string like `"P.U.(B) 305/2025"` pointing to the specific Warta Kerajaan entry. This is the **primary-source audit trail** — you can verify every holiday against the actual gazette.
+Plus a `gazetteRef` string like `"GN-33499"` (JPM Government Notification number) pointing to the specific Warta Kerajaan entry. This is the **primary-source audit trail** — you can verify every holiday against the actual gazette.
 
 ## Holiday status
 

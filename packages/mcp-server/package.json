@@ -1,18 +1,33 @@
 {
-  "name": "@mycal/mcp-server",
+  "name": "@catlabtech/mycal-mcp-server",
   "version": "0.1.0",
+  "description": "MCP (Model Context Protocol) server exposing the Malaysia Calendar API as 12 tools for Claude, ChatGPT, and other AI agents",
+  "keywords": ["malaysia", "calendar", "holidays", "mcp", "model-context-protocol", "claude", "ai"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Junhui20/malaysia-calendar-api.git",
+    "directory": "packages/mcp-server"
+  },
+  "homepage": "https://mycal.pages.dev/docs/mcp-server/what-is-mcp/",
+  "bugs": "https://github.com/Junhui20/malaysia-calendar-api/issues",
   "type": "module",
   "bin": {
+    "mycal-mcp-server": "./dist/index.js",
     "mycal-mcp": "./dist/index.js"
   },
   "main": "./dist/index.js",
+  "files": ["dist", "README.md"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --banner.js '#!/usr/bin/env node'",
+    "build": "tsup",
     "dev": "tsx src/index.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
-    "@mycal/core": "workspace:*",
+    "@catlabtech/mycal-core": "workspace:*",
     "zod": "^3.25.76"
   },
   "devDependencies": {

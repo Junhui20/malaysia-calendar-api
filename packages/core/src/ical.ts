@@ -49,8 +49,11 @@ export function generateIcal(
     "VERSION:2.0",
     "PRODID:-//MyCal//Malaysia Calendar API//EN",
     `X-WR-CALNAME:${escapeIcal(calendarName)}`,
+    "X-WR-TIMEZONE:Asia/Kuala_Lumpur",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
+    "REFRESH-INTERVAL;VALUE=DURATION:PT6H",
+    "X-PUBLISHED-TTL:PT6H",
   ].join("\r\n");
 
   const events = [

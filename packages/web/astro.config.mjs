@@ -81,7 +81,7 @@ export default defineConfig({
   ],
   vite: {
     ssr: {
-      noExternal: ["@mycal/sdk", "@mycal/core"],
+      noExternal: ["@catlabtech/mycal-sdk", "@catlabtech/mycal-core"],
     },
   },
 });

@@ -25,7 +25,7 @@ HTTP status codes follow REST conventions: `4xx` for client errors, `5xx` for se
 | 404 | `STATE_NOT_FOUND` | Unknown state code / alias | No — use `suggestions` |
 | 404 | `NOT_FOUND` | Unknown route | No |
 | 404 | `HOLIDAY_NOT_FOUND` | Specific ID lookup missed | No |
-| 429 | `RATE_LIMITED` | Exceeded 60 req/min | Yes, after `retryAfter` seconds |
+| 429 | `RATE_LIMITED` | Exceeded 100 req/min | Yes, after `retryAfter` seconds |
 | 500 | `INTERNAL_ERROR` | Server bug | Yes, with backoff |
 | 503 | `SERVICE_UNAVAILABLE` | Data layer offline | Yes, with backoff |
 

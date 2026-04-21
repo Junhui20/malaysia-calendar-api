@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { resolveStateCode } from "@mycal/core";
+import { resolveStateCode } from "@catlabtech/mycal-core";
 import { states } from "../data.js";
 
 export const statesRouter = new Hono();

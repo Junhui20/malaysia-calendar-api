@@ -1,6 +1,16 @@
 {
-  "name": "@mycal/sdk",
+  "name": "@catlabtech/mycal-sdk",
   "version": "0.1.0",
+  "description": "TypeScript client SDK for the Malaysia Calendar API — public holidays, school calendar, business day calculator",
+  "keywords": ["malaysia", "calendar", "holidays", "cuti", "sdk", "typescript"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Junhui20/malaysia-calendar-api.git",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://mycal.pages.dev/docs/sdk/installation/",
+  "bugs": "https://github.com/Junhui20/malaysia-calendar-api/issues",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -10,12 +20,16 @@
       "import": "./dist/index.js"
     }
   },
+  "files": ["dist", "README.md"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts",
     "dev": "tsup src/index.ts --format esm --dts --watch"
   },
   "dependencies": {
-    "@mycal/core": "workspace:*"
+    "@catlabtech/mycal-core": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.0.0",

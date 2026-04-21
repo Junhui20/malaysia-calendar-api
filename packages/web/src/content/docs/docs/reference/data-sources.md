@@ -11,16 +11,13 @@ MyCal sources every record from official Malaysian government publications. Ever
 
 **Source:** JPM BKPP gazette notifications published on [kabinet.gov.my/hari-kelepasan-am](https://www.kabinet.gov.my/hari-kelepasan-am/).
 
-**Format:** PDF notifications with reference numbers like `P.U.(B) 305/2025`. The convention:
+**Format:** MyCal stores `gazetteRef` as the JPM Government Notification number (`GN-xxxxx`). Each annual gazette typically has three documents:
 
-- `P.U.(A)` — Federal Law
-- `P.U.(B)` — Federal Notification — this is where most public holidays live
-- Numbers run sequentially through the year (305/2025 = 305th notification of 2025)
+- **GN-33499 (Federal)** — federal holidays for the following year
+- **GN-33500 (State)** — state-specific holidays
+- **GN-33501 (Combined)** — consolidated federal+state reference, entries marked (P) Persekutuan or (N) Negeri
 
-**Gazette structure:** Usually three documents per year:
-- **No. 33499 (Federal)** — federal holidays for next year
-- **No. 33500 (State)** — state-specific holidays
-- **No. 33501 (Combined)** — consolidated federal+state reference, marked (P) Persekutuan or (N) Negeri
+JPM publications sometimes cite `P.U.(A)` (Federal Law) or `P.U.(B)` (Federal Notification) numbers as well — both refer to the same underlying gazette series, but MyCal standardises on the GN number.
 
 ## JAKIM
 
@@ -68,9 +65,9 @@ Pick any Holiday from the API. The `gazetteRef` field gives you the exact docume
   "date": "2026-08-31",
   "name": { "en": "National Day", "ms": "Hari Kebangsaan" },
   "gazetteLevel": "P",
-  "gazetteRef": "P.U.(B) 305/2025",
+  "gazetteRef": "GN-33499",
   "source": "jpm"
 }
 ```
 
-Search `P.U.(B) 305/2025` on the JPM gazette portal and you'll find the exact PDF entry.
+Search `GN-33499` on the JPM gazette portal and you'll find the corresponding PDF.

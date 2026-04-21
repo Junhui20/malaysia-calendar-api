@@ -18,7 +18,7 @@ export type {
 export { MyCalApiError } from "./errors.js";
 export type { Result, ApiError } from "./errors.js";
 
-// Re-export all types from @mycal/core
+// Re-export all types from @catlabtech/mycal-core
 export type {
   LocalizedString,
   Holiday,
@@ -41,4 +41,4 @@ export type {
   BusinessDaysResult,
   LongWeekend,
   ChangelogEntry,
-} from "@mycal/core";
+} from "@catlabtech/mycal-core";

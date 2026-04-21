@@ -20,7 +20,7 @@ hero:
 ## Three ways to use it
 
 - **[REST API](/docs/getting-started/quickstart/)** — plain HTTP, any language
-- **[TypeScript SDK](/docs/sdk/installation/)** — `npm i @mycal/sdk` with fully typed responses
+- **[TypeScript SDK](/docs/sdk/installation/)** — `npm i @catlabtech/mycal-sdk` with fully typed responses
 - **[MCP Server](/docs/mcp-server/what-is-mcp/)** — 12 tools for Claude, ChatGPT, and other AI agents
 - **[iCal Subscription](/docs/ical/google-calendar/)** — drop into Google, Apple, or Outlook calendar
 
@@ -35,7 +35,7 @@ hero:
 
 ## Data provenance
 
-Every holiday record includes a gazette reference (e.g. `P.U.(B) 305/2025`) so you can trace it back to the official Warta Kerajaan. Data is sourced exclusively from:
+Every holiday record includes a gazette reference (e.g. `GN-33499`) so you can trace it back to the official Warta Kerajaan. Data is sourced exclusively from:
 
 - **JPM BKPP** — Federal and state gazettes
 - **JAKIM** — Takwim Hijri-Miladi

@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { resolveStateCode, filterHolidays, generateIcal } from "@mycal/core";
+import { resolveStateCode, filterHolidays, generateIcal } from "@catlabtech/mycal-core";
 import { getHolidays, getSchoolHolidays, states } from "../data.js";
 
 export const feedsRouter = new Hono();

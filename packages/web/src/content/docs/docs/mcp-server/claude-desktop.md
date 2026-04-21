@@ -20,7 +20,7 @@ Add (or merge into) the `mcpServers` block:
   "mcpServers": {
     "malaysia-calendar": {
       "command": "npx",
-      "args": ["-y", "@mycal/mcp-server"]
+      "args": ["-y", "@catlabtech/mycal-mcp-server"]
     }
   }
 }

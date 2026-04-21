@@ -9,7 +9,7 @@ import {
   getDayOfWeekName,
   type StateGroup,
   type ExamType,
-} from "@mycal/core";
+} from "@catlabtech/mycal-core";
 import { getSchoolTerms, getSchoolHolidays, getExams, getHolidays, states } from "../data.js";
 
 export const schoolRouter = new Hono();

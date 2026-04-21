@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { CheckDateResult } from "@mycal/core";
+import type { CheckDateResult } from "@catlabtech/mycal-core";
 import { StatePicker } from "./StatePicker";
 import { apiClient, apiBaseUrl } from "~/lib/api";
 import styles from "./demo.module.css";

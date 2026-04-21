@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { BusinessDaysResult } from "@mycal/core";
+import type { BusinessDaysResult } from "@catlabtech/mycal-core";
 import { StatePicker } from "./StatePicker";
 import { apiClient, apiBaseUrl } from "~/lib/api";
 import styles from "./demo.module.css";

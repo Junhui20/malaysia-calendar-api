@@ -22,7 +22,7 @@ Malaysia's most complete calendar API — public holidays, school calendar, exam
 - **Exam schedules** — SPM, STPM, MUET, PT3
 - **iCal subscription feeds** — per-state `.ics` feeds
 - **MCP Server** for AI agents — 12 tools for Claude, ChatGPT, and other assistants
-- **TypeScript SDK** (`@mycal/sdk`) with typed responses
+- **TypeScript SDK** (`@catlabtech/mycal-sdk`) with typed responses
 - **OpenAPI 3.1 spec** + interactive docs
 - **Trilingual** — Bahasa Melayu, English, Chinese names (三语支持)
 
@@ -35,8 +35,8 @@ cd MalaysiaCalanderApi
 pnpm install
 
 # Build shared packages
-pnpm --filter @mycal/core build
-pnpm --filter @mycal/sdk build
+pnpm --filter @catlabtech/mycal-core build
+pnpm --filter @catlabtech/mycal-sdk build
 
 # Run API locally (http://localhost:8787)
 cd packages/api && npx wrangler dev
@@ -159,7 +159,7 @@ See the full [OpenAPI 3.1 spec](./openapi.yaml) for request/response schemas.
 ## SDK Usage
 
 ```typescript
-import { MyCalClient } from "@mycal/sdk";
+import { MyCalClient } from "@catlabtech/mycal-sdk";
 
 const cal = new MyCalClient();
 
@@ -193,7 +193,7 @@ Add to your MCP configuration:
   "mcpServers": {
     "malaysia-calendar": {
       "command": "npx",
-      "args": ["@mycal/mcp-server"]
+      "args": ["@catlabtech/mycal-mcp-server"]
     }
   }
 }
@@ -266,7 +266,7 @@ malaysia-calendar-api/
 │   │       └── school.ts        # School term/holiday/exam logic
 │   ├── api/                     # Hono API on Cloudflare Workers
 │   ├── mcp-server/              # MCP Server (12 tools)
-│   ├── sdk/                     # TypeScript client SDK (@mycal/sdk)
+│   ├── sdk/                     # TypeScript client SDK (@catlabtech/mycal-sdk)
 │   └── web/                     # Astro + Starlight — marketing site, demos, docs
 ├── scripts/
 │   ├── validate-data.ts         # 5-layer data validation pipeline
@@ -298,15 +298,15 @@ Two parts deploy independently:
 ### API → Cloudflare Workers
 
 ```bash
-pnpm --filter @mycal/core build
+pnpm --filter @catlabtech/mycal-core build
 cd packages/api && npx wrangler deploy
 ```
 
 ### Website → Cloudflare Pages
 
 ```bash
-pnpm --filter @mycal/core build
-pnpm --filter @mycal/sdk build
+pnpm --filter @catlabtech/mycal-core build
+pnpm --filter @catlabtech/mycal-sdk build
 pnpm --filter @mycal/web build
 
 # Direct upload via wrangler (requires CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID)

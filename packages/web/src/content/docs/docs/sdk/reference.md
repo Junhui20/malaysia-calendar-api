@@ -1,9 +1,9 @@
 ---
 title: Type Reference
-description: Full type definitions re-exported by @mycal/sdk.
+description: Full type definitions re-exported by @catlabtech/mycal-sdk.
 ---
 
-All types listed here are re-exported from `@mycal/core`. Import them directly from `@mycal/sdk`:
+All types listed here are re-exported from `@catlabtech/mycal-core`. Import them directly from `@catlabtech/mycal-sdk`:
 
 ```ts
 import type {
@@ -13,7 +13,7 @@ import type {
   Exam, ExamType,
   CheckDateResult, BusinessDaysResult, LongWeekend,
   LocalizedString,
-} from "@mycal/sdk";
+} from "@catlabtech/mycal-sdk";
 ```
 
 ## LocalizedString

@@ -8,7 +8,7 @@ The SDK never throws. Every async method returns a `Result<T>`. This means no tr
 ## Check a single date
 
 ```ts
-import { MyCalClient } from "@mycal/sdk";
+import { MyCalClient } from "@catlabtech/mycal-sdk";
 
 const cal = new MyCalClient();
 
