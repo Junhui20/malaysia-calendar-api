@@ -6,8 +6,8 @@ Malaysia's most complete calendar API — public holidays, school calendar, exam
 
 ## Links
 
-- **Website + demo**: https://mycal.pages.dev
-- **Developer docs**: https://mycal.pages.dev/docs
+- **Website + demo**: https://mycal-web.pages.dev
+- **Developer docs**: https://mycal-web.pages.dev/docs
 - **API base URL**: https://mycal-api.huijun00100101.workers.dev/v1
 - **GitHub**: https://github.com/Junhui20/malaysia-calendar-api
 

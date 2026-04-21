@@ -9,7 +9,7 @@
     "url": "git+https://github.com/Junhui20/malaysia-calendar-api.git",
     "directory": "packages/core"
   },
-  "homepage": "https://mycal.pages.dev",
+  "homepage": "https://mycal-web.pages.dev",
   "bugs": "https://github.com/Junhui20/malaysia-calendar-api/issues",
   "type": "module",
   "main": "./dist/index.js",

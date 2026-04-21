@@ -2,7 +2,7 @@ import { Hono } from "hono";
 
 export const docsRouter = new Hono();
 
-const DOCS_SITE = "https://mycal.pages.dev/docs";
+const DOCS_SITE = "https://mycal-web.pages.dev/docs";
 
 // GET /v1/docs — redirect to the full documentation site
 docsRouter.get("/", (c) => c.redirect(`${DOCS_SITE}/rest-api/overview/`, 302));
@@ -15,7 +15,7 @@ docsRouter.get("/openapi.json", (c) => {
       title: "Malaysia Calendar API",
       version: "0.1.0",
       description:
-        "Malaysia's most complete calendar API. See https://mycal.pages.dev/docs for interactive documentation.",
+        "Malaysia's most complete calendar API. See https://mycal-web.pages.dev/docs for interactive documentation.",
       contact: { url: "https://github.com/Junhui20/malaysia-calendar-api" },
       license: { name: "MIT", url: "https://opensource.org/licenses/MIT" },
     },

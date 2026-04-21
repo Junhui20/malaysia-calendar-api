@@ -261,8 +261,8 @@ export const landingHTML = `<!DOCTYPE html>
       <h1>Malaysia<br><span>Calendar API</span></h1>
       <p>Public holidays, school calendar, exam schedules, and business day calculator for all 16 states. Powered by official government gazette data.</p>
       <div class="actions">
-        <a href="https://mycal.pages.dev" class="btn btn-primary">Full site & demos ↗</a>
-        <a href="https://mycal.pages.dev/docs" class="btn btn-secondary">Docs</a>
+        <a href="https://mycal-web.pages.dev" class="btn btn-primary">Full site & demos ↗</a>
+        <a href="https://mycal-web.pages.dev/docs" class="btn btn-secondary">Docs</a>
         <a href="https://github.com/Junhui20/malaysia-calendar-api" class="btn btn-secondary">GitHub</a>
       </div>
     </section>
@@ -358,8 +358,8 @@ export const landingHTML = `<!DOCTYPE html>
     <footer>
       <p>MyCal &mdash; Open source Malaysia Calendar API</p>
       <div class="footer-links">
-        <a href="https://mycal.pages.dev/docs">Docs</a>
-        <a href="https://mycal.pages.dev/demo">Demo</a>
+        <a href="https://mycal-web.pages.dev/docs">Docs</a>
+        <a href="https://mycal-web.pages.dev/demo">Demo</a>
         <a href="/v1/feed/ical/selangor">iCal</a>
         <a href="https://github.com/Junhui20/malaysia-calendar-api">GitHub</a>
       </div>
