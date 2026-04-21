@@ -1,8 +1,14 @@
 {
   "name": "@catlabtech/mycal-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Core types, schemas, and business logic for the Malaysia Calendar API",
-  "keywords": ["malaysia", "calendar", "holidays", "cuti", "typescript"],
+  "keywords": [
+    "malaysia",
+    "calendar",
+    "holidays",
+    "cuti",
+    "typescript"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -20,7 +26,10 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "publishConfig": {
     "access": "public"
   },
