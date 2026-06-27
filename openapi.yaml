@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Malaysia Calendar API
-  version: 0.1.0
+  version: 0.1.1
   description: >
     A comprehensive API for Malaysian public holidays, school terms, business day
     calculations, and state-level calendar data. Data is sourced from official
@@ -30,6 +30,8 @@ tags:
     description: School terms, holidays, and exam schedules
   - name: Feeds
     description: Calendar feeds (iCal, RSS)
+  - name: Meta
+    description: API metadata and data change log
 
 paths:
   /holidays:
@@ -308,6 +310,82 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/CheckDateResult"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /holidays/long-weekends:
+    get:
+      operationId: getLongWeekends
+      summary: Get long weekends
+      description: >
+        Returns all stretches of three or more consecutive non-working days
+        (weekends plus public holidays) for the given year and state, including
+        the number of bridge days needed to extend each break.
+      tags:
+        - Holidays
+      parameters:
+        - $ref: "#/components/parameters/YearParam"
+        - $ref: "#/components/parameters/StateParam"
+      responses:
+        "200":
+          description: Long weekends for the year.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - startDate
+                        - endDate
+                        - totalDays
+                        - holidays
+                        - weekendDays
+                        - bridgeDaysNeeded
+                      properties:
+                        startDate:
+                          type: string
+                          format: date
+                          example: "2026-05-01"
+                        endDate:
+                          type: string
+                          format: date
+                          example: "2026-05-03"
+                        totalDays:
+                          type: integer
+                          example: 3
+                        holidays:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Holiday"
+                        weekendDays:
+                          type: integer
+                          example: 2
+                        bridgeDaysNeeded:
+                          type: integer
+                          example: 0
+                  meta:
+                    type: object
+                    required:
+                      - year
+                      - state
+                      - total
+                    properties:
+                      year:
+                        type: integer
+                        example: 2026
+                      state:
+                        type: string
+                        example: "selangor"
+                      total:
+                        type: integer
+                        example: 7
         "400":
           $ref: "#/components/responses/BadRequest"
 
@@ -811,6 +889,76 @@ paths:
             application/rss+xml:
               schema:
                 type: string
+
+  /changelog:
+    get:
+      operationId: getChangelog
+      summary: Data change log
+      description: >
+        Returns a reverse-chronological log of data changes (publications,
+        corrections, additions). Useful for tracking newly announced holidays
+        such as cuti peristiwa.
+      tags:
+        - Meta
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of entries to return.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+            example: 10
+        - name: since
+          in: query
+          description: Only return entries on or after this ISO 8601 timestamp.
+          required: false
+          schema:
+            type: string
+            example: "2025-01-01"
+      responses:
+        "200":
+          description: Change log entries.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - timestamp
+                        - event
+                        - description
+                      properties:
+                        timestamp:
+                          type: string
+                          example: "2025-08-28T00:00:00+08:00"
+                        event:
+                          type: string
+                          example: "data.published"
+                        description:
+                          type: string
+                          example: "Initial 2026 holiday data published from JPM gazette"
+                  meta:
+                    type: object
+                    required:
+                      - total
+                      - limit
+                    properties:
+                      total:
+                        type: integer
+                        example: 3
+                      limit:
+                        type: integer
+                        example: 10
 
 components:
   parameters:

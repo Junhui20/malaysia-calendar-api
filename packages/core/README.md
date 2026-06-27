@@ -1,5 +1,8 @@
 # @catlabtech/mycal-core
 
+[![npm version](https://img.shields.io/npm/v/@catlabtech/mycal-core.svg)](https://www.npmjs.com/package/@catlabtech/mycal-core)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Junhui20/malaysia-calendar-api/blob/main/LICENSE)
+
 Shared types, Zod schemas, and business logic for the **Malaysia Calendar API**. This is the underlying library used by [`@catlabtech/mycal-sdk`](https://www.npmjs.com/package/@catlabtech/mycal-sdk) and [`@catlabtech/mycal-mcp-server`](https://www.npmjs.com/package/@catlabtech/mycal-mcp-server).
 
 > Most users should install the SDK or MCP server instead. Use `@catlabtech/mycal-core` directly only if you need the raw types, schemas, or pure business logic (e.g. for server-side implementations or custom runtimes).

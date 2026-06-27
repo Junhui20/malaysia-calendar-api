@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Junhui20/malaysia-calendar-api.git",
+    "directory": "packages/api"
+  },
   "scripts": {
     "dev": "wrangler dev",
     "build": "wrangler deploy --dry-run",
@@ -11,7 +16,7 @@
   },
   "dependencies": {
     "@catlabtech/mycal-core": "workspace:*",
-    "hono": "^4.7.0"
+    "hono": "^4.12.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.0.0",

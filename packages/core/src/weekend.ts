@@ -10,6 +10,9 @@ const DAY_NAMES = [
   "Saturday",
 ] as const;
 
+// `weekendHistory` MUST be ordered newest-first: this returns the first config
+// whose [from, to] range covers `date`, and the fallback below returns entry [0]
+// (the most recent) when no range matches. The schema enforces a non-empty array.
 export function getWeekendConfig(
   state: State,
   date: string
@@ -64,7 +67,11 @@ export function nextWorkingDay(
 }
 
 export function diffDays(start: string, end: string): number {
-  const s = new Date(start + "T00:00:00").getTime();
-  const e = new Date(end + "T00:00:00").getTime();
-  return Math.round((e - s) / (1000 * 60 * 60 * 24));
+  // Anchor at noon UTC (like every other date helper here) so whole-day
+  // arithmetic is immune to the runtime timezone and DST. Parsing as
+  // "YYYY-MM-DDT00:00:00" without a zone would use local time and could be
+  // off by a day for contributors running outside UTC.
+  const s = new Date(start + "T12:00:00Z").getTime();
+  const e = new Date(end + "T12:00:00Z").getTime();
+  return Math.round((e - s) / 86_400_000);
 }

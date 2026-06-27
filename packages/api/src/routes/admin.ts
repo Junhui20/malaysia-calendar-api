@@ -1,25 +1,12 @@
 import { Hono } from "hono";
 import { holidaySchema } from "@catlabtech/mycal-core";
+import { requireAdmin, unauthorized } from "../_shared.js";
 
 export const adminRouter = new Hono();
 
-function requireApiKey(c: any): boolean {
-  const key = c.req.header("X-API-Key") ?? c.req.query("api_key");
-  const expected = c.env?.ADMIN_API_KEY;
-  if (!expected || key !== expected) {
-    return false;
-  }
-  return true;
-}
-
 // POST /admin/holidays — Add ad-hoc holiday
 adminRouter.post("/holidays", async (c) => {
-  if (!requireApiKey(c)) {
-    return c.json(
-      { error: { code: "UNAUTHORIZED", message: "Valid API key required" } },
-      401
-    );
-  }
+  if (!requireAdmin(c)) return unauthorized(c);
 
   const body = await c.req.json();
   const result = holidaySchema.safeParse(body);
@@ -37,8 +24,7 @@ adminRouter.post("/holidays", async (c) => {
     );
   }
 
-  // In production: write to KV immediately, then async commit to Git
-  // For now: return success with the validated holiday
+  // In production: write to KV immediately, then async commit to Git.
   return c.json(
     {
       data: result.data,
@@ -53,17 +39,11 @@ adminRouter.post("/holidays", async (c) => {
 
 // PATCH /admin/holidays/:id — Update holiday (e.g. confirm Islamic date)
 adminRouter.patch("/holidays/:id", async (c) => {
-  if (!requireApiKey(c)) {
-    return c.json(
-      { error: { code: "UNAUTHORIZED", message: "Valid API key required" } },
-      401
-    );
-  }
+  if (!requireAdmin(c)) return unauthorized(c);
 
   const id = c.req.param("id");
   const body = await c.req.json();
 
-  // Partial validation — only validate provided fields
   const allowedFields = [
     "date",
     "endDate",
@@ -98,12 +78,7 @@ adminRouter.patch("/holidays/:id", async (c) => {
 
 // DELETE /admin/holidays/:id — Soft delete (set status to cancelled)
 adminRouter.delete("/holidays/:id", async (c) => {
-  if (!requireApiKey(c)) {
-    return c.json(
-      { error: { code: "UNAUTHORIZED", message: "Valid API key required" } },
-      401
-    );
-  }
+  if (!requireAdmin(c)) return unauthorized(c);
 
   const id = c.req.param("id");
 

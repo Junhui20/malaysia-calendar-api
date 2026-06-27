@@ -1,86 +1,52 @@
 import { Hono } from "hono";
+import { findLongWeekends, optimizeLeave } from "@catlabtech/mycal-core";
+import { getHolidays } from "../data.js";
 import {
-  resolveStateCode,
-  filterHolidays,
-  isWeekend,
-  addDays,
-  type LongWeekend,
-} from "@catlabtech/mycal-core";
-import { getHolidays, states } from "../data.js";
+  badRequest,
+  resolveStateOrError,
+  parseYearOrError,
+  isResponse,
+} from "../_shared.js";
 
 export const longWeekendsRouter = new Hono();
 
 // GET /holidays/long-weekends?year=2026&state=selangor
 longWeekendsRouter.get("/", (c) => {
-  const year = Number(c.req.query("year") ?? new Date().getFullYear());
-  const stateQuery = c.req.query("state");
+  const year = parseYearOrError(c, c.req.query("year"));
+  if (isResponse(year)) return year;
 
-  const stateObj = stateQuery
-    ? resolveStateCode(stateQuery, states)
-    : states.find((s) => s.code === "kuala-lumpur")!;
+  const state = resolveStateOrError(c, c.req.query("state"), { optional: true });
+  if (isResponse(state)) return state;
 
-  if (!stateObj) {
-    return c.json(
-      { error: { code: "INVALID_STATE", message: `Unknown state "${stateQuery}"` } },
-      400
-    );
-  }
-
-  const holidays = getHolidays(year);
-  const stateHolidays = filterHolidays(holidays, { state: stateObj.code, year });
-  const holidayDateMap = new Map(stateHolidays.map((h) => [h.date, h]));
-
-  const longWeekends: LongWeekend[] = [];
-  let current = `${year}-01-01`;
-  const yearEnd = `${year}-12-31`;
-
-  while (current <= yearEnd) {
-    const isNonWorking =
-      isWeekend(current, stateObj) || holidayDateMap.has(current);
-
-    if (!isNonWorking) {
-      current = addDays(current, 1);
-      continue;
-    }
-
-    // Found start of non-working streak
-    const startDate = current;
-    const streakHolidays = [];
-    let weekendDays = 0;
-    let totalDays = 0;
-
-    while (current <= yearEnd) {
-      const weekend = isWeekend(current, stateObj);
-      const holiday = holidayDateMap.get(current);
-
-      if (!weekend && !holiday) break;
-
-      if (weekend) weekendDays++;
-      if (holiday) streakHolidays.push(holiday);
-      totalDays++;
-      current = addDays(current, 1);
-    }
-
-    if (totalDays >= 3) {
-      const endDate = addDays(current, -1);
-      const bridgeDaysNeeded = Math.max(
-        0,
-        totalDays - weekendDays - streakHolidays.length
-      );
-
-      longWeekends.push({
-        startDate,
-        endDate,
-        totalDays,
-        holidays: streakHolidays,
-        weekendDays,
-        bridgeDaysNeeded,
-      });
-    }
-  }
-
+  const longWeekends = findLongWeekends(year, state, getHolidays(year));
   return c.json({
     data: longWeekends,
-    meta: { year, state: stateObj.code, total: longWeekends.length },
+    meta: { year, state: state.code, total: longWeekends.length },
+  });
+});
+
+// GET /holidays/leave-optimizer?year=2026&state=selangor&maxLeave=3&limit=10
+// "Spend up to N annual-leave days to get the longest possible break."
+export const leaveOptimizerRouter = new Hono();
+
+leaveOptimizerRouter.get("/", (c) => {
+  const year = parseYearOrError(c, c.req.query("year"));
+  if (isResponse(year)) return year;
+
+  const maxLeaveRaw = c.req.query("maxLeave");
+  const maxLeave = maxLeaveRaw === undefined ? 3 : Number(maxLeaveRaw);
+  if (!Number.isInteger(maxLeave) || maxLeave < 1 || maxLeave > 10) {
+    return badRequest(c, "INVALID_MAX_LEAVE", "maxLeave must be an integer between 1 and 10");
+  }
+
+  const state = resolveStateOrError(c, c.req.query("state"), { optional: true });
+  if (isResponse(state)) return state;
+
+  const limit = Math.min(Math.max(Number(c.req.query("limit") ?? 10), 1), 50);
+  const all = optimizeLeave(year, state, getHolidays(year), maxLeave);
+
+  return c.json({
+    data: all.slice(0, limit),
+    meta: { year, state: state.code, maxLeave, total: all.length },
   });
 });

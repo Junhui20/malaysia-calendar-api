@@ -12,6 +12,8 @@ import type {
   ExamType,
   CheckDateResult,
   BusinessDaysResult,
+  LongWeekend,
+  LeaveSuggestion,
   LocalizedString,
 } from "@catlabtech/mycal-core";
 import type { Result, ApiError } from "./errors.js";
@@ -54,6 +56,18 @@ export interface SchoolHolidaysParams {
 export interface ExamsParams {
   readonly year?: number;
   readonly type?: ExamType;
+}
+
+export interface LongWeekendsParams {
+  readonly year?: number;
+  readonly state?: string;
+}
+
+export interface LeaveOptimizerParams {
+  readonly year?: number;
+  readonly state?: string;
+  readonly maxLeave?: number;
+  readonly limit?: number;
 }
 
 export interface IsSchoolDayParams {
@@ -164,6 +178,24 @@ export class MyCalClient {
   async check(date: string, state: string): Promise<Result<CheckDateResult>> {
     const query = buildQuery({ date, state });
     return this.request<CheckDateResult>(`/holidays/check${query}`);
+  }
+
+  async longWeekends(params?: LongWeekendsParams): Promise<Result<readonly LongWeekend[]>> {
+    const query = buildQuery({ year: params?.year, state: params?.state });
+    return this.request<readonly LongWeekend[]>(`/holidays/long-weekends${query}`);
+  }
+
+  /** Best annual-leave days to take to maximise consecutive days off. */
+  async leaveOptimizer(
+    params?: LeaveOptimizerParams,
+  ): Promise<Result<readonly LeaveSuggestion[]>> {
+    const query = buildQuery({
+      year: params?.year,
+      state: params?.state,
+      maxLeave: params?.maxLeave,
+      limit: params?.limit,
+    });
+    return this.request<readonly LeaveSuggestion[]>(`/holidays/leave-optimizer${query}`);
   }
 
   // ─── Business Day Methods ───

@@ -10,14 +10,18 @@
     "typescript"
   ],
   "license": "MIT",
+  "author": "CatLab Tech",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Junhui20/malaysia-calendar-api.git",
     "directory": "packages/core"
   },
   "homepage": "https://mycal-web.pages.dev",
-  "bugs": "https://github.com/Junhui20/malaysia-calendar-api/issues",
+  "bugs": {
+    "url": "https://github.com/Junhui20/malaysia-calendar-api/issues"
+  },
   "type": "module",
+  "sideEffects": false,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -28,6 +32,7 @@
   },
   "files": [
     "dist",
+    "LICENSE",
     "README.md"
   ],
   "publishConfig": {

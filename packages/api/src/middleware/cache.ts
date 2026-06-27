@@ -31,6 +31,14 @@ export function cacheHeaders() {
   return async (c: Context, next: Next) => {
     await next();
 
+    // Never cache privileged surfaces — admin mutations and webhook management
+    // are per-key/per-owner and must not be stored by browsers or the CDN.
+    const path = c.req.path;
+    if (path.includes("/admin") || path.includes("/webhooks")) {
+      c.header("Cache-Control", "private, no-store");
+      return;
+    }
+
     // Only cache successful GET responses
     if (c.req.method !== "GET" || c.res.status >= 400) return;
 

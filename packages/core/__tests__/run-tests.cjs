@@ -527,6 +527,18 @@ async function main() {
     const ical = core.generateIcal(special, [], "Test");
     assert.ok(ical.includes("Special\\; holiday\\, day\\\\test"));
   });
+  test("generateIcal escapes carriage returns (CRLF folded to \\n)", () => {
+    const cr = [{
+      ...holidays[0],
+      id: "cr-test",
+      status: "confirmed",
+      name: { ms: "a\r\nb", en: "x\r\ny" },
+    }];
+    const ical = core.generateIcal(cr, [], "Test");
+    assert.ok(ical.includes("SUMMARY:x\\ny"), "CRLF in summary should fold to \\n");
+    // No bare CR should survive except as part of the \r\n line endings
+    assert.ok(!/\r(?!\n)/.test(ical), "No lone carriage returns in output");
+  });
   test("generateIcal UID uses @mycal.my domain", () => {
     const ical = core.generateIcal(holidays.slice(0, 1), [], "Test");
     assert.ok(ical.includes(`UID:${holidays[0].id}@mycal.my`));
@@ -589,6 +601,133 @@ async function main() {
   test("state schema rejects empty weekendHistory", () => {
     const bad = { ...states[0], weekendHistory: [] };
     assert.ok(!core.stateSchema.safeParse(bad).success);
+  });
+
+  // ─── Business Day Helpers (new) ───────────────────────────
+  console.log("\n📋 Business Day Helpers");
+  test("isBusinessDay true on a normal weekday", () => {
+    assert.equal(core.isBusinessDay("2026-07-14", sel, holidays), true); // Tue
+  });
+  test("isBusinessDay false on weekend", () => {
+    assert.equal(core.isBusinessDay("2026-07-18", sel, holidays), false); // Sat
+  });
+  test("isBusinessDay false on public holiday", () => {
+    assert.equal(core.isBusinessDay("2026-08-31", sel, holidays), false); // National Day
+  });
+  test("subtractBusinessDays mirrors addBusinessDays", () => {
+    const fwd = core.addBusinessDays("2026-07-13", 5, sel, holidays);
+    assert.equal(core.subtractBusinessDays(fwd, 5, sel, holidays), "2026-07-13");
+  });
+  test("nextBusinessDay from Friday = Monday", () => {
+    assert.equal(core.nextBusinessDay("2026-07-17", sel, holidays), "2026-07-20");
+  });
+  test("previousBusinessDay from Monday = Friday", () => {
+    assert.equal(core.previousBusinessDay("2026-07-20", sel, holidays), "2026-07-17");
+  });
+  test("addBusinessDays rejects negative input", () => {
+    assert.throws(() => core.addBusinessDays("2026-01-01", -1, sel, holidays), RangeError);
+  });
+  test("addBusinessDays rejects absurd input (DoS guard)", () => {
+    assert.throws(() => core.addBusinessDays("2026-01-01", 1e9, sel, holidays), RangeError);
+  });
+  test("countBusinessDays rejects start after end", () => {
+    assert.throws(() => core.countBusinessDays("2026-12-31", "2026-01-01", sel, holidays), RangeError);
+  });
+
+  // ─── Long Weekends & Leave Optimizer (new) ────────────────
+  console.log("\n📋 Long Weekends & Leave Optimizer");
+  test("findLongWeekends returns 3+ day natural breaks", () => {
+    const lw = core.findLongWeekends(2026, sel, holidays);
+    assert.ok(Array.isArray(lw) && lw.length > 0);
+    for (const w of lw) {
+      assert.ok(w.totalDays >= 3, `${w.startDate} streak < 3`);
+      assert.ok(w.startDate <= w.endDate);
+      assert.equal(w.bridgeDaysNeeded, 0);
+    }
+  });
+  test("findLongWeekends includes the National Day weekend", () => {
+    const lw = core.findLongWeekends(2026, sel, holidays);
+    assert.ok(lw.some(w => w.startDate <= "2026-08-31" && "2026-08-31" <= w.endDate));
+  });
+  test("optimizeLeave suggestions respect the leave budget", () => {
+    const sug = core.optimizeLeave(2026, sel, holidays, 2);
+    assert.ok(Array.isArray(sug) && sug.length > 0);
+    for (const s of sug) {
+      assert.ok(s.leaveCost >= 1 && s.leaveCost <= 2, `leaveCost ${s.leaveCost}`);
+      assert.equal(s.leaveDates.length, s.leaveCost);
+      assert.ok(s.totalDays > s.leaveCost, "a break must beat pure leave");
+      assert.ok(s.leaveDates.every(d => d >= s.startDate && d <= s.endDate));
+    }
+  });
+  test("optimizeLeave is sorted by efficiency (best first)", () => {
+    const sug = core.optimizeLeave(2026, sel, holidays, 3);
+    assert.ok(sug[0].efficiency >= sug[sug.length - 1].efficiency);
+    assert.ok(sug[0].efficiency > 1, "top suggestion gives more days off than leave spent");
+  });
+  test("optimizeLeave with maxLeave<1 returns nothing", () => {
+    assert.equal(core.optimizeLeave(2026, sel, holidays, 0).length, 0);
+  });
+
+  // ─── Validation & Safety Utilities (new) ──────────────────
+  console.log("\n📋 Validation & Safety");
+  test("isValidISODate accepts a real date", () => { assert.equal(core.isValidISODate("2026-03-21"), true); });
+  test("isValidISODate rejects Feb 30 / bad month / format", () => {
+    assert.equal(core.isValidISODate("2026-02-30"), false);
+    assert.equal(core.isValidISODate("2026-13-01"), false);
+    assert.equal(core.isValidISODate("2026-3-1"), false);
+    assert.equal(core.isValidISODate("not-a-date"), false);
+  });
+  test("timingSafeEqualString matches equal, rejects unequal/length", () => {
+    assert.equal(core.timingSafeEqualString("s3cr3t", "s3cr3t"), true);
+    assert.equal(core.timingSafeEqualString("s3cr3t", "s3cr3x"), false);
+    assert.equal(core.timingSafeEqualString("abc", "abcd"), false);
+  });
+  test("isSafePublicHttpsUrl allows public https only", () => {
+    assert.equal(core.isSafePublicHttpsUrl("https://hooks.example.com/x"), true);
+    assert.equal(core.isSafePublicHttpsUrl("http://example.com"), false);
+    assert.equal(core.isSafePublicHttpsUrl("not a url"), false);
+  });
+  test("isSafePublicHttpsUrl blocks SSRF targets", () => {
+    for (const bad of [
+      "https://localhost/x",
+      "https://127.0.0.1/x",
+      "https://169.254.169.254/latest/meta-data",
+      "https://10.0.0.5/x",
+      "https://192.168.1.1/x",
+      "https://172.16.0.1/x",
+      "https://[::1]/x",
+      "https://foo.internal/x",
+    ]) {
+      assert.equal(core.isSafePublicHttpsUrl(bad), false, `should block ${bad}`);
+    }
+  });
+
+  // ─── School Filter / iCal Categories / Data Model (new) ───
+  console.log("\n📋 School Filter / iCal Categories / Data Model");
+  test("filterSchoolHolidays matches findSchoolHolidayByDate semantics", () => {
+    const all = core.filterSchoolHolidays(schoolHolidays, "B");
+    assert.ok(all.every(h => h.group === "B"));
+    const nov10 = (list) => list.some(h => "2026-11-10" >= h.startDate && "2026-11-10" <= h.endDate);
+    assert.equal(nov10(core.filterSchoolHolidays(schoolHolidays, "B", "selangor")), true);
+    assert.equal(nov10(core.filterSchoolHolidays(schoolHolidays, "B", "sarawak")), false);
+  });
+  test("generateIcal emits machine-readable CATEGORIES + colour", () => {
+    const ical = core.generateIcal(holidays.slice(0, 3), [], "Test");
+    assert.ok(ical.includes("CATEGORIES:Public Holiday"));
+    assert.ok(ical.includes("X-APPLE-CALENDAR-COLOR:"));
+  });
+  test("generateIcal school events carry a School Holiday category", () => {
+    const ical = core.generateIcal([], schoolHolidays.slice(0, 1), "Test");
+    assert.ok(ical.includes("CATEGORIES:School Holiday"));
+  });
+  test("holidaySchema accepts new optional category + isEstimated", () => {
+    assert.ok(core.holidaySchema.safeParse({ ...holidays[0], category: "public", isEstimated: true }).success);
+  });
+  test("holidaySchema rejects an invalid category", () => {
+    assert.ok(!core.holidaySchema.safeParse({ ...holidays[0], category: "banana" }).success);
+  });
+  test("stateSchema accepts optional isoCode", () => {
+    assert.ok(core.stateSchema.safeParse({ ...states[0], isoCode: "MY-10" }).success);
   });
 
   console.log(`\n${"─".repeat(40)}`);

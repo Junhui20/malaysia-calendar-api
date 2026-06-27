@@ -1,0 +1,36 @@
+# MyCal — Malaysia Calendar API
+
+> MyCal is Malaysia's most complete calendar API: public holidays, school calendar, exam schedules (SPM/STPM/MUET/PT3), and a state-aware business-day calculator for all 16 states and 3 federal territories. Free, open source (MIT), and real-time, built from official government gazette data by CatLab Tech. It ships a REST API, a typed TypeScript SDK, iCal subscription feeds, and a Model Context Protocol (MCP) server so AI agents like Claude and ChatGPT can query Malaysian dates directly.
+
+## For AI agents (MCP)
+
+MyCal exposes a Model Context Protocol server with 12 ready-to-use tools, so an LLM can answer questions like "Is 2026-03-21 a working day in Selangor?" or "When is the next long weekend in Penang?" without writing any code.
+
+- [What is MCP?](https://mycal-web.pages.dev/docs/mcp-server/what-is-mcp): Why MyCal speaks MCP and what the server provides.
+- [Claude Desktop setup](https://mycal-web.pages.dev/docs/mcp-server/claude-desktop): Connect the MyCal MCP server to Claude Desktop.
+- [Claude Code setup](https://mycal-web.pages.dev/docs/mcp-server/claude-code): Add the MyCal MCP server to Claude Code.
+- [Available tools](https://mycal-web.pages.dev/docs/mcp-server/tools): The full list of MCP tools and their arguments.
+
+## Getting started
+
+- [Introduction](https://mycal-web.pages.dev/docs/getting-started/introduction): What MyCal is and who it's for.
+- [Quick start](https://mycal-web.pages.dev/docs/getting-started/quickstart): Make your first request in minutes.
+- [Core concepts](https://mycal-web.pages.dev/docs/getting-started/concepts): States, weekends, holiday types, and cuti ganti.
+
+## REST API
+
+- [REST API overview](https://mycal-web.pages.dev/docs/rest-api/overview): Base URL, endpoints, and response shapes.
+- [Holidays](https://mycal-web.pages.dev/docs/rest-api/holidays): Check and list public holidays by date and state.
+- [Business days](https://mycal-web.pages.dev/docs/rest-api/business-days): Count or add state-aware working days.
+- [School calendar](https://mycal-web.pages.dev/docs/rest-api/school): KPM terms, school holidays, and exam schedules.
+- [iCal feeds](https://mycal-web.pages.dev/docs/rest-api/feeds): Subscription URLs for Google, Apple, and Outlook calendars.
+
+## SDK (TypeScript)
+
+- [SDK installation](https://mycal-web.pages.dev/docs/sdk/installation): Install `@catlabtech/mycal-sdk`.
+- [Client usage](https://mycal-web.pages.dev/docs/sdk/client): Typed client with a Result pattern (no try/catch).
+- [Type reference](https://mycal-web.pages.dev/docs/sdk/reference): Full type definitions.
+
+## Live API
+
+- [Try the demos](https://mycal-web.pages.dev/demo): Interactive in-browser demos that call the production API.

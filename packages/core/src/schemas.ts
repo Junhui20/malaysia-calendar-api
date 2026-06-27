@@ -28,6 +28,14 @@ export const holidayStatusSchema = z.enum([
 
 export const gazetteLevelSchema = z.enum(["P", "N"]);
 
+export const holidayCategorySchema = z.enum([
+  "public",
+  "bank",
+  "optional",
+  "half_day",
+  "observance",
+]);
+
 export const holidaySourceSchema = z.enum([
   "jpm",
   "jakim",
@@ -50,6 +58,8 @@ export const holidaySchema = z.object({
   hijriDate: z.string().optional(),
   gazetteRef: z.string().optional(),
   source: holidaySourceSchema,
+  category: holidayCategorySchema.optional(),
+  isEstimated: z.boolean().optional(),
   confirmedAt: z.string().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
@@ -75,6 +85,7 @@ export const stateSchema = z.object({
   type: z.enum(["state", "federal_territory"]),
   weekendHistory: z.array(weekendConfigSchema).min(1),
   group: stateGroupSchema,
+  isoCode: z.string().optional(),
 });
 
 export const statesFileSchema = z.array(stateSchema);

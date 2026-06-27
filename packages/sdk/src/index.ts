@@ -8,6 +8,8 @@ export type {
   SchoolHolidaysParams,
   ExamsParams,
   IsSchoolDayParams,
+  LongWeekendsParams,
+  LeaveOptimizerParams,
   HolidaysTodayResponse,
   AddBusinessDaysResponse,
   ResolveStateResponse,
@@ -40,5 +42,6 @@ export type {
   CheckDateResult,
   BusinessDaysResult,
   LongWeekend,
+  LeaveSuggestion,
   ChangelogEntry,
 } from "@catlabtech/mycal-core";

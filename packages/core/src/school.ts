@@ -32,6 +32,24 @@ export function findSchoolHolidayByDate(
   );
 }
 
+/**
+ * List the school holidays that apply to a group (and optionally a specific
+ * state, honouring `states`/`excludeStates` overrides). Shared by the REST
+ * `/school/holidays` and iCal feed routes so the filter logic lives in one place.
+ */
+export function filterSchoolHolidays(
+  holidays: readonly SchoolHoliday[],
+  group: StateGroup,
+  stateCode?: string
+): readonly SchoolHoliday[] {
+  return holidays.filter((h) => {
+    if (h.group !== group) return false;
+    if (stateCode && h.excludeStates?.includes(stateCode)) return false;
+    if (h.states && stateCode && !h.states.includes(stateCode)) return false;
+    return true;
+  });
+}
+
 export function isSchoolDay(
   date: string,
   terms: readonly SchoolTerm[],

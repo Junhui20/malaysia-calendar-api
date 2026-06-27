@@ -1,11 +1,13 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import react from "@astrojs/react";
+import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
   site: "https://mycal-web.pages.dev",
   integrations: [
     react(),
+    sitemap(),
     starlight({
       title: "MyCal Docs",
       description: "Malaysia Calendar API — developer documentation",
