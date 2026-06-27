@@ -3,6 +3,7 @@ const pathname = Astro.url.pathname;
 const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
 const links = [
+  { href: "/subscribe", label: "Subscribe" },
   { href: "/demo", label: "Demo" },
   { href: "/docs", label: "Docs" },
   { href: "https://github.com/Junhui20/malaysia-calendar-api", label: "GitHub", external: true },

@@ -111,7 +111,7 @@ Try the interactive demo: **[https://mycal-web.pages.dev/demo](https://mycal-web
 
 ## Related packages
 
-- **[`@catlabtech/mycal-mcp-server`](https://www.npmjs.com/package/@catlabtech/mycal-mcp-server)** — MCP server exposing 12 tools for Claude, ChatGPT, and other AI agents
+- **[`@catlabtech/mycal-mcp-server`](https://www.npmjs.com/package/@catlabtech/mycal-mcp-server)** — MCP server exposing 13 tools for Claude, ChatGPT, and other AI agents
 - **[`@catlabtech/mycal-core`](https://www.npmjs.com/package/@catlabtech/mycal-core)** — shared types and schemas
 
 ## License

@@ -21,7 +21,7 @@ hero:
 
 - **[REST API](/docs/getting-started/quickstart/)** — plain HTTP, any language
 - **[TypeScript SDK](/docs/sdk/installation/)** — `npm i @catlabtech/mycal-sdk` with fully typed responses
-- **[MCP Server](/docs/mcp-server/what-is-mcp/)** — 12 tools for Claude, ChatGPT, and other AI agents
+- **[MCP Server](/docs/mcp-server/what-is-mcp/)** — 13 tools for Claude, ChatGPT, and other AI agents
 - **[iCal Subscription](/docs/ical/google-calendar/)** — drop into Google, Apple, or Outlook calendar
 
 ## Why MyCal

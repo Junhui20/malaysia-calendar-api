@@ -25,7 +25,7 @@ Published to npm under the `@catlabtech` scope:
 |---------|---------|---------|
 | [`@catlabtech/mycal-core`](https://www.npmjs.com/package/@catlabtech/mycal-core) | Shared types, Zod schemas, and calendar/business-day logic | `npm install @catlabtech/mycal-core` |
 | [`@catlabtech/mycal-sdk`](https://www.npmjs.com/package/@catlabtech/mycal-sdk) | TypeScript client SDK for the REST API | `npm install @catlabtech/mycal-sdk` |
-| [`@catlabtech/mycal-mcp-server`](https://www.npmjs.com/package/@catlabtech/mycal-mcp-server) | MCP server exposing 12 calendar tools for AI agents | `npm install @catlabtech/mycal-mcp-server` |
+| [`@catlabtech/mycal-mcp-server`](https://www.npmjs.com/package/@catlabtech/mycal-mcp-server) | MCP server exposing 13 calendar tools for AI agents | `npm install @catlabtech/mycal-mcp-server` |
 
 ## Features
 
@@ -37,7 +37,7 @@ Published to npm under the `@catlabtech` scope:
 - **School calendar** — terms, holidays, KPM cuti perayaan (Lampiran A/B/C)
 - **Exam schedules** — SPM, STPM, MUET, PT3
 - **iCal subscription feeds** — per-state `.ics` feeds
-- **MCP Server** for AI agents — 12 tools for Claude, ChatGPT, and other assistants
+- **MCP Server** for AI agents — 13 tools for Claude, ChatGPT, and other assistants
 - **TypeScript SDK** (`@catlabtech/mycal-sdk`) with typed responses
 - **OpenAPI 3.1 spec** + interactive docs
 - **Trilingual** — Bahasa Melayu, English, Chinese names (三语支持)
@@ -281,7 +281,7 @@ malaysia-calendar-api/
 │   │       ├── business-days.ts
 │   │       └── school.ts        # School term/holiday/exam logic
 │   ├── api/                     # Hono API on Cloudflare Workers
-│   ├── mcp-server/              # MCP Server (12 tools)
+│   ├── mcp-server/              # MCP Server (13 tools)
 │   ├── sdk/                     # TypeScript client SDK (@catlabtech/mycal-sdk)
 │   └── web/                     # Astro + Starlight — marketing site, demos, docs
 ├── scripts/

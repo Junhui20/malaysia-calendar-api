@@ -1,7 +1,7 @@
 {
   "name": "@catlabtech/mycal-mcp-server",
   "version": "0.1.1",
-  "description": "MCP (Model Context Protocol) server exposing the Malaysia Calendar API as 12 tools for Claude, ChatGPT, and other AI agents",
+  "description": "MCP (Model Context Protocol) server exposing the Malaysia Calendar API as 13 tools for Claude, ChatGPT, and other AI agents",
   "mcpName": "io.github.catlabtech/mycal",
   "keywords": [
     "malaysia",

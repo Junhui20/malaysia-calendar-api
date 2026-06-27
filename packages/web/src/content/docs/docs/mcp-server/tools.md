@@ -1,6 +1,6 @@
 ---
 title: Available Tools
-description: All 12 MCP tools with parameters and natural-language prompts that trigger them.
+description: All 13 MCP tools with parameters and natural-language prompts that trigger them.
 ---
 
 Every tool below is automatically available to your AI client once the MCP server is set up. You don't call them directly — the AI picks the right tool based on your question.
@@ -43,7 +43,15 @@ Return all 3+ day non-working stretches in a year.
 
 **Params:** `state` (required), `year?`
 
-**Triggers on:** "long weekends in 2026", "when can I take a 4-day trip with minimum leave?"
+**Triggers on:** "long weekends in 2026", "list the 3+ day stretches this year"
+
+## `malaysia_leave_optimizer`
+
+Find the most efficient annual-leave days to take for the longest continuous break ("take 2 → get 5 off"), per state.
+
+**Params:** `year` (required), `state?`, `maxLeave?` (default 3)
+
+**Triggers on:** "best days to take leave in 2026 for Selangor", "how do I turn 3 leave days into a 9-day break?"
 
 ## `list_malaysia_states`
 

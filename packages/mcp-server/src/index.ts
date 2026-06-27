@@ -1,9 +1,16 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { readFileSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
+
+// Bundled data — tsup/esbuild inlines these JSON imports into dist/index.js so
+// the published package works via `npx` with no local data files present.
+import statesData from "../../../data/states.json";
+import holidays2024 from "../../../data/holidays/2024.json";
+import holidays2025 from "../../../data/holidays/2025.json";
+import holidays2026 from "../../../data/holidays/2026.json";
+import schoolTerms2026 from "../../../data/school/terms-2026.json";
+import schoolHolidays2026 from "../../../data/school/holidays-2026.json";
+import exams2026 from "../../../data/school/exams-2026.json";
 
 import {
   filterHolidays,
@@ -31,10 +38,22 @@ import {
 
 // ─── Load Data ───
 
-const __dirname2 = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = resolve(__dirname2, "../../../data");
+const states = statesData as unknown as State[];
 
-const states: State[] = JSON.parse(readFileSync(resolve(DATA_DIR, "states.json"), "utf-8"));
+const holidaysByYear: Record<number, Holiday[]> = {
+  2024: holidays2024 as unknown as Holiday[],
+  2025: holidays2025 as unknown as Holiday[],
+  2026: holidays2026 as unknown as Holiday[],
+};
+const schoolTermsByYear: Record<number, SchoolTerm[]> = {
+  2026: schoolTerms2026 as unknown as SchoolTerm[],
+};
+const schoolHolidaysByYear: Record<number, SchoolHoliday[]> = {
+  2026: schoolHolidays2026 as unknown as SchoolHoliday[],
+};
+const examsByYear: Record<number, Exam[]> = {
+  2026: exams2026 as unknown as Exam[],
+};
 
 const DEFAULT_STATE_CODE = "kuala-lumpur";
 function defaultState(): State {
@@ -43,20 +62,20 @@ function defaultState(): State {
   return s;
 }
 
-function loadYear<T>(dir: string, year: number): T[] {
-  try {
-    return JSON.parse(readFileSync(resolve(DATA_DIR, dir, `${year}.json`), "utf-8"));
-  } catch {
-    return [];
-  }
+// Signatures kept stable for the call sites below; data now comes from the
+// bundled maps above instead of the filesystem.
+function loadYear<T>(_dir: string, year: number): T[] {
+  return (holidaysByYear[year] ?? []) as unknown as T[];
 }
 
 function loadSchool<T>(file: string, year: number): T[] {
-  try {
-    return JSON.parse(readFileSync(resolve(DATA_DIR, "school", `${file}-${year}.json`), "utf-8"));
-  } catch {
-    return [];
-  }
+  const map =
+    file === "terms"
+      ? schoolTermsByYear
+      : file === "holidays"
+        ? schoolHolidaysByYear
+        : examsByYear;
+  return (map[year] ?? []) as unknown as T[];
 }
 
 // ─── MCP Server ───

@@ -341,7 +341,7 @@ export const landingHTML = `<!DOCTYPE html>
       </div>
       <div class="feature">
         <h3>MCP Server</h3>
-        <p>12 tools for AI agents. Claude can answer holiday questions accurately.</p>
+        <p>13 tools for AI agents. Claude can answer holiday questions accurately.</p>
       </div>
       <div class="feature">
         <h3>Business Days</h3>
