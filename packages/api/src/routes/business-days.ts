@@ -1,6 +1,14 @@
 import { Hono } from "hono";
-import { resolveStateCode, countBusinessDays, addBusinessDays } from "@catlabtech/mycal-core";
-import { getHolidays, states } from "../data.js";
+import { countBusinessDays, addBusinessDays, diffDays } from "@catlabtech/mycal-core";
+import { getAllHolidays } from "../data.js";
+import {
+  badRequest,
+  isValidISODate,
+  resolveStateOrError,
+  isResponse,
+  MAX_RANGE_DAYS,
+  MAX_ADD_DAYS,
+} from "../_shared.js";
 
 export const businessDaysRouter = new Hono();
 
@@ -8,42 +16,49 @@ export const businessDaysRouter = new Hono();
 businessDaysRouter.get("/", (c) => {
   const start = c.req.query("start");
   const end = c.req.query("end");
-  const stateQuery = c.req.query("state");
 
-  if (!start || !end || !stateQuery) {
-    return c.json({ error: { code: "MISSING_PARAMS", message: "start, end, and state are required" } }, 400);
+  if (!start || !end) {
+    return badRequest(c, "MISSING_PARAMS", "start and end are required");
+  }
+  if (!isValidISODate(start) || !isValidISODate(end)) {
+    return badRequest(c, "INVALID_DATE", "start and end must be valid YYYY-MM-DD dates");
+  }
+  if (start > end) {
+    return badRequest(c, "INVALID_RANGE", "start must be on or before end");
+  }
+  if (diffDays(start, end) > MAX_RANGE_DAYS) {
+    return badRequest(c, "RANGE_TOO_LARGE", `date range must not exceed ${MAX_RANGE_DAYS} days`);
   }
 
-  const state = resolveStateCode(stateQuery, states);
-  if (!state) {
-    return c.json({ error: { code: "INVALID_STATE", message: `Unknown state "${stateQuery}"` } }, 400);
-  }
+  const state = resolveStateOrError(c, c.req.query("state"));
+  if (isResponse(state)) return state;
 
-  const year = Number(start.slice(0, 4));
-  const holidays = getHolidays(year);
-  const result = countBusinessDays(start, end, state, holidays);
-
+  const result = countBusinessDays(start, end, state, getAllHolidays());
   return c.json({ data: result, meta: { start, end, state: state.code } });
 });
 
 // GET /business-days/add?date=2026-03-01&days=10&state=selangor
 businessDaysRouter.get("/add", (c) => {
   const date = c.req.query("date");
-  const days = c.req.query("days");
-  const stateQuery = c.req.query("state");
+  const daysRaw = c.req.query("days");
 
-  if (!date || !days || !stateQuery) {
-    return c.json({ error: { code: "MISSING_PARAMS", message: "date, days, and state are required" } }, 400);
+  if (!date || daysRaw === undefined) {
+    return badRequest(c, "MISSING_PARAMS", "date and days are required");
+  }
+  if (!isValidISODate(date)) {
+    return badRequest(c, "INVALID_DATE", "date must be a valid YYYY-MM-DD date");
+  }
+  const days = Number(daysRaw);
+  if (!Number.isInteger(days) || days < 0 || days > MAX_ADD_DAYS) {
+    return badRequest(c, "INVALID_DAYS", `days must be an integer between 0 and ${MAX_ADD_DAYS}`);
   }
 
-  const state = resolveStateCode(stateQuery, states);
-  if (!state) {
-    return c.json({ error: { code: "INVALID_STATE", message: `Unknown state "${stateQuery}"` } }, 400);
-  }
+  const state = resolveStateOrError(c, c.req.query("state"));
+  if (isResponse(state)) return state;
 
-  const year = Number(date.slice(0, 4));
-  const holidays = getHolidays(year);
-  const resultDate = addBusinessDays(date, Number(days), state, holidays);
-
-  return c.json({ data: { startDate: date, businessDays: Number(days), resultDate }, meta: { state: state.code } });
+  const resultDate = addBusinessDays(date, days, state, getAllHolidays());
+  return c.json({
+    data: { startDate: date, businessDays: days, resultDate },
+    meta: { state: state.code },
+  });
 });

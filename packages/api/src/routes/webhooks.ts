@@ -1,4 +1,6 @@
 import { Hono } from "hono";
+import { isSafePublicHttpsUrl } from "@catlabtech/mycal-core";
+import { requireAdmin, unauthorized } from "../_shared.js";
 
 export const webhooksRouter = new Hono();
 
@@ -28,7 +30,7 @@ const VALID_EVENTS = [
 ] as const;
 
 function generateId(): string {
-  return `wh_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+  return `wh_${Date.now().toString(36)}_${crypto.randomUUID().slice(0, 8)}`;
 }
 
 function generateSecret(): string {
@@ -39,32 +41,40 @@ function generateSecret(): string {
     .join("");
 }
 
+// NOTE: webhook management is admin-gated until delivery is implemented. When
+// delivery lands it must (a) HMAC-sign payloads with the per-subscription secret,
+// (b) re-resolve and re-validate the target IP at send time (DNS-rebinding
+// defence) and (c) move per-subscription ownership off the admin key. URLs are
+// SSRF-screened on input here as a first line of defence.
+
 // POST /webhooks/subscribe
 webhooksRouter.post("/subscribe", async (c) => {
+  if (!requireAdmin(c)) return unauthorized(c);
+
   const body = await c.req.json();
 
   if (!body.url || !body.email) {
     return c.json(
+      { error: { code: "MISSING_FIELDS", message: "url and email are required" } },
+      400
+    );
+  }
+
+  if (!isSafePublicHttpsUrl(body.url)) {
+    return c.json(
       {
         error: {
-          code: "MISSING_FIELDS",
-          message: "url and email are required",
+          code: "INVALID_URL",
+          message:
+            "url must be a public https:// URL (loopback, private, link-local and cloud-metadata addresses are blocked)",
         },
       },
       400
     );
   }
 
-  try {
-    new URL(body.url);
-  } catch {
-    return c.json(
-      { error: { code: "INVALID_URL", message: "url must be a valid URL" } },
-      400
-    );
-  }
-
-  const events = body.events ?? ["holiday.created", "holiday.updated", "holiday.status_changed"];
+  const events =
+    body.events ?? ["holiday.created", "holiday.updated", "holiday.status_changed"];
   const invalidEvents = events.filter(
     (e: string) => !VALID_EVENTS.includes(e as (typeof VALID_EVENTS)[number])
   );
@@ -106,7 +116,7 @@ webhooksRouter.post("/subscribe", async (c) => {
         createdAt: subscription.createdAt,
       },
       meta: {
-        note: "Store the secret — it will be used to sign webhook payloads (HMAC-SHA256). It cannot be retrieved again.",
+        note: "Store the secret — it will sign webhook payloads (HMAC-SHA256). It cannot be retrieved again.",
       },
     },
     201
@@ -115,6 +125,8 @@ webhooksRouter.post("/subscribe", async (c) => {
 
 // DELETE /webhooks/:id
 webhooksRouter.delete("/:id", (c) => {
+  if (!requireAdmin(c)) return unauthorized(c);
+
   const id = c.req.param("id");
   const sub = subscriptions.get(id);
 
@@ -131,6 +143,8 @@ webhooksRouter.delete("/:id", (c) => {
 
 // GET /webhooks/:id/deliveries
 webhooksRouter.get("/:id/deliveries", (c) => {
+  if (!requireAdmin(c)) return unauthorized(c);
+
   const id = c.req.param("id");
   const sub = subscriptions.get(id);
 
@@ -141,12 +155,8 @@ webhooksRouter.get("/:id/deliveries", (c) => {
     );
   }
 
-  // Delivery log would come from D1 in production
   return c.json({
-    data: {
-      webhookId: id,
-      deliveries: [],
-    },
+    data: { webhookId: id, deliveries: [] },
     meta: { note: "Delivery logging requires D1 — not yet configured" },
   });
 });

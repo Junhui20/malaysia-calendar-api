@@ -15,7 +15,45 @@ const {
   image = "/og.png",
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://mycal-web.pages.dev").toString();
+const siteUrl = Astro.site ?? new URL("https://mycal-web.pages.dev");
+const canonical = new URL(Astro.url.pathname, siteUrl).toString();
+const ogImage = new URL(image, siteUrl).toString();
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "MyCal",
+    alternateName: "MyCal — Malaysia Calendar API",
+    url: siteUrl.toString(),
+    description,
+    publisher: {
+      "@type": "Organization",
+      name: "CatLab Tech",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "MyCal — Malaysia Calendar API",
+    applicationCategory: "DeveloperApplication",
+    applicationSubCategory: "WebAPI",
+    operatingSystem: "Any",
+    url: siteUrl.toString(),
+    description,
+    isAccessibleForFree: true,
+    license: "https://opensource.org/licenses/MIT",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    author: {
+      "@type": "Organization",
+      name: "CatLab Tech",
+    },
+  },
+];
 ---
 
 <!DOCTYPE html>
@@ -23,7 +61,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://mycal-web.p
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0B1221" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -33,11 +74,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://mycal-web.p
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content={image} />
+    <meta property="og:site_name" content="MyCal" />
+    <meta property="og:locale" content="en_MY" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

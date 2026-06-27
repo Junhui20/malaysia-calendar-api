@@ -5,7 +5,7 @@ import { cacheHeaders } from "./middleware/cache.js";
 import { holidaysRouter } from "./routes/holidays.js";
 import { statesRouter } from "./routes/states.js";
 import { checkRouter } from "./routes/check.js";
-import { longWeekendsRouter } from "./routes/long-weekends.js";
+import { longWeekendsRouter, leaveOptimizerRouter } from "./routes/long-weekends.js";
 import { businessDaysRouter } from "./routes/business-days.js";
 import { schoolRouter } from "./routes/school.js";
 import { feedsRouter } from "./routes/feeds.js";
@@ -28,6 +28,7 @@ v1.use("*", cacheHeaders());
 v1.route("/holidays", holidaysRouter);
 v1.route("/holidays/check", checkRouter);
 v1.route("/holidays/long-weekends", longWeekendsRouter);
+v1.route("/holidays/leave-optimizer", leaveOptimizerRouter);
 v1.route("/states", statesRouter);
 v1.route("/business-days", businessDaysRouter);
 v1.route("/school", schoolRouter);
@@ -44,7 +45,7 @@ v1.get("/openapi.json", (c) => {
 v1.get("/", (c) => {
   return c.json({
     name: "Malaysia Calendar API",
-    version: "0.1.0",
+    version: "0.1.1",
     description: "Malaysia's most complete calendar API — public holidays, school calendar, exam schedules",
     docs: "/v1/docs",
     endpoints: {
@@ -54,6 +55,7 @@ v1.get("/", (c) => {
       between: "/v1/holidays/between?start=2026-01-01&end=2026-06-30&state=selangor",
       today: "/v1/holidays/today?state=selangor",
       longWeekends: "/v1/holidays/long-weekends?year=2026&state=selangor",
+      leaveOptimizer: "/v1/holidays/leave-optimizer?year=2026&state=selangor&maxLeave=2",
       businessDays: "/v1/business-days?start=2026-03-01&end=2026-03-31&state=selangor",
       addBusinessDays: "/v1/business-days/add?date=2026-03-01&days=10&state=selangor",
       states: "/v1/states",

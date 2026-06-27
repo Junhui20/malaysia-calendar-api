@@ -14,6 +14,8 @@ import {
   getDayOfWeekName,
   getWeekendDayNames,
   countBusinessDays,
+  findLongWeekends,
+  optimizeLeave,
   findSchoolTermByDate,
   findSchoolHolidayByDate,
   isSchoolDay as checkSchoolDay,
@@ -33,6 +35,13 @@ const __dirname2 = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname2, "../../../data");
 
 const states: State[] = JSON.parse(readFileSync(resolve(DATA_DIR, "states.json"), "utf-8"));
+
+const DEFAULT_STATE_CODE = "kuala-lumpur";
+function defaultState(): State {
+  const s = states.find((x) => x.code === DEFAULT_STATE_CODE);
+  if (!s) throw new Error(`Default state "${DEFAULT_STATE_CODE}" missing from states.json`);
+  return s;
+}
 
 function loadYear<T>(dir: string, year: number): T[] {
   try {
@@ -54,13 +63,13 @@ function loadSchool<T>(file: string, year: number): T[] {
 
 const server = new McpServer({
   name: "Malaysia Calendar API",
-  version: "0.1.0",
+  version: "0.1.1",
 });
 
 // Tool 1: get_malaysia_holidays
 server.tool(
   "get_malaysia_holidays",
-  "Get Malaysia public holidays. Covers all 16 states + 3 FTs including Islamic holidays with tentative/confirmed status.",
+  "Get Malaysia public holidays. Covers all 16 regions (13 states + 3 federal territories) including Islamic holidays with tentative/confirmed status.",
   {
     year: z.number().int().describe("Year (e.g. 2026)"),
     state: z.string().optional().describe("State code or alias (e.g. 'selangor', 'KL', 'penang')"),
@@ -89,7 +98,7 @@ server.tool(
     state: z.string().optional().describe("State code or alias"),
   },
   async ({ date, state: stateQuery }) => {
-    const stateObj = stateQuery ? resolveStateCode(stateQuery, states) : states.find(s => s.code === "kuala-lumpur")!;
+    const stateObj = stateQuery ? resolveStateCode(stateQuery, states) : defaultState();
     if (!stateObj) return { content: [{ type: "text", text: `Unknown state: ${stateQuery}` }] };
 
     const year = parseInt(date.slice(0, 4));
@@ -164,54 +173,53 @@ server.tool(
     state: z.string().optional().describe("State code or alias (default: kuala-lumpur)"),
   },
   async ({ year, state }) => {
-    const stateObj = state ? resolveStateCode(state, states) : states.find(s => s.code === "kuala-lumpur")!;
-    if (!stateObj) return { content: [{ type: "text", text: `Unknown state` }] };
+    const stateObj = state ? resolveStateCode(state, states) : defaultState();
+    if (!stateObj) return { content: [{ type: "text", text: `Unknown state: ${state}` }] };
 
     const holidays = loadYear<Holiday>("holidays", year);
-    const stateHolidays = filterHolidays(holidays, { state: stateObj.code, year });
-    const holidayDates = new Set(stateHolidays.map(h => h.date));
-
-    const longWeekends: Array<{ start: string; end: string; days: number; holidays: string[] }> = [];
-    let current = `${year}-01-01`;
-    const yearEnd = `${year}-12-31`;
-
-    while (current <= yearEnd) {
-      if (!isWeekend(current, stateObj) && !holidayDates.has(current)) {
-        const d = new Date(current + "T12:00:00Z");
-        d.setUTCDate(d.getUTCDate() + 1);
-        current = d.toISOString().slice(0, 10);
-        continue;
-      }
-
-      const start = current;
-      const hols: string[] = [];
-      let count = 0;
-      while (current <= yearEnd && (isWeekend(current, stateObj) || holidayDates.has(current))) {
-        if (holidayDates.has(current)) {
-          const h = stateHolidays.find(h => h.date === current);
-          if (h) hols.push(h.name.en);
-        }
-        count++;
-        const d = new Date(current + "T12:00:00Z");
-        d.setUTCDate(d.getUTCDate() + 1);
-        current = d.toISOString().slice(0, 10);
-      }
-
-      if (count >= 3) {
-        const d = new Date(current + "T12:00:00Z");
-        d.setUTCDate(d.getUTCDate() - 1);
-        longWeekends.push({ start, end: d.toISOString().slice(0, 10), days: count, holidays: hols });
-      }
-    }
-
+    const longWeekends = findLongWeekends(year, stateObj, holidays).map((w) => ({
+      start: w.startDate,
+      end: w.endDate,
+      days: w.totalDays,
+      holidays: w.holidays.map((h) => h.name.en),
+    }));
     return { content: [{ type: "text", text: JSON.stringify({ total: longWeekends.length, longWeekends }, null, 2) }] };
+  }
+);
+
+// Tool 5b: malaysia_leave_optimizer
+server.tool(
+  "malaysia_leave_optimizer",
+  "Find the most efficient annual-leave days to take to maximise consecutive days off in Malaysia (e.g. 'take 2 days → get 5 off'). Ideal for planning trips around public holidays and weekends, per state.",
+  {
+    year: z.number().int().describe("Year"),
+    state: z.string().optional().describe("State code or alias (default: kuala-lumpur)"),
+    maxLeave: z.number().int().min(1).max(10).optional().describe("Max annual-leave days to spend per break (default 3)"),
+  },
+  async ({ year, state, maxLeave }) => {
+    const stateObj = state ? resolveStateCode(state, states) : defaultState();
+    if (!stateObj) return { content: [{ type: "text", text: `Unknown state: ${state}` }] };
+
+    const holidays = loadYear<Holiday>("holidays", year);
+    const suggestions = optimizeLeave(year, stateObj, holidays, maxLeave ?? 3)
+      .slice(0, 10)
+      .map((s) => ({
+        takeLeaveOn: s.leaveDates,
+        leaveDays: s.leaveCost,
+        from: s.startDate,
+        to: s.endDate,
+        totalDaysOff: s.totalDays,
+        efficiency: s.efficiency,
+        holidays: s.holidays.map((h) => h.name.en),
+      }));
+    return { content: [{ type: "text", text: JSON.stringify({ total: suggestions.length, suggestions }, null, 2) }] };
   }
 );
 
 // Tool 6: list_malaysia_states
 server.tool(
   "list_malaysia_states",
-  "List all 16 Malaysian states + 3 Federal Territories with weekend configurations and group assignments.",
+  "List all 16 Malaysian regions (13 states + 3 federal territories) with weekend configurations and group assignments.",
   {},
   async () => {
     const summary = states.map(s => ({

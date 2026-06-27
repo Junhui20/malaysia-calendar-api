@@ -16,6 +16,16 @@ export type HolidayType =
   | "replacement"
   | "adhoc";
 
+// Orthogonal "category" axis (how the day behaves) vs `type` (its origin),
+// following the date-holidays / python-holidays model. Optional and additive —
+// lets consumers ask for "bank-closed" vs "observance" independently of origin.
+export type HolidayCategory =
+  | "public"
+  | "bank"
+  | "optional"
+  | "half_day"
+  | "observance";
+
 export type HolidayStatus =
   | "confirmed"
   | "tentative"
@@ -45,6 +55,8 @@ export interface Holiday {
   readonly hijriDate?: string;
   readonly gazetteRef?: string;
   readonly source: HolidaySource;
+  readonly category?: HolidayCategory;
+  readonly isEstimated?: boolean; // computed Islamic/lunar date not yet gazetted ("anggaran")
   readonly confirmedAt?: string;
   readonly createdAt: string;
   readonly updatedAt: string;
@@ -70,6 +82,7 @@ export interface State {
   readonly type: StateType;
   readonly weekendHistory: readonly WeekendConfig[];
   readonly group: StateGroup; // current group
+  readonly isoCode?: string; // ISO 3166-2 subdivision code, e.g. "MY-10"
 }
 
 // ─── School Calendar Types ───
@@ -174,6 +187,16 @@ export interface LongWeekend {
   readonly holidays: readonly Holiday[];
   readonly weekendDays: number;
   readonly bridgeDaysNeeded: number;
+}
+
+export interface LeaveSuggestion {
+  readonly startDate: string; // first day of the continuous break
+  readonly endDate: string; // last day of the continuous break
+  readonly totalDays: number; // consecutive days off
+  readonly leaveDates: readonly string[]; // working days to request as leave
+  readonly leaveCost: number; // = leaveDates.length
+  readonly efficiency: number; // totalDays / leaveCost (days off per leave day)
+  readonly holidays: readonly Holiday[]; // public holidays inside the break
 }
 
 export interface ChangelogEntry {

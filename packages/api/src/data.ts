@@ -32,6 +32,13 @@ export function getHolidays(year: number): readonly Holiday[] {
   return holidaysByYear[year] ?? [];
 }
 
+// All loaded holidays across every year. Used by the business-day routes so a
+// range or add/subtract that crosses a year boundary still sees both years'
+// holidays (the per-year load would otherwise miss them).
+export function getAllHolidays(): readonly Holiday[] {
+  return Object.values(holidaysByYear).flat();
+}
+
 export function getSchoolTerms(year: number): readonly SchoolTerm[] {
   return schoolTermsByYear[year] ?? [];
 }
