@@ -30,7 +30,7 @@ If you already have other MCP servers, add `malaysia-calendar` alongside them in
 
 ## 3. Restart Claude Desktop
 
-Completely quit and reopen (not just close the window). Look for the MCP icon or the "Tools" indicator in the conversation UI. You should see "12 tools from malaysia-calendar".
+Completely quit and reopen (not just close the window). Look for the MCP icon or the "Tools" indicator in the conversation UI. You should see "13 tools from malaysia-calendar".
 
 ## 4. Test it
 

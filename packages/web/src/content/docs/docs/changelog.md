@@ -9,7 +9,7 @@ For programmatic access to data changes, hit `GET /v1/changelog`. This page is a
 
 - REST API with 14 endpoints
 - TypeScript SDK (`@catlabtech/mycal-sdk`)
-- MCP Server (`@catlabtech/mycal-mcp-server`) with 12 tools
+- MCP Server (`@catlabtech/mycal-mcp-server`) with 13 tools
 - iCal subscription feeds per state
 - Landing page, interactive demo, and developer docs site
 - Data: 2024, 2025, 2026 public holidays; 2026 school calendar

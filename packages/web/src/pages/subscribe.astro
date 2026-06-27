@@ -1,0 +1,220 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { STATE_OPTIONS } from "~/lib/states";
+import { apiBaseUrl } from "~/lib/api";
+
+function feedUrls(code: string, label: string, includeSchool: boolean) {
+  const suffix = includeSchool ? "" : "?include=holidays";
+  const https = `${apiBaseUrl}/feed/ical/${code}${suffix}`;
+  const webcal = https.replace(/^https?:\/\//, "webcal://");
+  const name = `Malaysia Holidays — ${label}`;
+  return {
+    https,
+    webcal,
+    google: `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`,
+    outlook: `https://outlook.live.com/calendar/0/addfromweb?url=${encodeURIComponent(https)}&name=${encodeURIComponent(name)}`,
+  };
+}
+
+const title = "Subscribe to Malaysian Public Holidays — MyCal";
+const description =
+  "Add every Malaysian public holiday and school break to your Google, Apple, or Outlook calendar in one tap. Per state, free, auto-updating. Never miss a cuti.";
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="container hero">
+    <h1>Never miss a <em>cuti</em> again</h1>
+    <p class="lead">
+      Subscribe your calendar to Malaysia's public holidays — one tap adds the
+      whole year (plus school breaks) to Google, Apple, or Outlook, and it
+      <strong>auto-updates</strong> when dates are gazetted. Free, no signup.
+    </p>
+    <label class="toggle">
+      <input type="checkbox" id="include-school" checked />
+      <span>Include school holidays (cuti sekolah)</span>
+    </label>
+  </section>
+
+  <section class="container grid">
+    {
+      STATE_OPTIONS.map((s) => {
+        const u = feedUrls(s.code, s.label, true);
+        return (
+          <article class="state-card" data-state-card data-code={s.code} data-label={s.label}>
+            <div class="state-head">
+              <h3>{s.label}</h3>
+              {s.group === "A" && <span class="badge">Fri–Sat weekend</span>}
+            </div>
+            <div class="btns">
+              <a class="btn primary" data-btn="google" href={u.google} target="_blank" rel="noopener">
+                Google
+              </a>
+              <a class="btn" data-btn="apple" href={u.webcal}>
+                Apple
+              </a>
+              <a class="btn" data-btn="outlook" href={u.outlook} target="_blank" rel="noopener">
+                Outlook
+              </a>
+              <button class="btn copy" data-btn="copy" data-url={u.webcal} type="button">
+                Copy URL
+              </button>
+            </div>
+          </article>
+        );
+      })
+    }
+  </section>
+
+  <p class="container foot-note">
+    Each calendar is a live <code>webcal://</code> subscription — your calendar app
+    refreshes it automatically. Prefer raw files or a programmatic feed? See the
+    <a href="/docs/rest-api/feeds/">iCal &amp; CSV feed docs</a>.
+  </p>
+</BaseLayout>
+
+<script define:vars={{ apiBaseUrl }}>
+  function buildUrls(code, label, includeSchool) {
+    const suffix = includeSchool ? "" : "?include=holidays";
+    const https = `${apiBaseUrl}/feed/ical/${code}${suffix}`;
+    const webcal = https.replace(/^https?:\/\//, "webcal://");
+    const name = `Malaysia Holidays — ${label}`;
+    return {
+      https,
+      webcal,
+      google: `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`,
+      outlook: `https://outlook.live.com/calendar/0/addfromweb?url=${encodeURIComponent(https)}&name=${encodeURIComponent(name)}`,
+    };
+  }
+
+  const checkbox = document.getElementById("include-school");
+
+  function refresh() {
+    const includeSchool = checkbox ? checkbox.checked : true;
+    document.querySelectorAll("[data-state-card]").forEach((card) => {
+      const code = card.getAttribute("data-code");
+      const label = card.getAttribute("data-label");
+      const u = buildUrls(code, label, includeSchool);
+      card.querySelector('[data-btn="google"]').href = u.google;
+      card.querySelector('[data-btn="apple"]').href = u.webcal;
+      card.querySelector('[data-btn="outlook"]').href = u.outlook;
+      const copy = card.querySelector('[data-btn="copy"]');
+      if (copy) copy.setAttribute("data-url", u.webcal);
+    });
+  }
+
+  if (checkbox) checkbox.addEventListener("change", refresh);
+
+  document.querySelectorAll('[data-btn="copy"]').forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const url = btn.getAttribute("data-url");
+      try {
+        await navigator.clipboard.writeText(url);
+        const original = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(() => (btn.textContent = original), 1200);
+      } catch (_) {
+        /* clipboard unavailable — the link buttons still work */
+      }
+    });
+  });
+
+  refresh();
+</script>
+
+<style>
+  .hero {
+    padding: 3.5rem 0 2rem;
+    text-align: center;
+    max-width: 46rem;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: -0.02em;
+    margin: 0 0 0.75rem;
+  }
+  .hero h1 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+  .lead {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    padding-bottom: 2rem;
+  }
+  .state-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.15rem;
+    background: var(--bg-subtle);
+  }
+  .state-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+  }
+  .state-head h3 {
+    font-size: 1rem;
+    margin: 0;
+  }
+  .badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--accent-text);
+    background: var(--accent-soft);
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .btn {
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.4rem 0.7rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: var(--bg);
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+  .btn:hover {
+    background: var(--bg-subtle);
+    border-color: var(--accent);
+  }
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .btn.primary:hover {
+    filter: brightness(1.05);
+    background: var(--accent);
+  }
+  .foot-note {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    max-width: 46rem;
+    padding-bottom: 3rem;
+  }
+</style>

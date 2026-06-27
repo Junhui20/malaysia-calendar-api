@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First public npm releases of the workspace packages under the `@catlabtech` scope:
   - `@catlabtech/mycal-core` — shared types, Zod schemas, and calendar/business-day logic.
   - `@catlabtech/mycal-sdk` — TypeScript client SDK for the REST API.
-  - `@catlabtech/mycal-mcp-server` — MCP server exposing 12 calendar tools for AI agents.
+  - `@catlabtech/mycal-mcp-server` — MCP server exposing 13 calendar tools for AI agents.
 - MIT `LICENSE` at the repository root and bundled inside each published package.
 - npm package metadata (`author`, `repository`, `homepage`, `bugs`, `keywords`) for discoverability,
   plus `sideEffects: false` on `mycal-core` and an `mcpName` registry identifier on `mycal-mcp-server`.

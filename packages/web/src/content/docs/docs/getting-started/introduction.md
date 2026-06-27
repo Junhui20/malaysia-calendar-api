@@ -33,7 +33,7 @@ MyCal is Malaysia's most complete calendar API. It gives you, from one endpoint,
 | School + exam calendar | ✓ | ✗ |
 | Gazette references | ✓ every record | ✗ |
 | iCal subscription | ✓ per-state feed | Usually `.ics` export only |
-| MCP server | ✓ 12 tools | ✗ |
+| MCP server | ✓ 13 tools | ✗ |
 
 ## Pick your integration
 
