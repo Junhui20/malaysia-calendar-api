@@ -1,0 +1,18 @@
+{
+  "name": "MyCal — Malaysia Calendar API",
+  "short_name": "MyCal",
+  "description": "Malaysia's most complete calendar API. Public holidays, school calendar, exam schedules, business day calculator. Free, open source, real-time.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#0B1221",
+  "background_color": "#0B1221",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}

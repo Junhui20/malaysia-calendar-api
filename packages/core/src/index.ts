@@ -3,6 +3,7 @@ export type {
   LocalizedString,
   Holiday,
   HolidayType,
+  HolidayCategory,
   HolidayStatus,
   HolidaySource,
   GazetteLevel,
@@ -20,12 +21,14 @@ export type {
   CheckDateResult,
   BusinessDaysResult,
   LongWeekend,
+  LeaveSuggestion,
   ChangelogEntry,
 } from "./types.js";
 
 // Schemas
 export {
   holidaySchema,
+  holidayCategorySchema,
   holidayFileSchema,
   stateSchema,
   statesFileSchema,
@@ -60,6 +63,7 @@ export {
   filterHolidays,
   findHolidaysByDate,
   findNextHoliday,
+  groupHolidaysByDate,
 } from "./filter.js";
 export type { HolidayFilter } from "./filter.js";
 
@@ -67,12 +71,30 @@ export type { HolidayFilter } from "./filter.js";
 export { calculateReplacementHolidays } from "./replacement.js";
 
 // Business days
-export { countBusinessDays, addBusinessDays } from "./business-days.js";
+export {
+  countBusinessDays,
+  addBusinessDays,
+  subtractBusinessDays,
+  isBusinessDay,
+  nextBusinessDay,
+  previousBusinessDay,
+} from "./business-days.js";
+
+// Long weekends & leave optimization
+export { findLongWeekends, optimizeLeave } from "./long-weekend.js";
+
+// Input validation & request-safety utilities
+export {
+  isValidISODate,
+  timingSafeEqualString,
+  isSafePublicHttpsUrl,
+} from "./validation.js";
 
 // School calendar
 export {
   findSchoolTermByDate,
   findSchoolHolidayByDate,
+  filterSchoolHolidays,
   isSchoolDay,
 } from "./school.js";
 

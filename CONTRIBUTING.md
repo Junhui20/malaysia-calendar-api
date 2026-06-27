@@ -36,8 +36,8 @@ Found an error in the holiday data? Here's how to submit a fix:
 ### 1. Fork and clone
 
 ```bash
-git clone https://github.com/<your-username>/MalaysiaCalanderApi.git
-cd MalaysiaCalanderApi
+git clone https://github.com/<your-username>/malaysia-calendar-api.git
+cd malaysia-calendar-api
 pnpm install
 ```
 
@@ -193,9 +193,8 @@ pnpm validate
 | `pnpm build` | Build all packages (via Turborepo) |
 | `pnpm test` | Run all tests |
 | `pnpm validate` | Run 5-layer data validation |
-| `pnpm parse:jpm` | Parse JPM gazette PDF |
-| `pnpm parse:kpm` | Parse KPM school calendar PDF |
-| `pnpm parse:mpm` | Parse MPM exam schedule PDF |
+
+> **Note:** The PDF parsing helpers (`pnpm parse:jpm` / `parse:kpm` / `parse:mpm`) are not yet available — the underlying scripts have not been committed. Data is currently maintained by hand-editing the JSON files in `data/`.
 
 ## Cuti Peristiwa (Ad-hoc Holiday)
 

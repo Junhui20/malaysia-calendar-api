@@ -1,5 +1,8 @@
 # @catlabtech/mycal-mcp-server
 
+[![npm version](https://img.shields.io/npm/v/@catlabtech/mycal-mcp-server.svg)](https://www.npmjs.com/package/@catlabtech/mycal-mcp-server)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Junhui20/malaysia-calendar-api/blob/main/LICENSE)
+
 MCP (Model Context Protocol) server exposing the **Malaysia Calendar API** as 12 ready-to-use tools for Claude, ChatGPT, and other AI agents.
 
 > Data sourced from the official Malaysian government gazette (JPM BKPP), JAKIM, KPM, and MPM.

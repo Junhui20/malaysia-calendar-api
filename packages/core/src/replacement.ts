@@ -1,6 +1,38 @@
 import type { Holiday, State } from "./types.js";
 import { isWeekend, nextWorkingDay } from "./weekend.js";
 
+/**
+ * Build the synthetic "Cuti Ganti" (replacement) holiday for a `source` holiday
+ * that has been rolled forward to `replacementDate`. Centralised so the
+ * weekend-clash and same-day-overlap paths cannot drift apart.
+ */
+function makeReplacement(
+  source: Holiday,
+  replacementDate: string,
+  stateCode: string,
+  idSuffix: string,
+  now: string
+): Holiday {
+  return {
+    id: `${source.id}-${idSuffix}`,
+    date: replacementDate,
+    name: {
+      ms: `Cuti Ganti ${source.name.ms}`,
+      en: `Replacement for ${source.name.en}`,
+      zh: source.name.zh ? `补假 ${source.name.zh}` : undefined,
+    },
+    type: "replacement",
+    status: source.status,
+    states: [stateCode],
+    isPublicHoliday: true,
+    gazetteLevel: source.gazetteLevel,
+    isReplacementFor: source.id,
+    source: source.source,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
 export function calculateReplacementHolidays(
   holidays: readonly Holiday[],
   state: State
@@ -16,37 +48,21 @@ export function calculateReplacementHolidays(
   const replacements: Holiday[] = [];
   const now = new Date().toISOString();
 
-  // 1. Holidays falling on weekends
+  // 1. Holidays that fall on a weekend roll forward to the next working day.
   for (const holiday of stateHolidays) {
     if (holiday.type === "replacement") continue;
+    if (!isWeekend(holiday.date, state)) continue;
 
-    if (isWeekend(holiday.date, state)) {
-      const allOccupied = new Set([...holidayDates, ...replacementDates]);
-      const replacementDate = nextWorkingDay(holiday.date, state, allOccupied);
-
-      replacementDates.add(replacementDate);
-      replacements.push({
-        id: `${holiday.id}-replacement`,
-        date: replacementDate,
-        name: {
-          ms: `Cuti Ganti ${holiday.name.ms}`,
-          en: `Replacement for ${holiday.name.en}`,
-          zh: holiday.name.zh ? `补假 ${holiday.name.zh}` : undefined,
-        },
-        type: "replacement",
-        status: holiday.status,
-        states: [state.code],
-        isPublicHoliday: true,
-        gazetteLevel: holiday.gazetteLevel,
-        isReplacementFor: holiday.id,
-        source: holiday.source,
-        createdAt: now,
-        updatedAt: now,
-      });
-    }
+    const occupied = new Set([...holidayDates, ...replacementDates]);
+    const replacementDate = nextWorkingDay(holiday.date, state, occupied);
+    replacementDates.add(replacementDate);
+    replacements.push(
+      makeReplacement(holiday, replacementDate, state.code, "replacement", now)
+    );
   }
 
-  // 2. Overlapping holidays (same date, different holidays)
+  // 2. Two holidays on the same date: the federal (gazette "P") holiday takes the
+  //    day, so the state-level (gazette "N") holiday is the one rolled forward.
   const dateGroups = new Map<string, Holiday[]>();
   for (const h of stateHolidays) {
     if (h.type === "replacement") continue;
@@ -57,37 +73,24 @@ export function calculateReplacementHolidays(
   for (const [, group] of dateGroups) {
     if (group.length <= 1) continue;
 
-    // Federal (P) takes precedence; state (N) holiday gets replacement
     const stateHoliday = group.find((h) => h.gazetteLevel === "N");
     if (!stateHoliday) continue;
 
-    // Skip if already has a replacement from weekend logic
+    // Skip if the weekend pass already produced a replacement for it.
     if (replacements.some((r) => r.isReplacementFor === stateHoliday.id)) continue;
 
-    const allOccupied = new Set([...holidayDates, ...replacementDates]);
-    const replacementDate = nextWorkingDay(stateHoliday.date, state, allOccupied);
-
+    const occupied = new Set([...holidayDates, ...replacementDates]);
+    const replacementDate = nextWorkingDay(stateHoliday.date, state, occupied);
     replacementDates.add(replacementDate);
-    replacements.push({
-      id: `${stateHoliday.id}-overlap-replacement`,
-      date: replacementDate,
-      name: {
-        ms: `Cuti Ganti ${stateHoliday.name.ms}`,
-        en: `Replacement for ${stateHoliday.name.en}`,
-        zh: stateHoliday.name.zh
-          ? `补假 ${stateHoliday.name.zh}`
-          : undefined,
-      },
-      type: "replacement",
-      status: stateHoliday.status,
-      states: [state.code],
-      isPublicHoliday: true,
-      gazetteLevel: stateHoliday.gazetteLevel,
-      isReplacementFor: stateHoliday.id,
-      source: stateHoliday.source,
-      createdAt: now,
-      updatedAt: now,
-    });
+    replacements.push(
+      makeReplacement(
+        stateHoliday,
+        replacementDate,
+        state.code,
+        "overlap-replacement",
+        now
+      )
+    );
   }
 
   return replacements;

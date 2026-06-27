@@ -1,6 +1,6 @@
 {
   "name": "malaysia-calendar-api",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "packageManager": "pnpm@10.32.1",
   "description": "Malaysia's most complete calendar API — public holidays, school calendar, exam schedules, MCP server",
@@ -14,10 +14,7 @@
     "build": "turbo build",
     "test": "turbo test",
     "lint": "turbo lint",
-    "validate": "tsx scripts/validate-data.ts",
-    "parse:jpm": "tsx scripts/parse-jpm-pdf.ts",
-    "parse:kpm": "tsx scripts/parse-kpm-calendar.ts",
-    "parse:mpm": "tsx scripts/parse-mpm-exams.ts"
+    "validate": "tsx scripts/validate-data.ts"
   },
   "devDependencies": {
     "tsx": "^4.21.0"

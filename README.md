@@ -2,6 +2,12 @@
 
 Malaysia's most complete calendar API — public holidays, school calendar, exam schedules, and MCP server for AI tools.
 
+[![npm: mycal-core](https://img.shields.io/npm/v/@catlabtech/mycal-core?label=mycal-core)](https://www.npmjs.com/package/@catlabtech/mycal-core)
+[![npm: mycal-sdk](https://img.shields.io/npm/v/@catlabtech/mycal-sdk?label=mycal-sdk)](https://www.npmjs.com/package/@catlabtech/mycal-sdk)
+[![npm: mycal-mcp-server](https://img.shields.io/npm/v/@catlabtech/mycal-mcp-server?label=mycal-mcp-server)](https://www.npmjs.com/package/@catlabtech/mycal-mcp-server)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Deploys on Cloudflare](https://img.shields.io/badge/deploys%20on-Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://mycal-web.pages.dev)
+
 **Data source**: Official government gazette (JPM BKPP), JAKIM, KPM, MPM. Not scraped from third-party websites.
 
 ## Links
@@ -10,6 +16,16 @@ Malaysia's most complete calendar API — public holidays, school calendar, exam
 - **Developer docs**: https://mycal-web.pages.dev/docs
 - **API base URL**: https://mycal-api.huijun00100101.workers.dev/v1
 - **GitHub**: https://github.com/Junhui20/malaysia-calendar-api
+
+## Packages
+
+Published to npm under the `@catlabtech` scope:
+
+| Package | Purpose | Install |
+|---------|---------|---------|
+| [`@catlabtech/mycal-core`](https://www.npmjs.com/package/@catlabtech/mycal-core) | Shared types, Zod schemas, and calendar/business-day logic | `npm install @catlabtech/mycal-core` |
+| [`@catlabtech/mycal-sdk`](https://www.npmjs.com/package/@catlabtech/mycal-sdk) | TypeScript client SDK for the REST API | `npm install @catlabtech/mycal-sdk` |
+| [`@catlabtech/mycal-mcp-server`](https://www.npmjs.com/package/@catlabtech/mycal-mcp-server) | MCP server exposing 12 calendar tools for AI agents | `npm install @catlabtech/mycal-mcp-server` |
 
 ## Features
 
@@ -31,7 +47,7 @@ Malaysia's most complete calendar API — public holidays, school calendar, exam
 ```bash
 # Clone and install
 git clone https://github.com/Junhui20/malaysia-calendar-api.git
-cd MalaysiaCalanderApi
+cd malaysia-calendar-api
 pnpm install
 
 # Build shared packages
@@ -271,7 +287,6 @@ malaysia-calendar-api/
 ├── scripts/
 │   ├── validate-data.ts         # 5-layer data validation pipeline
 │   └── sync-to-kv.ts           # JSON -> Cloudflare KV denormalization
-├── parsers/                     # Year-specific PDF layout adapters
 ├── openapi.yaml                 # OpenAPI 3.1 spec (spec-first)
 ├── pnpm-workspace.yaml
 └── turbo.json

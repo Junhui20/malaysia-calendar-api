@@ -1,8 +1,10 @@
 import { Hono } from "hono";
+import type { Context } from "hono";
 import {
   resolveStateCode,
   findSchoolTermByDate,
   findSchoolHolidayByDate,
+  filterSchoolHolidays,
   findHolidaysByDate,
   isWeekend,
   isSchoolDay as checkSchoolDay,
@@ -14,7 +16,7 @@ import { getSchoolTerms, getSchoolHolidays, getExams, getHolidays, states } from
 
 export const schoolRouter = new Hono();
 
-function resolveGroup(c: any): { group: StateGroup; stateCode?: string } | null {
+function resolveGroup(c: Context): { group: StateGroup; stateCode?: string } | null {
   const groupParam = c.req.query("group") as StateGroup | undefined;
   const stateQuery = c.req.query("state");
 
@@ -54,12 +56,11 @@ schoolRouter.get("/holidays", (c) => {
     return c.json({ error: { code: "INVALID_STATE", message: "Unknown state" } }, 400);
   }
 
-  const holidays = getSchoolHolidays(year).filter((h) => {
-    if (h.group !== resolved.group) return false;
-    if (resolved.stateCode && h.excludeStates?.includes(resolved.stateCode)) return false;
-    if (h.states && resolved.stateCode && !h.states.includes(resolved.stateCode)) return false;
-    return true;
-  });
+  const holidays = filterSchoolHolidays(
+    getSchoolHolidays(year),
+    resolved.group,
+    resolved.stateCode
+  );
 
   return c.json({ data: holidays, meta: { year, group: resolved.group, total: holidays.length } });
 });
