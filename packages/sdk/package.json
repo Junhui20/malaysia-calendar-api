@@ -1,6 +1,6 @@
 {
   "name": "@catlabtech/mycal-sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "TypeScript client SDK for the Malaysia Calendar API — public holidays, school calendar, business day calculator",
   "keywords": [
     "malaysia",
