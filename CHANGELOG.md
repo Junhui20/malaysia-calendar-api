@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-06-28
+
+### Changed
+
+- `@catlabtech/mycal-mcp-server`: set `mcpName` to `io.github.junhui20/mycal` (matches the
+  GitHub repo owner so it can be published to the official MCP Registry) and added
+  `packages/mcp-server/server.json`.
+
 ## [0.1.2] - 2026-06-28
 
 ### Added
