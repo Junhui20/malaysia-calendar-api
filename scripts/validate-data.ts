@@ -46,7 +46,7 @@ function validateSchemas() {
   }
 
   // Holidays
-  for (const year of [2024, 2025, 2026]) {
+  for (const year of [2024, 2025, 2026, 2027]) {
     const file = `holidays/${year}.json`;
     const data = loadJson(file);
     const result = holidayFileSchema.safeParse(data);
@@ -97,7 +97,7 @@ function validateSchemas() {
 // ─── Layer 2: Temporal Validation ───
 
 function validateTemporal() {
-  for (const year of [2024, 2025, 2026]) {
+  for (const year of [2024, 2025, 2026, 2027]) {
     const holidays = loadJson(`holidays/${year}.json`) as Array<{ id: string; date: string }>;
     for (const h of holidays) {
       const hYear = parseInt(h.date.slice(0, 4), 10);
@@ -115,7 +115,7 @@ function validateCrossSource() {
   const states = loadJson("states.json") as Array<{ code: string }>;
   const stateCodes = new Set(states.map((s) => s.code));
 
-  for (const year of [2024, 2025, 2026]) {
+  for (const year of [2024, 2025, 2026, 2027]) {
     const holidays = loadJson(`holidays/${year}.json`) as Array<{ id: string; states: string[] }>;
     for (const h of holidays) {
       for (const s of h.states) {
@@ -146,7 +146,7 @@ function validateHistorical() {
     { date: "-12-25", nameMs: "Hari Krismas" },
   ];
 
-  for (const year of [2024, 2025, 2026]) {
+  for (const year of [2024, 2025, 2026, 2027]) {
     const holidays = loadJson(`holidays/${year}.json`) as Array<{ date: string; name: { ms: string } }>;
 
     for (const known of KNOWN_FIXED) {

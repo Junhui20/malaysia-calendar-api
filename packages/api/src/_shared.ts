@@ -19,6 +19,59 @@ export const MAX_YEAR = 2100;
 export interface Env {
   ADMIN_API_KEY?: string;
   RATE_LIMITER?: { limit(options: { key: string }): Promise<{ success: boolean }> };
+  API_KEYS?: KVNamespace;
+}
+
+// ─── API key tiers ───
+// Anonymous-first: no key required. A key just raises the per-minute limit.
+export type ApiTier = "anonymous" | "free" | "pro";
+export const TIER_LIMITS: Record<ApiTier, number> = {
+  anonymous: 100,
+  free: 1000,
+  pro: 10000,
+};
+
+export interface ApiKeyRecord {
+  readonly tier: ApiTier;
+  readonly label?: string;
+  readonly createdAt: string;
+}
+
+export async function sha256hex(input: string): Promise<string> {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function presentedKey(c: Context): string | undefined {
+  const auth = c.req.header("Authorization");
+  if (auth?.startsWith("Bearer ")) return auth.slice(7).trim();
+  const xk = c.req.header("X-API-Key");
+  return xk ?? undefined;
+}
+
+/**
+ * Resolve the caller's tier from a presented `mycal_…` key (Bearer or X-API-Key)
+ * by looking up its SHA-256 hash in KV. Returns null (→ anonymous) when there's
+ * no KV binding, no key, or no match. Only `mycal_`-prefixed keys are looked up,
+ * so the separate admin key never hits KV.
+ */
+export async function lookupTier(
+  c: Context
+): Promise<{ tier: ApiTier; keyId: string } | null> {
+  const kv = (c.env as Env | undefined)?.API_KEYS;
+  const key = presentedKey(c);
+  if (!kv || !key || !key.startsWith("mycal_")) return null;
+  const hash = await sha256hex(key);
+  const raw = await kv.get(`key:${hash}`);
+  if (!raw) return null;
+  try {
+    const rec = JSON.parse(raw) as ApiKeyRecord;
+    return { tier: rec.tier, keyId: hash.slice(0, 12) };
+  } catch {
+    return null;
+  }
 }
 
 export function badRequest(c: Context, code: string, message: string): Response {

@@ -14,6 +14,12 @@ API_VERSION = "v1"
 # binding = "HOLIDAYS_KV"
 # id = "xxx"  # Fill after: wrangler kv namespace create HOLIDAYS_KV
 
+# KV namespace for self-serve API keys (enables higher rate-limit tiers).
+# Without it the API stays anonymous-only; /v1/keys returns 503.
+# [[kv_namespaces]]
+# binding = "API_KEYS"
+# id = "xxx"  # Fill after: wrangler kv namespace create API_KEYS
+
 # D1 database for webhooks + analytics
 # [[d1_databases]]
 # binding = "DB"
