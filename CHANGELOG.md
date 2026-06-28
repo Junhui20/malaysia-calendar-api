@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-06-28
+
+### Added
+
+- **Leave optimizer** — `optimizeLeave` (core), `GET /v1/holidays/leave-optimizer`, the
+  `malaysia_leave_optimizer` MCP tool, and `client.leaveOptimizer()` in the SDK.
+- **Feeds** — `GET /v1/feed/csv/:state` (spreadsheet export) and an `?include=holidays`
+  iCal variant; iCal now emits machine-readable `CATEGORIES`, calendar colour/description,
+  and a refresh interval.
+- New **`/subscribe`** page with one-tap webcal "Add to Google/Apple/Outlook" buttons.
+- Business-day helpers: `subtractBusinessDays`, `nextBusinessDay`, `previousBusinessDay`,
+  `isBusinessDay`; plus optional `category` / `isEstimated` (Holiday) and `isoCode` (State).
+
+### Fixed
+
+- **Security:** bounded business-day inputs (CPU-DoS), constant-time header-only admin auth,
+  SSRF-screened + admin-gated webhooks, no-store on `/admin` & `/webhooks`, iCal CRLF escaping,
+  and a rate limiter that prefers Cloudflare's native binding (no longer trusts X-Forwarded-For).
+- **MCP `npx`:** calendar data is bundled into the package, so an installed server no longer
+  fails reading a non-shipped data directory.
+- `diffDays` timezone bug (now anchored at noon-UTC).
+
+### Changed
+
+- Extracted `findLongWeekends` into core (de-duplicated from the API route and MCP server).
+
 ## [0.1.1] - 2026-04-22
 
 ### Added
