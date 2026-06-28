@@ -34,7 +34,7 @@ export function cacheHeaders() {
     // Never cache privileged surfaces — admin mutations and webhook management
     // are per-key/per-owner and must not be stored by browsers or the CDN.
     const path = c.req.path;
-    if (path.includes("/admin") || path.includes("/webhooks")) {
+    if (path.includes("/admin") || path.includes("/webhooks") || path.includes("/keys")) {
       c.header("Cache-Control", "private, no-store");
       return;
     }

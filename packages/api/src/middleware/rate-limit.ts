@@ -1,5 +1,5 @@
 import type { Context, Next } from "hono";
-import type { Env } from "../_shared.js";
+import { lookupTier, TIER_LIMITS, type Env } from "../_shared.js";
 
 interface RateLimitEntry {
   count: number;
@@ -9,7 +9,6 @@ interface RateLimitEntry {
 const store = new Map<string, RateLimitEntry>();
 
 const WINDOW_MS = 60_000; // 1 minute
-const MAX_REQUESTS = 100; // 100 req/min for anonymous
 const MAX_TRACKED_KEYS = 20_000; // bound the fallback map's memory
 
 function clientKey(c: Context): string {
@@ -25,13 +24,17 @@ function sweepExpired(now: number): void {
 }
 
 export async function rateLimiter(c: Context, next: Next) {
-  const key = clientKey(c);
+  // Anonymous-first: a valid API key raises the per-minute limit and is bucketed
+  // by key; otherwise we limit by IP at the anonymous tier.
+  const tierInfo = await lookupTier(c);
+  const tier = tierInfo?.tier ?? "anonymous";
+  const limit = TIER_LIMITS[tier];
+  const key = tierInfo ? `key:${tierInfo.keyId}` : clientKey(c);
 
-  // Prefer Cloudflare's native, durable Rate Limiting binding when configured.
-  // The in-memory map below is per-isolate (and thus only approximate across the
-  // edge) — it is a best-effort fallback, not the primary control.
+  // Cloudflare's native binding has a config-fixed limit, so use it only for the
+  // anonymous tier; keyed (higher-tier) callers go through the in-memory counter.
   const limiter = (c.env as Env | undefined)?.RATE_LIMITER;
-  if (limiter) {
+  if (tier === "anonymous" && limiter) {
     const { success } = await limiter.limit({ key });
     if (!success) {
       c.header("Retry-After", "60");
@@ -51,16 +54,16 @@ export async function rateLimiter(c: Context, next: Next) {
 
   if (!existing || now > existing.resetAt) {
     store.set(key, { count: 1, resetAt: now + WINDOW_MS });
-    c.header("X-RateLimit-Limit", String(MAX_REQUESTS));
-    c.header("X-RateLimit-Remaining", String(MAX_REQUESTS - 1));
+    c.header("X-RateLimit-Limit", String(limit));
+    c.header("X-RateLimit-Remaining", String(limit - 1));
     await next();
     return;
   }
 
-  if (existing.count >= MAX_REQUESTS) {
+  if (existing.count >= limit) {
     const retryAfter = Math.ceil((existing.resetAt - now) / 1000);
     c.header("Retry-After", String(retryAfter));
-    c.header("X-RateLimit-Limit", String(MAX_REQUESTS));
+    c.header("X-RateLimit-Limit", String(limit));
     c.header("X-RateLimit-Remaining", "0");
     return c.json(
       {
@@ -74,7 +77,7 @@ export async function rateLimiter(c: Context, next: Next) {
   }
 
   existing.count++;
-  c.header("X-RateLimit-Limit", String(MAX_REQUESTS));
-  c.header("X-RateLimit-Remaining", String(MAX_REQUESTS - existing.count));
+  c.header("X-RateLimit-Limit", String(limit));
+  c.header("X-RateLimit-Remaining", String(limit - existing.count));
   await next();
 }

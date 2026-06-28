@@ -13,6 +13,9 @@ import { changelogRouter } from "./routes/changelog.js";
 import { adminRouter } from "./routes/admin.js";
 import { webhooksRouter } from "./routes/webhooks.js";
 import { docsRouter } from "./routes/docs.js";
+import { dataRouter } from "./routes/data.js";
+import { prayerTimesRouter } from "./routes/prayer-times.js";
+import { keysRouter } from "./routes/keys.js";
 import { handleCron } from "./cron/rss-monitor.js";
 import { landingHTML } from "./landing.js";
 
@@ -37,6 +40,9 @@ v1.route("/changelog", changelogRouter);
 v1.route("/admin", adminRouter);
 v1.route("/webhooks", webhooksRouter);
 v1.route("/docs", docsRouter);
+v1.route("/data", dataRouter);
+v1.route("/prayer-times", prayerTimesRouter);
+v1.route("/keys", keysRouter);
 v1.get("/openapi.json", (c) => {
   return docsRouter.fetch(new Request(new URL("/openapi.json", c.req.url)));
 });
@@ -66,6 +72,9 @@ v1.get("/", (c) => {
       isSchoolDay: "/v1/school/is-school-day?date=2026-03-21&state=selangor",
       icalFeed: "/v1/feed/ical/selangor",
       changelog: "/v1/changelog",
+      openData: "/v1/data/manifest",
+      prayerTimes: "/v1/prayer-times/SGR01",
+      prayerZones: "/v1/prayer-times/zones",
     },
     sources: "https://github.com/Junhui20/malaysia-calendar-api",
   });
