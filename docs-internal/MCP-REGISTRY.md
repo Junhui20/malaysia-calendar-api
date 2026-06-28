@@ -27,8 +27,8 @@ There is **no `catlabtech` GitHub account/org** backing that namespace, so `mcp-
 5. Authenticate as a member of `catlabtech` when you run `mcp-publisher login github`.
 
 ### Option B — change the namespace to the existing owner (fastest)
-1. In `packages/mcp-server/package.json`: change `"mcpName": "io.github.catlabtech/mycal"` → `"mcpName": "io.github.junhui20/mycal"` (lowercased owner).
-2. In `server.json`: `"name": "io.github.junhui20/mycal"`.
+1. In `packages/mcp-server/package.json`: change `"mcpName": "io.github.catlabtech/mycal"` → `"mcpName": "io.github.Junhui20/mycal"` (lowercased owner).
+2. In `server.json`: `"name": "io.github.Junhui20/mycal"`.
 3. Authenticate as `Junhui20`.
 
 > **Either option requires a fresh npm publish.** The registry verifies the *published npm package* contains an `mcpName` matching the server name. After editing `mcpName`, bump the version (e.g. `0.1.3`), `npm publish`, and use that version in `server.json`.
@@ -60,7 +60,7 @@ Place at `packages/mcp-server/server.json` (schema `2025-12-11`). The 13 tools a
 }
 ```
 
-**Option B version** — identical except `"name": "io.github.junhui20/mycal"` and the `repository.url` set to `https://github.com/Junhui20/malaysia-calendar-api`.
+**Option B version** — identical except `"name": "io.github.Junhui20/mycal"` and the `repository.url` set to `https://github.com/Junhui20/malaysia-calendar-api`.
 
 Notes:
 - `server.json` `name` **must** equal `mcpName` in the published `package.json`.
