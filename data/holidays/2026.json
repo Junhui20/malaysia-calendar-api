@@ -103,7 +103,7 @@
     "date": "2026-02-19",
     "name": { "ms": "Awal Ramadan", "en": "Beginning of Ramadan", "zh": "斋戒月首日" },
     "type": "islamic_state",
-    "status": "tentative",
+    "status": "confirmed",
     "states": ["johor", "kedah", "kelantan", "terengganu", "melaka", "perlis"],
     "isPublicHoliday": true,
     "gazetteLevel": "N",
@@ -111,7 +111,7 @@
     "source": "jpm",
     "gazetteRef": "GN-33500",
     "createdAt": "2025-08-28T00:00:00+08:00",
-    "updatedAt": "2025-08-28T00:00:00+08:00"
+    "updatedAt": "2026-07-06T00:00:00+08:00"
   },
   {
     "id": "2026-pengisytiharan-kemerdekaan",
@@ -146,7 +146,7 @@
     "date": "2026-03-07",
     "name": { "ms": "Hari Nuzul Al-Quran", "en": "Revelation of the Quran", "zh": "可兰经降世" },
     "type": "islamic",
-    "status": "tentative",
+    "status": "confirmed",
     "states": ["*"],
     "isPublicHoliday": true,
     "gazetteLevel": "P",
@@ -154,14 +154,31 @@
     "source": "jpm",
     "gazetteRef": "GN-33499",
     "createdAt": "2025-08-28T00:00:00+08:00",
-    "updatedAt": "2025-08-28T00:00:00+08:00"
+    "updatedAt": "2026-07-06T00:00:00+08:00"
+  },
+  {
+    "id": "2026-hari-raya-aidilfitri-tambahan",
+    "date": "2026-03-20",
+    "name": {
+      "ms": "Hari Raya Aidilfitri (Cuti Tambahan)",
+      "en": "Hari Raya Aidilfitri (Additional Public Holiday)",
+      "zh": "开斋节（额外假期）"
+    },
+    "type": "adhoc",
+    "status": "confirmed",
+    "states": ["*"],
+    "isPublicHoliday": true,
+    "gazetteLevel": "P",
+    "source": "jpm",
+    "createdAt": "2026-03-15T00:00:00+08:00",
+    "updatedAt": "2026-03-15T00:00:00+08:00"
   },
   {
     "id": "2026-hari-raya-aidilfitri-1",
     "date": "2026-03-21",
     "name": { "ms": "Hari Raya Aidilfitri", "en": "Eid al-Fitr", "zh": "开斋节" },
     "type": "islamic",
-    "status": "tentative",
+    "status": "confirmed",
     "states": ["*"],
     "isPublicHoliday": true,
     "gazetteLevel": "P",
@@ -169,14 +186,14 @@
     "source": "jpm",
     "gazetteRef": "GN-33499",
     "createdAt": "2025-08-28T00:00:00+08:00",
-    "updatedAt": "2025-08-28T00:00:00+08:00"
+    "updatedAt": "2026-07-06T00:00:00+08:00"
   },
   {
     "id": "2026-hari-raya-aidilfitri-2",
     "date": "2026-03-22",
     "name": { "ms": "Hari Raya Aidilfitri (Hari Kedua)", "en": "Eid al-Fitr (2nd Day)", "zh": "开斋节（第二天）" },
     "type": "islamic",
-    "status": "tentative",
+    "status": "confirmed",
     "states": ["*"],
     "isPublicHoliday": true,
     "gazetteLevel": "P",
@@ -184,7 +201,7 @@
     "source": "jpm",
     "gazetteRef": "GN-33499",
     "createdAt": "2025-08-28T00:00:00+08:00",
-    "updatedAt": "2025-08-28T00:00:00+08:00"
+    "updatedAt": "2026-07-06T00:00:00+08:00"
   },
   {
     "id": "2026-keputeraan-sultan-johor",
@@ -205,7 +222,7 @@
     "date": "2026-03-23",
     "name": { "ms": "Hari Raya Puasa (Hari Ketiga)", "en": "Eid al-Fitr (3rd Day)" },
     "type": "islamic_state",
-    "status": "tentative",
+    "status": "confirmed",
     "states": ["kelantan", "terengganu", "kedah", "johor", "perlis"],
     "isPublicHoliday": true,
     "gazetteLevel": "N",
@@ -213,7 +230,7 @@
     "source": "jpm",
     "gazetteRef": "GN-33500",
     "createdAt": "2025-08-28T00:00:00+08:00",
-    "updatedAt": "2025-08-28T00:00:00+08:00"
+    "updatedAt": "2026-07-06T00:00:00+08:00"
   },
   {
     "id": "2026-hari-jadi-tyt-sabah",
@@ -304,7 +321,7 @@
     "date": "2026-05-26",
     "name": { "ms": "Hari Arafah", "en": "Day of Arafah" },
     "type": "islamic_state",
-    "status": "tentative",
+    "status": "confirmed",
     "states": ["kelantan", "terengganu", "kedah", "perlis"],
     "isPublicHoliday": true,
     "gazetteLevel": "N",
@@ -312,14 +329,14 @@
     "source": "jpm",
     "gazetteRef": "GN-33500",
     "createdAt": "2025-08-28T00:00:00+08:00",
-    "updatedAt": "2025-08-28T00:00:00+08:00"
+    "updatedAt": "2026-07-06T00:00:00+08:00"
   },
   {
     "id": "2026-hari-raya-haji-1",
     "date": "2026-05-27",
     "name": { "ms": "Hari Raya Qurban", "en": "Eid al-Adha", "zh": "哈芝节" },
     "type": "islamic",
-    "status": "tentative",
+    "status": "confirmed",
     "states": ["*"],
     "isPublicHoliday": true,
     "gazetteLevel": "P",
@@ -327,14 +344,14 @@
     "source": "jpm",
     "gazetteRef": "GN-33499",
     "createdAt": "2025-08-28T00:00:00+08:00",
-    "updatedAt": "2025-08-28T00:00:00+08:00"
+    "updatedAt": "2026-07-06T00:00:00+08:00"
   },
   {
     "id": "2026-hari-raya-haji-2",
     "date": "2026-05-28",
     "name": { "ms": "Hari Raya Qurban (Hari Kedua)", "en": "Eid al-Adha (2nd Day)", "zh": "哈芝节（第二天）" },
     "type": "islamic",
-    "status": "tentative",
+    "status": "confirmed",
     "states": ["*"],
     "isPublicHoliday": true,
     "gazetteLevel": "P",
@@ -342,7 +359,7 @@
     "source": "jpm",
     "gazetteRef": "GN-33499",
     "createdAt": "2025-08-28T00:00:00+08:00",
-    "updatedAt": "2025-08-28T00:00:00+08:00"
+    "updatedAt": "2026-07-06T00:00:00+08:00"
   },
   {
     "id": "2026-pesta-kaamatan-1",
@@ -433,7 +450,7 @@
     "date": "2026-06-17",
     "name": { "ms": "Awal Muharam (Maal Hijrah)", "en": "Islamic New Year", "zh": "回历新年" },
     "type": "islamic",
-    "status": "tentative",
+    "status": "confirmed",
     "states": ["*"],
     "isPublicHoliday": true,
     "gazetteLevel": "P",
@@ -441,7 +458,7 @@
     "source": "jpm",
     "gazetteRef": "GN-33499",
     "createdAt": "2025-08-28T00:00:00+08:00",
-    "updatedAt": "2025-08-28T00:00:00+08:00"
+    "updatedAt": "2026-07-06T00:00:00+08:00"
   },
   {
     "id": "2026-keputeraan-sultan-kedah",

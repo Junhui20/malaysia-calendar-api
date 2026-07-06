@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import pkg from "../package.json";
 
 // Bundled data — tsup/esbuild inlines these JSON imports into dist/index.js so
 // the published package works via `npx` with no local data files present.
@@ -70,6 +71,18 @@ function loadYear<T>(_dir: string, year: number): T[] {
   return (holidaysByYear[year] ?? []) as unknown as T[];
 }
 
+// All bundled holidays across every year. Used by tools that reason across a
+// date range so a query spanning a year boundary still sees both years.
+function allHolidays(): Holiday[] {
+  return Object.values(holidaysByYear).flat();
+}
+
+// School data currently only exists for a subset of years; callers surface this
+// so a query for an unavailable year returns an explicit signal, not silence.
+function hasSchoolData(year: number): boolean {
+  return year in schoolTermsByYear;
+}
+
 function loadSchool<T>(file: string, year: number): T[] {
   const map =
     file === "terms"
@@ -84,7 +97,7 @@ function loadSchool<T>(file: string, year: number): T[] {
 
 const server = new McpServer({
   name: "Malaysia Calendar API",
-  version: "0.1.1",
+  version: pkg.version,
 });
 
 // Tool 1: get_malaysia_holidays
@@ -139,6 +152,7 @@ server.tool(
       isWeekend: weekend,
       isWorkingDay: !weekend && !isHoliday,
       isSchoolDay: schoolDay,
+      schoolDataAvailable: hasSchoolData(year),
       holidays: dayHolidays.map(h => ({ name: h.name, type: h.type, status: h.status })),
       state: { code: stateObj.code, group: stateObj.group },
     };
@@ -158,8 +172,8 @@ server.tool(
   },
   async ({ state, afterDate, type, count }) => {
     const after = afterDate ?? new Date().toISOString().slice(0, 10);
-    const year = parseInt(after.slice(0, 4));
-    const holidays = loadYear<Holiday>("holidays", year);
+    // Search across all bundled years so the next holiday can fall in a later year.
+    const holidays = allHolidays();
     const stateCode = state ? resolveStateCode(state, states)?.code : undefined;
     const next = findNextHoliday(after, holidays, stateCode, type as HolidayType, count ?? 1);
     return { content: [{ type: "text", text: JSON.stringify(next, null, 2) }] };
@@ -178,8 +192,8 @@ server.tool(
   async ({ start, end, state: stateQuery }) => {
     const stateObj = resolveStateCode(stateQuery, states);
     if (!stateObj) return { content: [{ type: "text", text: `Unknown state: ${stateQuery}` }] };
-    const year = parseInt(start.slice(0, 4));
-    const holidays = loadYear<Holiday>("holidays", year);
+    // Use all bundled years so a range spanning a year boundary sees both.
+    const holidays = allHolidays();
     const result = countBusinessDays(start, end, stateObj, holidays);
     return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
   }
@@ -197,7 +211,7 @@ server.tool(
     const stateObj = state ? resolveStateCode(state, states) : defaultState();
     if (!stateObj) return { content: [{ type: "text", text: `Unknown state: ${state}` }] };
 
-    const holidays = loadYear<Holiday>("holidays", year);
+    const holidays = allHolidays();
     const longWeekends = findLongWeekends(year, stateObj, holidays).map((w) => ({
       start: w.startDate,
       end: w.endDate,
@@ -221,7 +235,7 @@ server.tool(
     const stateObj = state ? resolveStateCode(state, states) : defaultState();
     if (!stateObj) return { content: [{ type: "text", text: `Unknown state: ${state}` }] };
 
-    const holidays = loadYear<Holiday>("holidays", year);
+    const holidays = allHolidays();
     const suggestions = optimizeLeave(year, stateObj, holidays, maxLeave ?? 3)
       .slice(0, 10)
       .map((s) => ({
@@ -283,8 +297,9 @@ server.tool(
   },
   async ({ year, group }) => {
     const g = (group ?? "B") as StateGroup;
+    const dataAvailable = hasSchoolData(year);
     const terms = loadSchool<SchoolTerm>("terms", year).filter(t => t.group === g);
-    return { content: [{ type: "text", text: JSON.stringify({ group: g, total: terms.length, terms }, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify({ group: g, dataAvailable, ...(dataAvailable ? {} : { message: `No school data available for year ${year}` }), total: terms.length, terms }, null, 2) }] };
   }
 );
 
@@ -298,8 +313,9 @@ server.tool(
   },
   async ({ year, group }) => {
     const g = (group ?? "B") as StateGroup;
+    const dataAvailable = hasSchoolData(year);
     const hols = loadSchool<SchoolHoliday>("holidays", year).filter(h => h.group === g);
-    return { content: [{ type: "text", text: JSON.stringify({ group: g, total: hols.length, holidays: hols }, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify({ group: g, dataAvailable, ...(dataAvailable ? {} : { message: `No school data available for year ${year}` }), total: hols.length, holidays: hols }, null, 2) }] };
   }
 );
 
@@ -312,9 +328,10 @@ server.tool(
     type: z.enum(["spm", "stpm", "muet", "pt3", "stam", "other"]).optional(),
   },
   async ({ year, type }) => {
+    const dataAvailable = hasSchoolData(year);
     let exams = loadSchool<Exam>("exams", year);
     if (type) exams = exams.filter(e => e.type === type);
-    return { content: [{ type: "text", text: JSON.stringify({ total: exams.length, exams }, null, 2) }] };
+    return { content: [{ type: "text", text: JSON.stringify({ dataAvailable, ...(dataAvailable ? {} : { message: `No school data available for year ${year}` }), total: exams.length, exams }, null, 2) }] };
   }
 );
 
@@ -356,6 +373,7 @@ server.tool(
         type: "text",
         text: JSON.stringify({
           date, dayOfWeek: getDayOfWeekName(date), isSchoolDay: schoolDay,
+          schoolDataAvailable: hasSchoolData(year),
           isPublicHoliday: isHoliday, isWeekend: weekend, group: g,
           term: term ? { id: term.id, term: term.term } : null,
           holiday: schoolHoliday ? { id: schoolHoliday.id, name: schoolHoliday.name, type: schoolHoliday.type } : null,

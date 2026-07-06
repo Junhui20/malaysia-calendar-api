@@ -552,7 +552,7 @@ async function main() {
   test("school/holidays-2026 schema valid", () => { assert.ok(core.schoolHolidaysFileSchema.safeParse(schoolHolidays).success); });
   test("school/exams-2026 schema valid", () => { assert.ok(core.examsFileSchema.safeParse(exams).success); });
   test("16 states", () => { assert.equal(states.length, 16); });
-  test("49 holidays for 2026", () => { assert.equal(holidays.length, 49); });
+  test("50 holidays for 2026", () => { assert.equal(holidays.length, 50); });
   test("all holiday IDs are unique", () => {
     const ids = holidays.map(h => h.id);
     assert.equal(ids.length, new Set(ids).size, "Duplicate holiday IDs found");
@@ -666,6 +666,21 @@ async function main() {
   });
   test("optimizeLeave with maxLeave<1 returns nothing", () => {
     assert.equal(core.optimizeLeave(2026, sel, holidays, 0).length, 0);
+  });
+  test("findLongWeekends captures a run straddling the year boundary", () => {
+    // Dec 31 2026 (Thu) + Jan 1 2027 (Fri) holidays chain into Sat/Sun.
+    const custom = [
+      { ...holidays[0], id: "nye-2026", date: "2026-12-31", status: "confirmed", states: ["*"] },
+      { ...holidays[0], id: "nyd-2027", date: "2027-01-01", status: "confirmed", states: ["*"] },
+    ];
+    const lw2026 = core.findLongWeekends(2026, sel, custom);
+    const straddle = lw2026.find(w => w.startDate === "2026-12-31");
+    assert.ok(straddle, "run starting 2026-12-31 should be reported in full");
+    assert.equal(straddle.endDate, "2027-01-03");
+    assert.equal(straddle.totalDays, 4);
+    // The same run must not be double-counted by the following year.
+    const lw2027 = core.findLongWeekends(2027, sel, custom);
+    assert.ok(!lw2027.some(w => w.startDate === "2026-12-31"));
   });
 
   // ─── Validation & Safety Utilities (new) ──────────────────

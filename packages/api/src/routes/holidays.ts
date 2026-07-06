@@ -7,7 +7,7 @@ import {
   type HolidayType,
   type HolidayStatus,
 } from "@catlabtech/mycal-core";
-import { getHolidays, states } from "../data.js";
+import { getHolidays, getAllHolidays, states } from "../data.js";
 
 export const holidaysRouter = new Hono();
 
@@ -70,7 +70,6 @@ holidaysRouter.get("/next", (c) => {
   const stateQuery = c.req.query("state");
   const type = c.req.query("type") as HolidayType | undefined;
   const limit = Math.min(Number(c.req.query("limit") ?? 1), 10);
-  const year = Number(today.slice(0, 4));
 
   let stateCode: string | undefined;
   if (stateQuery) {
@@ -78,7 +77,8 @@ holidaysRouter.get("/next", (c) => {
     if (resolved) stateCode = resolved.code;
   }
 
-  const holidays = getHolidays(year);
+  // Use all bundled years so "next holiday" can cross the year boundary.
+  const holidays = getAllHolidays();
   const next = findNextHoliday(today, holidays, stateCode, type, limit);
 
   return c.json({ data: next, meta: { afterDate: today, state: stateCode ?? null } });
@@ -94,8 +94,8 @@ holidaysRouter.get("/between", (c) => {
   }
 
   const stateQuery = c.req.query("state");
-  const year = Number(start.slice(0, 4));
-  const holidays = getHolidays(year);
+  // Use all bundled years so a range that spans a year boundary sees both.
+  const holidays = getAllHolidays();
 
   let stateCode: string | undefined;
   if (stateQuery) {

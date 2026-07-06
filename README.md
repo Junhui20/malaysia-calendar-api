@@ -160,6 +160,7 @@ curl "https://mycal-api.huijun00100101.workers.dev/v1/states/resolve?q=kl"
 | `GET /v1/holidays/today` | Today's holiday status |
 | `GET /v1/holidays/next` | Next upcoming holiday |
 | `GET /v1/holidays/between` | Holidays in date range |
+| `GET /v1/holidays/leave-optimizer` | Suggest annual-leave days to spend for the longest consecutive break |
 | `GET /v1/business-days` | Count business days between dates |
 | `GET /v1/business-days/add` | Add N business days to a date |
 | `GET /v1/states` | All 16 states + 3 FTs with weekend config |
@@ -169,6 +170,10 @@ curl "https://mycal-api.huijun00100101.workers.dev/v1/states/resolve?q=kl"
 | `GET /v1/school/exams` | SPM, STPM, MUET, PT3 schedule |
 | `GET /v1/school/is-school-day` | Is this a school day? |
 | `GET /v1/feed/ical/:state` | iCal subscription feed |
+| `GET /v1/feed/csv/:state` | CSV/spreadsheet export of holidays |
+| `GET /v1/data/*` | Raw, cacheable open-data snapshots — `manifest`, `states`, `holidays/:year`, `all` (no API key required) |
+| `GET /v1/prayer-times/:zone` | JAKIM prayer times for a zone (MYT-formatted); `GET /v1/prayer-times/zones` lists the zone directory |
+| `POST /v1/keys` | Issue an API key (admin-gated for now; `GET /v1/keys/whoami` checks the caller's tier) |
 
 See the full [OpenAPI 3.1 spec](./openapi.yaml) for request/response schemas.
 
@@ -215,7 +220,7 @@ Add to your MCP configuration:
 }
 ```
 
-### Available Tools (12)
+### Available Tools (13)
 
 | Tool | Description |
 |------|-------------|
@@ -224,6 +229,7 @@ Add to your MCP configuration:
 | `next_malaysia_holiday` | Find the next upcoming holiday |
 | `malaysia_business_days` | Count working days between two dates |
 | `malaysia_long_weekends` | Find long weekends (3+ days) |
+| `malaysia_leave_optimizer` | Find the most efficient leave days to take to maximise consecutive days off |
 | `list_malaysia_states` | List all states with weekend config |
 | `resolve_malaysia_state` | Resolve alias (KL, JB) to canonical code |
 | `malaysia_holiday_changes` | Recent data changes |

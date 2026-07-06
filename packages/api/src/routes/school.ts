@@ -12,7 +12,7 @@ import {
   type StateGroup,
   type ExamType,
 } from "@catlabtech/mycal-core";
-import { getSchoolTerms, getSchoolHolidays, getExams, getHolidays, states } from "../data.js";
+import { getSchoolTerms, getSchoolHolidays, getExams, getHolidays, hasSchoolData, states } from "../data.js";
 
 export const schoolRouter = new Hono();
 
@@ -44,7 +44,16 @@ schoolRouter.get("/terms", (c) => {
 
   const terms = getSchoolTerms(year).filter((t) => t.group === resolved.group);
 
-  return c.json({ data: terms, meta: { year, group: resolved.group, total: terms.length } });
+  return c.json({
+    data: terms,
+    meta: {
+      year,
+      group: resolved.group,
+      total: terms.length,
+      dataAvailable: hasSchoolData(year),
+      ...(hasSchoolData(year) ? {} : { message: `No school data available for year ${year}` }),
+    },
+  });
 });
 
 // GET /school/holidays?year=2026&group=B
@@ -62,7 +71,16 @@ schoolRouter.get("/holidays", (c) => {
     resolved.stateCode
   );
 
-  return c.json({ data: holidays, meta: { year, group: resolved.group, total: holidays.length } });
+  return c.json({
+    data: holidays,
+    meta: {
+      year,
+      group: resolved.group,
+      total: holidays.length,
+      dataAvailable: hasSchoolData(year),
+      ...(hasSchoolData(year) ? {} : { message: `No school data available for year ${year}` }),
+    },
+  });
 });
 
 // GET /school/exams?year=2026&type=spm
@@ -75,7 +93,15 @@ schoolRouter.get("/exams", (c) => {
     exams = exams.filter((e) => e.type === type);
   }
 
-  return c.json({ data: exams, meta: { year, total: exams.length } });
+  return c.json({
+    data: exams,
+    meta: {
+      year,
+      total: exams.length,
+      dataAvailable: hasSchoolData(year),
+      ...(hasSchoolData(year) ? {} : { message: `No school data available for year ${year}` }),
+    },
+  });
 });
 
 // GET /school/is-school-day?date=2026-03-21&state=selangor
@@ -111,6 +137,7 @@ schoolRouter.get("/is-school-day", (c) => {
       date,
       dayOfWeek: getDayOfWeekName(date),
       isSchoolDay: schoolDay,
+      schoolDataAvailable: hasSchoolData(year),
       isPublicHoliday: isHoliday,
       isWeekend: weekend,
       group: resolved.group,

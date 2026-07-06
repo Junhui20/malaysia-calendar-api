@@ -6,64 +6,55 @@ Internal guide for listing the mycal MCP server in the **official MCP Registry**
 
 ---
 
-## ⚠️ READ FIRST: the namespace problem (blocker)
+## ✅ Resolution: the namespace problem is fixed
 
-The registry validates **namespace ownership** at publish time. With GitHub auth, the server-name prefix `io.github.<owner>/` **must** match the GitHub account (or org, via GitHub Actions) you authenticate as.
+The registry validates **namespace ownership** at publish time: with GitHub auth, the server-name prefix `io.github.<owner>/` must match the GitHub account you authenticate as. We originally shipped `io.github.catlabtech/mycal`, but there is no `catlabtech` GitHub account/org — publishing failed with *"You do not have permission to publish this server."*
 
-Our current state is **mismatched**:
+We went with **Option B** (use the existing repo owner rather than standing up a `catlabtech` org):
 
-| What | Value |
-| --- | --- |
-| `mcpName` in `packages/mcp-server/package.json` | `io.github.catlabtech/mycal` |
-| Actual GitHub repo owner | `Junhui20` (`github.com/Junhui20/malaysia-calendar-api`) |
+1. `packages/mcp-server/package.json`: `mcpName` set to `io.github.Junhui20/mycal`.
+2. `packages/mcp-server/server.json`: `name` set to `io.github.Junhui20/mycal`, `repository.url` set to `https://github.com/Junhui20/malaysia-calendar-api`.
+3. **Case sensitivity caveat** (learned the hard way): the registry namespace check is **case-sensitive** against the GitHub login. `io.github.junhui20/mycal` (lowercase, published in v0.1.3) was rejected — the account is `Junhui20` (capital J). Re-published as `io.github.Junhui20/mycal` in **v0.1.4**, which the registry accepted.
+4. Published `@catlabtech/mycal-mcp-server@0.1.4` to npm with the corrected `mcpName`, then `mcp-publisher publish` succeeded authenticated as `Junhui20`.
 
-There is **no `catlabtech` GitHub account/org** backing that namespace, so `mcp-publisher publish` will fail with *"You do not have permission to publish this server."* Pick **one** option first:
+Current state: **live** in the official MCP Registry as `io.github.Junhui20/mycal` at v0.1.4. Verify anytime with:
 
-### Option A — keep the `catlabtech` namespace (recommended for branding)
-1. Create a GitHub **organization** named `catlabtech`.
-2. **Transfer** `Junhui20/malaysia-calendar-api` into the `catlabtech` org (you must be an owner/member there).
-3. Keep `mcpName` = `io.github.catlabtech/mycal` and `server.json` `name` = `io.github.catlabtech/mycal`.
-4. Update every repository URL to the new owner (`package.json` repository/homepage/bugs, `server.json`, README badges, the launch copy).
-5. Authenticate as a member of `catlabtech` when you run `mcp-publisher login github`.
+```bash
+curl "https://registry.modelcontextprotocol.io/v0/servers?search=mycal"
+# → "name":"io.github.Junhui20/mycal"
+```
 
-### Option B — change the namespace to the existing owner (fastest)
-1. In `packages/mcp-server/package.json`: change `"mcpName": "io.github.catlabtech/mycal"` → `"mcpName": "io.github.Junhui20/mycal"` (lowercased owner).
-2. In `server.json`: `"name": "io.github.Junhui20/mycal"`.
-3. Authenticate as `Junhui20`.
-
-> **Either option requires a fresh npm publish.** The registry verifies the *published npm package* contains an `mcpName` matching the server name. After editing `mcpName`, bump the version (e.g. `0.1.3`), `npm publish`, and use that version in `server.json`.
+See `CHANGELOG.md` [0.1.3] / [0.1.4] entries and commits `f373c62`, `54b5855`, `261da55` for the full trail.
 
 ---
 
-## The `server.json` to publish
+## The published `server.json`
 
-Place at `packages/mcp-server/server.json` (schema `2025-12-11`). The 13 tools are **read-only** (no auth, no env vars), transport `stdio`.
+Lives at `packages/mcp-server/server.json` (schema `2025-12-11`). The 13 tools are **read-only** (no auth, no env vars), transport `stdio`.
 
 ```json
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.catlabtech/mycal",
+  "name": "io.github.Junhui20/mycal",
   "description": "Malaysia public holidays, school terms, business-day math and a leave optimizer — 13 read-only tools.",
   "repository": {
-    "url": "https://github.com/catlabtech/malaysia-calendar-api",
+    "url": "https://github.com/Junhui20/malaysia-calendar-api",
     "source": "github"
   },
-  "version": "0.1.3",
+  "version": "0.1.4",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@catlabtech/mycal-mcp-server",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "transport": { "type": "stdio" }
     }
   ]
 }
 ```
 
-**Option B version** — identical except `"name": "io.github.Junhui20/mycal"` and the `repository.url` set to `https://github.com/Junhui20/malaysia-calendar-api`.
-
-Notes:
-- `server.json` `name` **must** equal `mcpName` in the published `package.json`.
+Notes for future publishes:
+- `server.json` `name` **must** equal `mcpName` in the published `package.json`, and both **must** exactly match the GitHub login's case (`Junhui20`, not `junhui20`).
 - Keep `description` short (registry caps ~100 chars).
 - `version` (top-level and under `packages[]`) must match the npm version you actually published.
 - `mcp-publisher init` scaffolds a `server.json` from `package.json` — run it then trim to the above.
@@ -73,11 +64,9 @@ Notes:
 ## Publish steps (run in `packages/mcp-server/`)
 
 ```bash
-# 0. Fix the namespace (Option A or B) first, then:
-
 # 1. Build + publish the npm package (registry stores metadata, not artifacts)
 npm run build
-npm publish --access public          # @catlabtech/mycal-mcp-server@0.1.3
+npm publish --access public          # @catlabtech/mycal-mcp-server@<version>
 
 # 2. Install the mcp-publisher CLI (or: brew install mcp-publisher)
 #    Prebuilt binaries: https://github.com/modelcontextprotocol/registry/releases/latest
@@ -86,15 +75,14 @@ mcp-publisher --help
 # 3. (optional) scaffold then edit server.json
 mcp-publisher init
 
-# 4. Authenticate with GitHub (device-code flow)
-#    Option A: log in as a member of the `catlabtech` org. Option B: log in as `Junhui20`.
+# 4. Authenticate with GitHub (device-code flow) as `Junhui20`
 mcp-publisher login github
 
 # 5. Publish to the registry
 mcp-publisher publish
 ```
 
-**Verify:** `curl "https://registry.modelcontextprotocol.io/v0/servers?search=mycal"` → expect `"name":"io.github.<owner>/mycal"`.
+**Verify:** `curl "https://registry.modelcontextprotocol.io/v0/servers?search=mycal"` → expect `"name":"io.github.Junhui20/mycal"`.
 
 **Troubleshooting:**
 
@@ -102,7 +90,7 @@ mcp-publisher publish
 | --- | --- |
 | "Registry validation failed for package" | Published npm package is missing the matching `mcpName`. Bump + re-publish to npm. |
 | "Invalid or expired Registry JWT token" | Re-run `mcp-publisher login github`. |
-| "You do not have permission to publish this server" | Your GitHub identity doesn't own the `io.github.<owner>/` namespace — the namespace problem above. |
+| "You do not have permission to publish this server" | Your GitHub identity doesn't own the `io.github.<owner>/` namespace, or the case doesn't match `Junhui20` exactly. |
 
 > Automate later via GitHub Actions (OIDC) to skip the manual login: https://modelcontextprotocol.io/registry/github-actions
 

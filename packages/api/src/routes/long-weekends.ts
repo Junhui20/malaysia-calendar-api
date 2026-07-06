@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { findLongWeekends, optimizeLeave } from "@catlabtech/mycal-core";
-import { getHolidays } from "../data.js";
+import { getAllHolidays } from "../data.js";
 import {
   badRequest,
   resolveStateOrError,
@@ -18,7 +18,7 @@ longWeekendsRouter.get("/", (c) => {
   const state = resolveStateOrError(c, c.req.query("state"), { optional: true });
   if (isResponse(state)) return state;
 
-  const longWeekends = findLongWeekends(year, state, getHolidays(year));
+  const longWeekends = findLongWeekends(year, state, getAllHolidays());
   return c.json({
     data: longWeekends,
     meta: { year, state: state.code, total: longWeekends.length },
@@ -43,7 +43,7 @@ leaveOptimizerRouter.get("/", (c) => {
   if (isResponse(state)) return state;
 
   const limit = Math.min(Math.max(Number(c.req.query("limit") ?? 10), 1), 50);
-  const all = optimizeLeave(year, state, getHolidays(year), maxLeave);
+  const all = optimizeLeave(year, state, getAllHolidays(), maxLeave);
 
   return c.json({
     data: all.slice(0, limit),

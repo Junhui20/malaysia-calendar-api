@@ -9,7 +9,7 @@ import {
   findSchoolHolidayByDate,
   isSchoolDay as checkSchoolDay,
 } from "@catlabtech/mycal-core";
-import { getHolidays, getSchoolTerms, getSchoolHolidays, states } from "../data.js";
+import { getHolidays, getSchoolTerms, getSchoolHolidays, hasSchoolData, states } from "../data.js";
 
 export const checkRouter = new Hono();
 
@@ -55,6 +55,7 @@ checkRouter.get("/", (c) => {
       holidays: dayHolidays,
       school: {
         group: state.group,
+        dataAvailable: hasSchoolData(year),
         term: schoolTerm ? { id: schoolTerm.id, term: schoolTerm.term, startDate: schoolTerm.startDate, endDate: schoolTerm.endDate } : null,
         holiday: schoolHoliday ? { id: schoolHoliday.id, name: schoolHoliday.name, type: schoolHoliday.type } : null,
       },

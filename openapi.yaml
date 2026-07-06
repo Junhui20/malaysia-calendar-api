@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Malaysia Calendar API
-  version: 0.1.1
+  version: 0.1.4
   description: >
     A comprehensive API for Malaysian public holidays, school terms, business day
     calculations, and state-level calendar data. Data is sourced from official
@@ -29,9 +29,17 @@ tags:
   - name: School
     description: School terms, holidays, and exam schedules
   - name: Feeds
-    description: Calendar feeds (iCal, RSS)
+    description: Calendar feeds (iCal, CSV, RSS)
   - name: Meta
     description: API metadata and data change log
+  - name: Open Data
+    description: Raw, cacheable, no-API-key JSON snapshots of the calendar dataset
+  - name: Prayer Times
+    description: JAKIM Waktu Solat prayer times by zone
+  - name: API Keys
+    description: Self-serve API key issuance and lookup (issuance is admin-gated for now)
+  - name: Webhooks
+    description: Webhook subscriptions for data-change events (admin-gated for now)
 
 paths:
   /holidays:
@@ -386,6 +394,119 @@ paths:
                       total:
                         type: integer
                         example: 7
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /holidays/leave-optimizer:
+    get:
+      operationId: getLeaveOptimizer
+      summary: Suggest optimal annual-leave days
+      description: >
+        Suggests annual-leave days to spend (up to `maxLeave`) to maximise the
+        length of the resulting consecutive break, by bridging weekends and
+        public holidays. Suggestions are sorted by efficiency (days off per
+        leave day spent).
+      tags:
+        - Holidays
+      parameters:
+        - $ref: "#/components/parameters/YearParam"
+        - $ref: "#/components/parameters/StateParam"
+        - name: maxLeave
+          in: query
+          description: Maximum annual-leave days to spend per suggested break.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+            default: 3
+            example: 2
+        - name: limit
+          in: query
+          description: Maximum number of suggestions to return.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+            example: 10
+      responses:
+        "200":
+          description: Leave-optimizer suggestions, most efficient first.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - leaveDates
+                        - leaveCost
+                        - startDate
+                        - endDate
+                        - totalDays
+                        - efficiency
+                        - holidays
+                      properties:
+                        leaveDates:
+                          type: array
+                          items:
+                            type: string
+                            format: date
+                          description: Dates the caller should take as annual leave.
+                          example:
+                            - "2026-05-04"
+                        leaveCost:
+                          type: integer
+                          description: Number of annual-leave days spent.
+                          example: 1
+                        startDate:
+                          type: string
+                          format: date
+                          example: "2026-05-01"
+                        endDate:
+                          type: string
+                          format: date
+                          example: "2026-05-05"
+                        totalDays:
+                          type: integer
+                          description: Total consecutive days off (weekends + holidays + leave).
+                          example: 5
+                        efficiency:
+                          type: number
+                          description: totalDays / leaveCost.
+                          example: 5
+                        holidays:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Holiday"
+                  meta:
+                    type: object
+                    required:
+                      - year
+                      - state
+                      - maxLeave
+                      - total
+                    properties:
+                      year:
+                        type: integer
+                        example: 2026
+                      state:
+                        type: string
+                        example: "selangor"
+                      maxLeave:
+                        type: integer
+                        example: 2
+                      total:
+                        type: integer
+                        example: 8
         "400":
           $ref: "#/components/responses/BadRequest"
 
@@ -875,6 +996,37 @@ paths:
                   END:VEVENT
                   END:VCALENDAR
 
+  /feed/csv/{state}:
+    get:
+      operationId: getCsvFeed
+      summary: CSV calendar export
+      description: >
+        Returns a CSV (spreadsheet/HR-friendly) export of public holidays for
+        the specified state and year.
+      tags:
+        - Feeds
+      parameters:
+        - name: state
+          in: path
+          required: true
+          description: State code.
+          schema:
+            type: string
+            example: "SGR"
+        - $ref: "#/components/parameters/YearParam"
+      responses:
+        "200":
+          description: CSV file.
+          content:
+            text/csv:
+              schema:
+                type: string
+                example: |
+                  date,end_date,name_en,name_ms,type,status,states
+                  2026-08-31,,National Day,Hari Kebangsaan,federal,confirmed,*
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
   /feed/rss:
     get:
       operationId: getRssFeed
@@ -959,6 +1111,644 @@ paths:
                       limit:
                         type: integer
                         example: 10
+
+  /data/manifest:
+    get:
+      operationId: getOpenDataManifest
+      summary: Open-data index
+      description: >
+        Returns the index of the open-data snapshot dataset — no API key
+        required, and responses are cached hard at the edge/browser (they are
+        immutable reference data).
+      tags:
+        - Open Data
+      responses:
+        "200":
+          description: Open-data manifest.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                  - description
+                  - years
+                  - states
+                  - files
+                  - license
+                  - source
+                properties:
+                  name:
+                    type: string
+                    example: "mycal open data"
+                  description:
+                    type: string
+                  years:
+                    type: array
+                    items:
+                      type: integer
+                    example:
+                      - 2024
+                      - 2025
+                      - 2026
+                      - 2027
+                  states:
+                    type: integer
+                    description: Number of states/federal territories in the dataset.
+                    example: 19
+                  files:
+                    type: object
+                    properties:
+                      states:
+                        type: string
+                        example: "/v1/data/states"
+                      holidaysByYear:
+                        type: string
+                        example: "/v1/data/holidays/{year}"
+                      everything:
+                        type: string
+                        example: "/v1/data/all"
+                  license:
+                    type: string
+                    example: "MIT"
+                  source:
+                    type: string
+                    example: "https://github.com/Junhui20/malaysia-calendar-api"
+
+  /data/states:
+    get:
+      operationId: getOpenDataStates
+      summary: Raw states dataset
+      description: >
+        Returns the raw states array with no response envelope — a direct
+        snapshot of the underlying dataset, suitable for zero-SDK consumption.
+      tags:
+        - Open Data
+      responses:
+        "200":
+          description: Raw array of all states and federal territories.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/State"
+
+  /data/holidays/{year}:
+    get:
+      operationId: getOpenDataHolidaysByYear
+      summary: Raw holidays dataset for a year
+      description: >
+        Returns the raw holidays array for the given year with no response
+        envelope, modelled on the gov.uk bank-holidays.json pattern.
+      tags:
+        - Open Data
+      parameters:
+        - name: year
+          in: path
+          required: true
+          description: Calendar year.
+          schema:
+            type: integer
+            example: 2026
+      responses:
+        "200":
+          description: Raw array of holidays for the year (empty array if none).
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Holiday"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /data/all:
+    get:
+      operationId: getOpenDataAll
+      summary: Full open-data snapshot
+      description: >
+        Returns the entire dataset in one snapshot — states plus holidays,
+        school terms, school holidays, and exams keyed by year.
+      tags:
+        - Open Data
+      responses:
+        "200":
+          description: Full dataset snapshot.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - states
+                  - years
+                  - meta
+                properties:
+                  states:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/State"
+                  years:
+                    type: object
+                    description: Keyed by year (e.g. "2026").
+                    additionalProperties:
+                      type: object
+                      properties:
+                        holidays:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Holiday"
+                        schoolTerms:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/SchoolTerm"
+                        schoolHolidays:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/SchoolHoliday"
+                        exams:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Exam"
+                  meta:
+                    type: object
+                    properties:
+                      years:
+                        type: array
+                        items:
+                          type: integer
+                      license:
+                        type: string
+                        example: "MIT"
+
+  /prayer-times/zones:
+    get:
+      operationId: getPrayerTimeZones
+      summary: List JAKIM prayer-time zones
+      description: >
+        Returns the authoritative JAKIM zone directory (source:
+        api.waktusolat.app/zones).
+      tags:
+        - Prayer Times
+      responses:
+        "200":
+          description: All JAKIM zones.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - code
+                        - state
+                        - area
+                      properties:
+                        code:
+                          type: string
+                          example: "SGR01"
+                        state:
+                          type: string
+                          example: "Selangor"
+                        area:
+                          type: string
+                          example: "Gombak, Petaling, Sepang, Hulu Langat, Hulu Selangor, Shah Alam"
+                  meta:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 68
+                      source:
+                        type: string
+                        example: "JAKIM (via api.waktusolat.app)"
+
+  /prayer-times/{zone}:
+    get:
+      operationId: getPrayerTimes
+      summary: Prayer times for a zone
+      description: >
+        Returns JAKIM Waktu Solat prayer times for a zone, proxied from
+        api.waktusolat.app with an added MYT-formatted `times` object
+        alongside the raw Unix-epoch fields (Malaysia is a fixed UTC+8 with no
+        DST).
+      tags:
+        - Prayer Times
+      parameters:
+        - name: zone
+          in: path
+          required: true
+          description: JAKIM zone code (see GET /prayer-times/zones).
+          schema:
+            type: string
+            example: "SGR01"
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 2026
+        - name: month
+          in: query
+          required: false
+          description: Month (1-12).
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+            example: 6
+      responses:
+        "200":
+          description: Prayer times for the zone.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      zone:
+                        type: string
+                        example: "SGR01"
+                      year:
+                        type: integer
+                        example: 2026
+                      month:
+                        type: string
+                        example: "6"
+                      prayers:
+                        type: array
+                        items:
+                          type: object
+                          description: Raw upstream fields (Unix epoch seconds) plus a `times` object with HH:MM (MYT).
+                          properties:
+                            times:
+                              type: object
+                              properties:
+                                imsak:
+                                  type: string
+                                  example: "05:45"
+                                fajr:
+                                  type: string
+                                  example: "05:55"
+                                syuruk:
+                                  type: string
+                                  example: "07:12"
+                                dhuha:
+                                  type: string
+                                  example: "07:35"
+                                dhuhr:
+                                  type: string
+                                  example: "13:22"
+                                asr:
+                                  type: string
+                                  example: "16:44"
+                                maghrib:
+                                  type: string
+                                  example: "19:22"
+                                isha:
+                                  type: string
+                                  example: "20:35"
+                  meta:
+                    type: object
+                    properties:
+                      zone:
+                        type: string
+                        example: "SGR01"
+                      source:
+                        type: string
+                        example: "JAKIM (via api.waktusolat.app)"
+                      timezone:
+                        type: string
+                        example: "Asia/Kuala_Lumpur"
+        "400":
+          description: Unknown JAKIM zone code.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: The upstream prayer-times source could not be reached or returned an error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /keys:
+    post:
+      operationId: issueApiKey
+      summary: Issue an API key
+      description: >
+        Issues a new `mycal_…` API key backed by Cloudflare KV. **Admin-gated
+        for now** (requires the `X-API-Key` admin header) — public self-serve
+        issuance needs email verification/captcha first. Returns 503 if the
+        `API_KEYS` KV namespace is not bound.
+      tags:
+        - API Keys
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tier:
+                  type: string
+                  enum:
+                    - free
+                    - pro
+                  default: free
+                label:
+                  type: string
+                  maxLength: 80
+                  example: "acme-corp-prod"
+      responses:
+        "201":
+          description: Key issued. The raw key is only ever returned here.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        example: "mycal_3f9a..."
+                      tier:
+                        type: string
+                        enum:
+                          - free
+                          - pro
+                      label:
+                        type: string
+                      createdAt:
+                        type: string
+                        format: date-time
+                  meta:
+                    type: object
+                    properties:
+                      note:
+                        type: string
+                      limitPerMinute:
+                        type: integer
+                        example: 60
+        "401":
+          description: Missing or invalid admin `X-API-Key` header.
+        "503":
+          description: API key store not configured (no `API_KEYS` KV binding).
+    delete:
+      operationId: revokeApiKey
+      summary: Revoke an API key
+      description: Revokes a previously issued key. **Admin-gated** (requires the `X-API-Key` admin header).
+      tags:
+        - API Keys
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - key
+              properties:
+                key:
+                  type: string
+                  example: "mycal_3f9a..."
+      responses:
+        "200":
+          description: Key revoked.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      revoked:
+                        type: boolean
+                        example: true
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Missing or invalid admin `X-API-Key` header.
+        "503":
+          description: API key store not configured (no `API_KEYS` KV binding).
+
+  /keys/whoami:
+    get:
+      operationId: getApiKeyWhoami
+      summary: Check the caller's tier
+      description: >
+        Returns the tier the presented key (via `Authorization: Bearer` or
+        `X-API-Key`) resolves to, or `anonymous` if no valid key is presented.
+        Public — no admin auth required.
+      tags:
+        - API Keys
+      responses:
+        "200":
+          description: Caller's resolved tier.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      tier:
+                        type: string
+                        enum:
+                          - anonymous
+                          - free
+                          - pro
+                        example: "anonymous"
+                      limitPerMinute:
+                        type: integer
+                        example: 30
+                      keyed:
+                        type: boolean
+                        example: false
+
+  /webhooks/subscribe:
+    post:
+      operationId: subscribeWebhook
+      summary: Create a webhook subscription
+      description: >
+        Registers a webhook subscription for data-change events. **Admin-gated
+        for now** (requires the `X-API-Key` admin header). The target URL is
+        SSRF-screened (must be a public `https://` URL — loopback, private,
+        link-local, and cloud-metadata addresses are rejected).
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - url
+                - email
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  example: "https://example.com/webhooks/mycal"
+                email:
+                  type: string
+                  format: email
+                events:
+                  type: array
+                  description: >
+                    Defaults to holiday.created, holiday.updated, and
+                    holiday.status_changed if omitted.
+                  items:
+                    type: string
+                    enum:
+                      - holiday.created
+                      - holiday.updated
+                      - holiday.status_changed
+                      - holiday.cancelled
+                      - holiday.replacement_created
+                      - school.term_changed
+                      - school.holiday_changed
+                      - exam.date_changed
+                      - exam.results_date_announced
+      responses:
+        "201":
+          description: Subscription created. The signing secret is only ever returned here.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - meta
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "wh_m1a2b3c4_d5e6f7g8"
+                      url:
+                        type: string
+                        format: uri
+                      events:
+                        type: array
+                        items:
+                          type: string
+                      secret:
+                        type: string
+                        description: HMAC-SHA256 signing secret for delivered payloads.
+                      createdAt:
+                        type: string
+                        format: date-time
+                  meta:
+                    type: object
+                    properties:
+                      note:
+                        type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Missing or invalid admin `X-API-Key` header.
+
+  /webhooks/{id}:
+    delete:
+      operationId: deleteWebhook
+      summary: Delete a webhook subscription
+      description: Deletes a webhook subscription. **Admin-gated** (requires the `X-API-Key` admin header).
+      tags:
+        - Webhooks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "wh_m1a2b3c4_d5e6f7g8"
+      responses:
+        "200":
+          description: Subscription deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      deleted:
+                        type: boolean
+                        example: true
+        "401":
+          description: Missing or invalid admin `X-API-Key` header.
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /webhooks/{id}/deliveries:
+    get:
+      operationId: getWebhookDeliveries
+      summary: List webhook delivery attempts
+      description: >
+        Lists delivery attempts for a subscription. **Admin-gated** (requires
+        the `X-API-Key` admin header). Delivery logging requires D1 and is not
+        yet wired up, so `deliveries` is currently always empty.
+      tags:
+        - Webhooks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "wh_m1a2b3c4_d5e6f7g8"
+      responses:
+        "200":
+          description: Delivery attempts (currently always empty; see description).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      webhookId:
+                        type: string
+                      deliveries:
+                        type: array
+                        items: {}
+                  meta:
+                    type: object
+                    properties:
+                      note:
+                        type: string
+        "401":
+          description: Missing or invalid admin `X-API-Key` header.
+        "404":
+          $ref: "#/components/responses/NotFound"
 
 components:
   parameters:

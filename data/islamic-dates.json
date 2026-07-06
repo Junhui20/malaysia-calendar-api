@@ -10,7 +10,8 @@
       "years": {
         "2024": { "hijriYear": 1445, "gregorian": "2024-02-08", "confirmed": true },
         "2025": { "hijriYear": 1446, "gregorian": "2025-01-27", "confirmed": true },
-        "2026": { "hijriYear": 1447, "gregorian": "2026-01-17", "confirmed": false }
+        "2026": { "hijriYear": 1447, "gregorian": "2026-01-17", "confirmed": true },
+        "2027": { "hijriYear": 1448, "gregorian": "2027-01-06", "confirmed": false }
       }
     },
     {
@@ -21,7 +22,8 @@
       "years": {
         "2024": { "hijriYear": 1445, "gregorian": "2024-03-12", "confirmed": true },
         "2025": { "hijriYear": 1446, "gregorian": "2025-03-01", "confirmed": true },
-        "2026": { "hijriYear": 1447, "gregorian": "2026-02-19", "confirmed": false }
+        "2026": { "hijriYear": 1447, "gregorian": "2026-02-19", "confirmed": true },
+        "2027": { "hijriYear": 1448, "gregorian": "2027-02-08", "confirmed": false }
       }
     },
     {
@@ -32,7 +34,8 @@
       "years": {
         "2024": { "hijriYear": 1445, "gregorian": "2024-03-28", "confirmed": true },
         "2025": { "hijriYear": 1446, "gregorian": "2025-03-17", "confirmed": true },
-        "2026": { "hijriYear": 1447, "gregorian": "2026-03-07", "confirmed": false }
+        "2026": { "hijriYear": 1447, "gregorian": "2026-03-07", "confirmed": true },
+        "2027": { "hijriYear": 1448, "gregorian": "2027-02-24", "confirmed": false }
       }
     },
     {
@@ -43,7 +46,8 @@
       "years": {
         "2024": { "hijriYear": 1445, "gregorian": "2024-04-10", "confirmed": true },
         "2025": { "hijriYear": 1446, "gregorian": "2025-03-31", "confirmed": true },
-        "2026": { "hijriYear": 1447, "gregorian": "2026-03-21", "confirmed": false }
+        "2026": { "hijriYear": 1447, "gregorian": "2026-03-21", "confirmed": true },
+        "2027": { "hijriYear": 1448, "gregorian": "2027-03-10", "confirmed": false }
       }
     },
     {
@@ -54,7 +58,8 @@
       "years": {
         "2024": { "hijriYear": 1445, "gregorian": "2024-06-16", "confirmed": true },
         "2025": { "hijriYear": 1446, "gregorian": "2025-06-06", "confirmed": true },
-        "2026": { "hijriYear": 1447, "gregorian": "2026-05-26", "confirmed": false }
+        "2026": { "hijriYear": 1447, "gregorian": "2026-05-26", "confirmed": true },
+        "2027": { "hijriYear": 1448, "gregorian": "2027-05-16", "confirmed": false }
       }
     },
     {
@@ -65,7 +70,8 @@
       "years": {
         "2024": { "hijriYear": 1445, "gregorian": "2024-06-17", "confirmed": true },
         "2025": { "hijriYear": 1446, "gregorian": "2025-06-07", "confirmed": true },
-        "2026": { "hijriYear": 1447, "gregorian": "2026-05-27", "confirmed": false }
+        "2026": { "hijriYear": 1447, "gregorian": "2026-05-27", "confirmed": true },
+        "2027": { "hijriYear": 1448, "gregorian": "2027-05-17", "confirmed": false }
       }
     },
     {
@@ -76,7 +82,8 @@
       "years": {
         "2024": { "hijriYear": 1446, "gregorian": "2024-07-08", "confirmed": true },
         "2025": { "hijriYear": 1447, "gregorian": "2025-06-27", "confirmed": true },
-        "2026": { "hijriYear": 1448, "gregorian": "2026-06-17", "confirmed": false }
+        "2026": { "hijriYear": 1448, "gregorian": "2026-06-17", "confirmed": true },
+        "2027": { "hijriYear": 1449, "gregorian": "2027-06-06", "confirmed": false }
       }
     },
     {
@@ -87,7 +94,8 @@
       "years": {
         "2024": { "hijriYear": 1446, "gregorian": "2024-09-27", "confirmed": true },
         "2025": { "hijriYear": 1447, "gregorian": "2025-09-05", "confirmed": true },
-        "2026": { "hijriYear": 1448, "gregorian": "2026-08-25", "confirmed": false }
+        "2026": { "hijriYear": 1448, "gregorian": "2026-08-25", "confirmed": false },
+        "2027": { "hijriYear": 1449, "gregorian": "2027-08-15", "confirmed": false }
       }
     }
   ]

@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { holidaySchema } from "@catlabtech/mycal-core";
-import { requireAdmin, unauthorized } from "../_shared.js";
+import { requireAdmin, unauthorized, notImplemented } from "../_shared.js";
 
 export const adminRouter = new Hono();
 
@@ -25,15 +25,10 @@ adminRouter.post("/holidays", async (c) => {
   }
 
   // In production: write to KV immediately, then async commit to Git.
-  return c.json(
-    {
-      data: result.data,
-      meta: {
-        action: "created",
-        note: "KV write not yet implemented — deploy with KV binding to enable",
-      },
-    },
-    201
+  // Persistence is not wired up yet, so we must not report a fake success.
+  return notImplemented(
+    c,
+    "Adding holidays is not yet implemented — deploy with a KV binding to enable."
   );
 });
 
@@ -41,7 +36,6 @@ adminRouter.post("/holidays", async (c) => {
 adminRouter.patch("/holidays/:id", async (c) => {
   if (!requireAdmin(c)) return unauthorized(c);
 
-  const id = c.req.param("id");
   const body = await c.req.json();
 
   const allowedFields = [
@@ -67,26 +61,18 @@ adminRouter.patch("/holidays/:id", async (c) => {
     );
   }
 
-  return c.json({
-    data: { id, updates, updatedAt: new Date().toISOString() },
-    meta: {
-      action: "updated",
-      note: "KV write not yet implemented — deploy with KV binding to enable",
-    },
-  });
+  return notImplemented(
+    c,
+    "Updating holidays is not yet implemented — deploy with a KV binding to enable."
+  );
 });
 
 // DELETE /admin/holidays/:id — Soft delete (set status to cancelled)
 adminRouter.delete("/holidays/:id", async (c) => {
   if (!requireAdmin(c)) return unauthorized(c);
 
-  const id = c.req.param("id");
-
-  return c.json({
-    data: { id, status: "cancelled", updatedAt: new Date().toISOString() },
-    meta: {
-      action: "cancelled",
-      note: "Soft delete — status set to cancelled",
-    },
-  });
+  return notImplemented(
+    c,
+    "Deleting holidays is not yet implemented — deploy with a KV binding to enable."
+  );
 });

@@ -7,7 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-07-06
+
+### Fixed
+
+- **Cross-year holiday lookups** — `next_malaysia_holiday`, `malaysia_business_days`,
+  `malaysia_long_weekends`, and `malaysia_leave_optimizer` (MCP), plus
+  `GET /v1/holidays/next`, `/v1/holidays/between`, `/v1/holidays/long-weekends`, and
+  `/v1/holidays/leave-optimizer` (API), now draw from all bundled years (2024–2027)
+  instead of a single year, so queries near a year boundary no longer silently miss
+  holidays.
+- `findLongWeekends` (core) scans past the Dec 31 boundary so a long weekend straddling
+  the new year is reported in full (attributed to the year it starts in, never
+  double-counted).
+- **Data:** added the missing additional federal public holiday for Hari Raya Aidilfitri
+  on Friday 2026-03-20; flipped nine past 2026 Islamic holidays from `tentative` to
+  `confirmed` after verifying each against the actual JAKIM/observed dates; extended
+  `data/islamic-dates.json` with unconfirmed 2027 estimates.
+- Admin mutation endpoints (`POST/PATCH/DELETE /v1/admin/holidays`) now return
+  `501 Not Implemented` instead of fake success while KV persistence is unimplemented.
+- API and MCP server report their real package versions instead of a hardcoded `0.1.1`.
+
+### Changed
+
+- School-calendar endpoints and MCP tools return an explicit
+  `dataAvailable: false` + message for years without school data (currently only 2026
+  ships) instead of silently empty results.
+- Docs re-synced: CHANGELOG 0.1.4 feature set, README (13 MCP tools, full API reference),
+  `openapi.yaml` (leave-optimizer, CSV feed, open-data, prayer-times, keys, webhooks
+  paths), and `docs-internal/MCP-REGISTRY.md` (namespace resolution recorded).
+
 ## [0.1.4] - 2026-06-28
+
+### Added
+
+- **Open data** — `GET /v1/data/manifest`, `/v1/data/states`, `/v1/data/holidays/:year`, and
+  `/v1/data/all`: raw, cacheable JSON snapshots of the calendar dataset (no API key, no
+  response envelope) for zero-SDK consumption.
+- **Prayer times** — `GET /v1/prayer-times/:zone` (JAKIM Waktu Solat times via
+  api.waktusolat.app, MYT-formatted) and `GET /v1/prayer-times/zones` (the JAKIM zone
+  directory).
+- **API keys** — `POST /v1/keys` (admin-issued for now), `GET /v1/keys/whoami`, and
+  `DELETE /v1/keys`, with anonymous-first tiered rate limiting. The key store stays
+  inactive (anonymous-only) until an `API_KEYS` KV namespace is bound.
+- Preliminary `data/holidays/2027.json` (49 entries) — fixed/statutory holidays confirmed;
+  Islamic and lunar dates marked tentative + `isEstimated` pending the 2027 federal gazette.
+  Wired into the API and MCP server.
+- `LAUNCH.md`, `docs-internal/MCP-REGISTRY.md`, and `docs-internal/MULTI-LANG-SDKS.md` —
+  launch copy (Show HN / r/malaysia / LinkedIn / dev.to / Product Hunt) and growth-pack
+  reference docs.
 
 ### Changed
 
@@ -71,6 +119,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial Malaysia Calendar API: public holidays, school calendar, exam schedules,
   business-day calculator, state resolver, iCal feeds, and OpenAPI 3.1 spec.
 
-[Unreleased]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.5...HEAD
+[0.1.5]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.4...v0.1.5
+[0.1.4]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.3...v0.1.4
+[0.1.3]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Junhui20/malaysia-calendar-api/releases/tag/v0.1.0

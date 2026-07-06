@@ -78,6 +78,10 @@ export function badRequest(c: Context, code: string, message: string): Response 
   return c.json({ error: { code, message } }, 400);
 }
 
+export function notImplemented(c: Context, message: string): Response {
+  return c.json({ error: { code: "NOT_IMPLEMENTED", message } }, 501);
+}
+
 export function isResponse(value: unknown): value is Response {
   return value instanceof Response;
 }

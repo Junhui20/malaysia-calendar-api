@@ -53,6 +53,13 @@ export function getExams(year: number): readonly Exam[] {
   return examsByYear[year] ?? [];
 }
 
+// School data (terms/holidays/exams) currently only exists for a subset of
+// years. Routes surface this so a query for an unavailable year returns an
+// explicit `dataAvailable: false` signal instead of a silently empty result.
+export function hasSchoolData(year: number): boolean {
+  return year in schoolTermsByYear;
+}
+
 export function getAvailableYears(): readonly number[] {
   return Object.keys(holidaysByYear).map(Number).sort();
 }

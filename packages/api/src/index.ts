@@ -18,6 +18,7 @@ import { prayerTimesRouter } from "./routes/prayer-times.js";
 import { keysRouter } from "./routes/keys.js";
 import { handleCron } from "./cron/rss-monitor.js";
 import { landingHTML } from "./landing.js";
+import pkg from "../package.json";
 
 // ─── V1 API ───
 const v1 = new Hono();
@@ -51,7 +52,7 @@ v1.get("/openapi.json", (c) => {
 v1.get("/", (c) => {
   return c.json({
     name: "Malaysia Calendar API",
-    version: "0.1.1",
+    version: pkg.version,
     description: "Malaysia's most complete calendar API — public holidays, school calendar, exam schedules",
     docs: "/v1/docs",
     endpoints: {

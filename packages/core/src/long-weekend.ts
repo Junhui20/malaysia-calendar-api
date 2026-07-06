@@ -17,11 +17,19 @@ export function findLongWeekends(
   const holidayMap = groupHolidaysByDate(holidays, state.code);
   const isOff = (d: string) => isWeekend(d, state) || holidayMap.has(d);
 
+  const yearStart = `${year}-01-01`;
   const yearEnd = `${year}-12-31`;
+  // Scan a little past both year boundaries so a run that is still "off" at
+  // Dec 31 (or already running on Jan 1) is measured in full instead of being
+  // truncated at the boundary. A run is only *reported* when it starts within
+  // the requested year, so a boundary-straddling long weekend is attributed to
+  // exactly one year and never double-counted.
+  const scanStart = addDays(yearStart, -7);
+  const scanEnd = addDays(yearEnd, 7);
   const result: LongWeekend[] = [];
 
-  let current = `${year}-01-01`;
-  while (current <= yearEnd) {
+  let current = scanStart;
+  while (current <= scanEnd) {
     if (!isOff(current)) {
       current = addDays(current, 1);
       continue;
@@ -32,7 +40,7 @@ export function findLongWeekends(
     let weekendDays = 0;
     let totalDays = 0;
 
-    while (current <= yearEnd && isOff(current)) {
+    while (current <= scanEnd && isOff(current)) {
       if (isWeekend(current, state)) weekendDays++;
       const hs = holidayMap.get(current);
       if (hs) streakHolidays.push(...hs);
@@ -40,7 +48,7 @@ export function findLongWeekends(
       current = addDays(current, 1);
     }
 
-    if (totalDays >= 3) {
+    if (totalDays >= 3 && startDate >= yearStart && startDate <= yearEnd) {
       result.push({
         startDate,
         endDate: addDays(current, -1),
