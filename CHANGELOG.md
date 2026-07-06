@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-07-06
+
+### Fixed
+
+- Republished `@catlabtech/mycal-mcp-server`: the npm 0.1.5 artifact was accidentally
+  packed from a stale June-28 `dist/` (a failed `turbo build` didn't stop the publish),
+  so it shipped without the 0.1.5 cross-year fixes and data corrections. 0.1.5 is
+  deprecated on npm; 0.1.6 is the real build.
+
 ## [0.1.5] - 2026-07-06
 
 ### Fixed
@@ -119,7 +128,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial Malaysia Calendar API: public holidays, school calendar, exam schedules,
   business-day calculator, state resolver, iCal feeds, and OpenAPI 3.1 spec.
 
-[Unreleased]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.5...HEAD
+[Unreleased]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.6...HEAD
+[0.1.6]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/Junhui20/malaysia-calendar-api/compare/v0.1.2...v0.1.3
