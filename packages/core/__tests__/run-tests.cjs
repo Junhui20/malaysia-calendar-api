@@ -158,20 +158,42 @@ async function main() {
 
   // ─── Replacement Holidays ─────────────────────────────────
   console.log("\n📋 Replacement Holidays");
-  test("Hari Raya Sat gets replacement", () => {
-    const reps = core.calculateReplacementHolidays(holidays, sel);
-    const raya = reps.find(r => r.isReplacementFor === "2026-hari-raya-aidilfitri-1");
-    assert.ok(raya, "Should create replacement");
-    assert.equal(raya.type, "replacement");
+  const repDates = (code, sourceId) =>
+    core.calculateReplacementHolidays(holidays, states.find(s => s.code === code))
+      .filter(r => !sourceId || r.isReplacementFor === sourceId)
+      .map(r => r.date);
+  test("Saturday Hari Raya in a Sat–Sun state is not replaced", () => {
+    assert.deepEqual(repDates("selangor", "2026-hari-raya-aidilfitri-1"), []);
   });
-  test("Hari Raya Sun also gets replacement", () => {
+  test("Sunday Hari Raya gets replacement", () => {
     const reps = core.calculateReplacementHolidays(holidays, sel);
     const raya2 = reps.find(r => r.isReplacementFor === "2026-hari-raya-aidilfitri-2");
     assert.ok(raya2, "Sunday Hari Raya should also have replacement");
+    assert.equal(raya2.type, "replacement");
+  });
+  test("Kedah replaces a Friday holiday (Labour Day 2026 → Sun 3 May)", () => {
+    assert.deepEqual(repDates("kedah", "2026-hari-pekerja"), ["2026-05-03"]);
+  });
+  test("Kelantan does not replace a Friday holiday", () => {
+    assert.deepEqual(repDates("kelantan", "2026-hari-pekerja"), []);
+  });
+  test("Kelantan/Terengganu replace a Saturday holiday (Nuzul 2026 → Sun 8 Mar)", () => {
+    assert.deepEqual(repDates("kelantan", "2026-nuzul-quran"), ["2026-03-08"]);
+    assert.deepEqual(repDates("terengganu", "2026-nuzul-quran"), ["2026-03-08"]);
+  });
+  test("two holidays on one Sunday share a single replacement day", () => {
+    assert.deepEqual([...new Set(repDates("kuala-lumpur").filter(d => d.startsWith("2026-02")))], ["2026-02-02"]);
+  });
+  test("Johor replaced Friday holidays only while on a Fri–Sat weekend", () => {
+    assert.equal(core.getReplacedWeekday(jhr, "2024-06-01"), 5);
+    assert.equal(core.getReplacedWeekday(jhr, "2025-06-01"), 0);
+  });
+  test("ad hoc holidays never roll forward", () => {
+    assert.deepEqual(repDates("kedah", "2026-hari-raya-aidilfitri-tambahan"), []);
   });
   test("replacements have correct name format", () => {
     const reps = core.calculateReplacementHolidays(holidays, sel);
-    const raya = reps.find(r => r.isReplacementFor === "2026-hari-raya-aidilfitri-1");
+    const raya = reps.find(r => r.isReplacementFor === "2026-hari-raya-aidilfitri-2");
     assert.ok(raya.name.en.startsWith("Replacement for"));
     assert.ok(raya.name.ms.startsWith("Cuti Ganti"));
   });

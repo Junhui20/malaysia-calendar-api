@@ -5,9 +5,9 @@
     "name": { "ms": "Johor", "en": "Johor" },
     "type": "state",
     "weekendHistory": [
-      { "from": "2025-01-01", "to": null, "weekendDays": [0, 6], "group": "B" },
-      { "from": "2014-01-01", "to": "2024-12-31", "weekendDays": [5, 6], "group": "A" },
-      { "from": "1900-01-01", "to": "2013-12-31", "weekendDays": [0, 6], "group": "B" }
+      { "from": "2025-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" },
+      { "from": "2014-01-01", "to": "2024-12-31", "weekendDays": [5, 6], "replacedWeekday": 5, "group": "A" },
+      { "from": "1900-01-01", "to": "2013-12-31", "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -17,7 +17,7 @@
     "name": { "ms": "Kedah", "en": "Kedah" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [5, 6], "group": "A" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [5, 6], "replacedWeekday": 5, "group": "A" }
     ],
     "group": "A"
   },
@@ -27,7 +27,7 @@
     "name": { "ms": "Kelantan", "en": "Kelantan" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [5, 6], "group": "A" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [5, 6], "replacedWeekday": 6, "group": "A" }
     ],
     "group": "A"
   },
@@ -37,7 +37,7 @@
     "name": { "ms": "Terengganu", "en": "Terengganu" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [5, 6], "group": "A" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [5, 6], "replacedWeekday": 6, "group": "A" }
     ],
     "group": "A"
   },
@@ -47,7 +47,7 @@
     "name": { "ms": "Perak", "en": "Perak" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -57,7 +57,7 @@
     "name": { "ms": "Pulau Pinang", "en": "Penang" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -67,7 +67,7 @@
     "name": { "ms": "Selangor", "en": "Selangor" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -77,7 +77,7 @@
     "name": { "ms": "Negeri Sembilan", "en": "Negeri Sembilan" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -87,7 +87,7 @@
     "name": { "ms": "Melaka", "en": "Malacca" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -97,7 +97,7 @@
     "name": { "ms": "Pahang", "en": "Pahang" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -107,7 +107,7 @@
     "name": { "ms": "Perlis", "en": "Perlis" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -117,7 +117,7 @@
     "name": { "ms": "Sabah", "en": "Sabah" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -127,7 +127,7 @@
     "name": { "ms": "Sarawak", "en": "Sarawak" },
     "type": "state",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -137,7 +137,7 @@
     "name": { "ms": "Wilayah Persekutuan Kuala Lumpur", "en": "Federal Territory of Kuala Lumpur" },
     "type": "federal_territory",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -147,7 +147,7 @@
     "name": { "ms": "Wilayah Persekutuan Putrajaya", "en": "Federal Territory of Putrajaya" },
     "type": "federal_territory",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   },
@@ -157,7 +157,7 @@
     "name": { "ms": "Wilayah Persekutuan Labuan", "en": "Federal Territory of Labuan" },
     "type": "federal_territory",
     "weekendHistory": [
-      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "group": "B" }
+      { "from": "1900-01-01", "to": null, "weekendDays": [0, 6], "replacedWeekday": 0, "group": "B" }
     ],
     "group": "B"
   }

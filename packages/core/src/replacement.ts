@@ -1,5 +1,7 @@
 import type { Holiday, State } from "./types.js";
-import { isWeekend, nextWorkingDay } from "./weekend.js";
+import { getReplacedWeekday, isWeekend, nextWorkingDay } from "./weekend.js";
+
+const dayOfWeek = (date: string) => new Date(date + "T12:00:00Z").getUTCDay();
 
 /**
  * Build the synthetic "Cuti Ganti" (replacement) holiday for a `source` holiday
@@ -48,14 +50,21 @@ export function calculateReplacementHolidays(
   const replacements: Holiday[] = [];
   const now = new Date().toISOString();
 
-  // 1. Holidays that fall on a weekend roll forward to the next working day.
+  // 1. Holidays on the state's replaced weekday roll forward to the next working
+  //    day. Two holidays on the same such day share one replacement day.
+  //    Ad hoc days are declared for a specific date and never roll.
+  const rolledTo = new Map<string, string>();
   for (const holiday of stateHolidays) {
-    if (holiday.type === "replacement") continue;
-    if (!isWeekend(holiday.date, state)) continue;
+    if (holiday.type === "replacement" || holiday.type === "adhoc") continue;
+    if (dayOfWeek(holiday.date) !== getReplacedWeekday(state, holiday.date)) continue;
 
-    const occupied = new Set([...holidayDates, ...replacementDates]);
-    const replacementDate = nextWorkingDay(holiday.date, state, occupied);
-    replacementDates.add(replacementDate);
+    let replacementDate = rolledTo.get(holiday.date);
+    if (!replacementDate) {
+      const occupied = new Set([...holidayDates, ...replacementDates]);
+      replacementDate = nextWorkingDay(holiday.date, state, occupied);
+      rolledTo.set(holiday.date, replacementDate);
+      replacementDates.add(replacementDate);
+    }
     replacements.push(
       makeReplacement(holiday, replacementDate, state.code, "replacement", now)
     );
@@ -70,8 +79,9 @@ export function calculateReplacementHolidays(
     dateGroups.set(h.date, [...existing, h]);
   }
 
-  for (const [, group] of dateGroups) {
+  for (const [date, group] of dateGroups) {
     if (group.length <= 1) continue;
+    if (isWeekend(date, state)) continue;
 
     const stateHoliday = group.find((h) => h.gazetteLevel === "N");
     if (!stateHoliday) continue;

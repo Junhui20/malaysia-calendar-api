@@ -33,7 +33,15 @@ Islamic holidays that apply only to specific states.
 
 ## `replacement`
 
-**Cuti ganti** — automatically generated when a federal or state holiday falls on a weekend. Most states grant the next Monday (or next working day) as a replacement.
+**Cuti ganti** — generated when a holiday falls on the state's replaced weekday, and granted on the next working day that is not already a holiday:
+
+| States | Replaced weekday |
+|---|---|
+| Saturday–Sunday weekend states (incl. Johor from 2025) | Sunday |
+| Kedah; Johor 2014–2024 | Friday |
+| Kelantan, Terengganu | Saturday |
+
+Any other weekend day is not replaced: a Saturday holiday in Selangor, or a Friday holiday in Kelantan, earns nothing. Two holidays on the same replaced day share one replacement day. Ad hoc holidays never roll forward. The weekday lives in `states.json` as `weekendHistory[].replacedWeekday`.
 
 Replacement records carry `isReplacementFor` pointing to the original holiday's `id`. They have the same `states` scope as their parent.
 

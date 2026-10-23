@@ -6,12 +6,12 @@
     "url": "https://github.com/Junhui20/malaysia-calendar-api",
     "source": "github"
   },
-  "version": "0.1.6",
+  "version": "0.1.7",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@catlabtech/mycal-mcp-server",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "transport": { "type": "stdio" }
     }
   ]

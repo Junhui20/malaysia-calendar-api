@@ -64,7 +64,7 @@ type: "federal" | "state" | "islamic" | "islamic_state" | "replacement" | "adhoc
 - `state` — observed in specific states only, e.g. Sultan of Selangor's Birthday.
 - `islamic` — Islamic calendar holidays shared across all states.
 - `islamic_state` — state-specific Islamic holidays (e.g. Awal Ramadan in some states only).
-- `replacement` — cuti ganti automatically generated when a federal holiday lands on a weekend. Links to the original via `isReplacementFor`.
+- `replacement` — cuti ganti generated when a holiday lands on the state's replaced weekday (Sunday; Friday in Kedah; Saturday in Kelantan and Terengganu). Links to the original via `isReplacementFor`.
 - `adhoc` — one-off cuti peristiwa.
 
 Next: [REST API overview →](/docs/rest-api/overview/)

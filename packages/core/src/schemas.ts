@@ -75,6 +75,7 @@ export const weekendConfigSchema = z.object({
   from: isoDate,
   to: isoDate.nullable(),
   weekendDays: z.array(z.number().int().min(0).max(6)),
+  replacedWeekday: z.number().int().min(0).max(6).optional(),
   group: stateGroupSchema,
 });
 

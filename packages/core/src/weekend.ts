@@ -36,6 +36,14 @@ export function isWeekend(date: string, state: State): boolean {
   return config.weekendDays.includes(dayOfWeek);
 }
 
+// Only a holiday on this weekday earns a cuti ganti — not every weekend day.
+// Sat–Sun states roll Sunday, Kedah (and Johor 2014–2024) roll Friday,
+// Kelantan and Terengganu roll Saturday. A Saturday holiday in Selangor is lost.
+export function getReplacedWeekday(state: State, date: string): number {
+  const config = getWeekendConfig(state, date);
+  return config.replacedWeekday ?? (config.weekendDays.includes(0) ? 0 : 5);
+}
+
 export function getDayOfWeekName(date: string): string {
   const dayIndex = new Date(date + "T12:00:00Z").getUTCDay();
   return DAY_NAMES[dayIndex];

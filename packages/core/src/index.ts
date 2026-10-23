@@ -50,6 +50,7 @@ export {
 // Weekend utilities
 export {
   getWeekendConfig,
+  getReplacedWeekday,
   isWeekend,
   getDayOfWeekName,
   getWeekendDayNames,

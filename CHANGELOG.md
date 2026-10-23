@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.7] - 2026-10-23
+
+### Fixed
+
+- **Cuti ganti rule** (`calculateReplacementHolidays`, core 0.1.4) — a holiday is replaced only
+  when it falls on the state's replaced weekday, not on any weekend day: Sunday in
+  Saturday–Sunday states, Friday in Kedah (and Johor 2014–2024), Saturday in Kelantan and
+  Terengganu. Previously a Saturday holiday in e.g. Selangor produced a phantom Monday off
+  (CNY 2024 yielded 12 *and* 13 Feb). Two holidays on the same replaced day now share one
+  replacement day, ad hoc holidays never roll forward, and a same-day clash on a weekend no
+  longer rolls the state holiday forward.
+- **Data: 2024–2027 reconciled against the official BKPP gazettes** (HKA PDFs on
+  kabinet.gov.my), every row and state column:
+  - 2027: the June preliminary file is now gazette-verified (Isra' Mi'raj and Thaipusam
+    states, Melaka's 20 Feb holiday name, Hari Raya Puasa 3rd day for Melaka, Hol Sultan
+    Iskandar 11 Jul); `isEstimated` dropped.
+  - 2024: Deepavali 31 Oct (was 1 Nov), Maulidur Rasul 16 Sep (was 27 Sep), Awal Muharam
+    7 Jul, Hol Sultan Iskandar 11 Aug; added 8 missing state holidays (Melaka 20 Feb,
+    Arafah, Sultan of Kedah, the Penang/Melaka/Sabah/Sarawak governors' birthdays).
+  - 2025: Awal Ramadan 2 Mar, Nuzul Al-Quran 18 Mar, Hol Sultan Iskandar 31 Jul; added
+    8 missing holidays (incl. Hari Raya Puasa 3rd day for Melaka, Sultan of Perak).
+  - 2024–2026: state lists fixed for state-only holidays previously marked nationwide
+    (Thaipusam, Isra' Mi'raj, Nuzul Al-Quran, Hari Raya Qurban 2nd day), Deepavali excludes
+    Sarawak, New Year excludes Perlis, World Heritage Day is Penang (not Melaka), 2026 Hari
+    Raya Puasa 3rd day is Melaka only.
+
+### Added
+
+- `replacedWeekday` on each `states.json` weekend config, and `getReplacedWeekday()` (core).
+
 ## [0.1.6] - 2026-07-06
 
 ### Fixed

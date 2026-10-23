@@ -70,6 +70,7 @@ export interface WeekendConfig {
   readonly from: string; // ISO date
   readonly to: string | null; // null = current
   readonly weekendDays: readonly number[]; // 0=Sun, 6=Sat
+  readonly replacedWeekday?: number; // holidays on this day get a cuti ganti; see getReplacedWeekday
   readonly group: StateGroup;
 }
 
