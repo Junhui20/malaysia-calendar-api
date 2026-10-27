@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@catlabtech/mycal-sdk.svg)](https://www.npmjs.com/package/@catlabtech/mycal-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Junhui20/malaysia-calendar-api/blob/main/LICENSE)
 
-TypeScript client SDK for the **Malaysia Calendar API** — public holidays, school calendar, exam schedules, and business day calculator for all 16 states + 3 Federal Territories.
+TypeScript client SDK for the **Malaysia Calendar API** — public holidays, school calendar, exam schedules, and business day calculator for all 13 states + 3 Federal Territories.
 
 > Data sourced from the official Malaysian government gazette (JPM BKPP), JAKIM, KPM, and MPM.
 
@@ -82,7 +82,7 @@ await cal.isSchoolDay("2026-03-21", { state: "selangor" });
 ### States
 
 ```ts
-await cal.states();                       // all 16 states + 3 FTs
+await cal.states();                       // all 13 states + 3 FTs
 await cal.resolveState("kl");             // alias → canonical code
 ```
 
@@ -94,7 +94,7 @@ cal.icalUrl("selangor", 2026);            // formatted URL for subscription
 
 ## Features
 
-- **16 states + 3 Federal Territories** with correct weekend config
+- **13 states + 3 Federal Territories** with correct weekend config
 - **Smart aliases** — `kl`, `jb`, `penang`, `n9`, `kk` — all auto-resolve
 - **Cuti ganti** — replacement holidays auto-calculated
 - **Trilingual** — every holiday has Bahasa Melayu, English, and Chinese (中文) names

@@ -7,7 +7,7 @@ Every `Holiday` record has a `type` field. Six values:
 
 ## `federal`
 
-Nationwide public holidays gazetted by the Prime Minister's Department (JPM). Applies to all 16 states and 3 FTs unless a specific state opts out (rare).
+Nationwide public holidays gazetted by the Prime Minister's Department (JPM). Applies to all 13 states and 3 FTs unless a specific state opts out (rare).
 
 **Examples:** Hari Kebangsaan (31 Aug), Hari Malaysia (16 Sep), Labour Day (1 May).
 

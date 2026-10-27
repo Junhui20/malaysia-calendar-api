@@ -1,6 +1,6 @@
 ---
 title: States
-description: List all 16 states with weekend config and group, or resolve any alias to a canonical code.
+description: List all 13 states and 3 federal territories with weekend config and group, or resolve any alias to a canonical code.
 ---
 
 ## GET /states

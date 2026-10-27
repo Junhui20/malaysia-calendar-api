@@ -61,7 +61,7 @@ Or commit to your repo's `.mcp.json` for team-wide setup. Verify with `/mcp` in 
 | `next_malaysia_holiday` | Next N upcoming holidays |
 | `malaysia_business_days` | Count working days in range, or add N business days to a date |
 | `malaysia_long_weekends` | All 3+ day non-working stretches in the year |
-| `list_malaysia_states` | 16 states + 3 FTs with weekend config |
+| `list_malaysia_states` | 13 states + 3 FTs with weekend config |
 | `resolve_malaysia_state` | Alias (`kl`, `jb`, `n9`) → canonical code |
 | `malaysia_holiday_changes` | Recent additions / changes — useful for cuti peristiwa tracking |
 | `malaysia_school_terms` | KPM school term dates + school-day counts |

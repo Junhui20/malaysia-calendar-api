@@ -55,7 +55,7 @@ Find the most efficient annual-leave days to take for the longest continuous bre
 
 ## `list_malaysia_states`
 
-Return all 16 states + 3 FTs with weekend config.
+Return all 13 states + 3 FTs with weekend config.
 
 **Params:** none
 

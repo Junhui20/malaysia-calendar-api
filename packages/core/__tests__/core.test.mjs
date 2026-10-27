@@ -137,6 +137,6 @@ describe("data integrity", () => {
   it("holidays/2026.json schema valid", () => {
     assert.ok(holidayFileSchema.safeParse(holidays2026).success);
   });
-  it("16 states", () => { assert.equal(states.length, 16); });
-  it("49 holidays for 2026", () => { assert.equal(holidays2026.length, 49); });
+  it("13 states + 3 federal territories", () => { assert.equal(states.length, 16); });
+  it("50 holidays for 2026", () => { assert.equal(holidays2026.length, 50); });
 });

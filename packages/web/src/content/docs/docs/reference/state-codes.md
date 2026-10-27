@@ -1,6 +1,6 @@
 ---
 title: State Codes Reference
-description: All 16 states + 3 Federal Territories with canonical codes, aliases, weekend config, and group.
+description: All 13 states + 3 Federal Territories with canonical codes, aliases, weekend config, and group.
 ---
 
 Every state and federal territory. The API accepts any alias (case-insensitive) in the `state` query parameter.

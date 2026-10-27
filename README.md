@@ -29,8 +29,8 @@ Published to npm under the `@catlabtech` scope:
 
 ## Features
 
-- **49 public holidays** for 2026 from official gazette (Warta Kerajaan) — federal + state-specific
-- **16 states + 3 Federal Territories** with aliases (KL, JB, Penang, etc.)
+- **50 public holidays** for 2026 from official gazette (Warta Kerajaan) — federal + state-specific
+- **13 states + 3 Federal Territories** with aliases (KL, JB, Penang, etc.)
 - **Weekend-aware** — Kedah/Kelantan/Terengganu use Fri-Sat (Kumpulan A), all others use Sat-Sun (Kumpulan B), with Johor's historical switch tracked
 - **Cuti ganti** (replacement holiday) auto-calculation per state weekend config
 - **Business day calculator** — per-state, holiday-aware
@@ -163,7 +163,7 @@ curl "https://mycal-api.huijun00100101.workers.dev/v1/states/resolve?q=kl"
 | `GET /v1/holidays/leave-optimizer` | Suggest annual-leave days to spend for the longest consecutive break |
 | `GET /v1/business-days` | Count business days between dates |
 | `GET /v1/business-days/add` | Add N business days to a date |
-| `GET /v1/states` | All 16 states + 3 FTs with weekend config |
+| `GET /v1/states` | All 13 states + 3 FTs with weekend config |
 | `GET /v1/states/resolve` | Resolve alias (KL, penang, jb) to canonical code |
 | `GET /v1/school/terms` | School term dates + day counts |
 | `GET /v1/school/holidays` | School holidays + KPM cuti perayaan |
@@ -274,7 +274,7 @@ malaysia-calendar-api/
 │   │   ├── terms-2026.json      # School terms (Kumpulan A + B)
 │   │   ├── holidays-2026.json   # School holidays + KPM cuti perayaan
 │   │   └── exams-2026.json      # SPM, STPM, MUET, PT3 schedules
-│   ├── states.json              # 16 states + 3 FT, aliases, weekend history
+│   ├── states.json              # 13 states + 3 FT, aliases, weekend history
 │   └── known-fixed-holidays.json
 ├── packages/
 │   ├── core/                    # Shared business logic (types, schemas, utils)
@@ -308,7 +308,7 @@ All data is sourced from official Malaysian government publications:
 | **JAKIM** | Takwim Hijri-Miladi (Islamic calendar) | e-solat.gov.my |
 | **KPM** | Kalendar Akademik / school calendar (Lampiran A/B/C) | moe.gov.my |
 | **MPM** | STPM & MUET exam schedules | mpm.edu.my |
-| **State Portals** | State-specific holidays (16 states) | *.gov.my |
+| **State Portals** | State-specific holidays (13 states) | *.gov.my |
 
 Holiday data includes gazette references (e.g., `P.U.(B) 305/2025`) for traceability.
 

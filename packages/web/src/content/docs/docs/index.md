@@ -26,8 +26,8 @@ hero:
 
 ## Why MyCal
 
-- **49 public holidays** for 2026 from the official JPM gazette
-- **16 states + 3 Federal Territories** with correct weekend config (Kedah/Kelantan/Terengganu use Fri–Sat)
+- **50 public holidays** for 2026 from the official JPM gazette
+- **13 states + 3 Federal Territories** with correct weekend config (Kedah/Kelantan/Terengganu use Fri–Sat)
 - **Cuti ganti** automatically calculated when holidays fall on weekends
 - **School calendar** including KPM terms, cuti penggal, cuti perayaan
 - **Exam schedules** — SPM, STPM, MUET, PT3

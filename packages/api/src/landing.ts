@@ -259,7 +259,7 @@ export const landingHTML = `<!DOCTYPE html>
     <section class="hero">
       <div class="hero-label">Open Source &middot; Free &middot; Real-time</div>
       <h1>Malaysia<br><span>Calendar API</span></h1>
-      <p>Public holidays, school calendar, exam schedules, and business day calculator for all 16 states. Powered by official government gazette data.</p>
+      <p>Public holidays, school calendar, exam schedules, and business day calculator for all 13 states and 3 federal territories. Powered by official government gazette data.</p>
       <div class="actions">
         <a href="https://mycal-web.pages.dev" class="btn btn-primary">Full site & demos ↗</a>
         <a href="https://mycal-web.pages.dev/docs" class="btn btn-secondary">Docs</a>

@@ -6,7 +6,7 @@ description: What MyCal is, who it's for, and how to pick the right integration.
 MyCal is Malaysia's most complete calendar API. It gives you, from one endpoint, the information you'd otherwise have to scrape from five different `.gov.my` websites:
 
 - Federal public holidays
-- State-specific public holidays (all 16 states + 3 Federal Territories)
+- State-specific public holidays (all 13 states + 3 Federal Territories)
 - Replacement holidays (cuti ganti) when a holiday lands on a weekend
 - Ad-hoc cuti peristiwa
 - JAKIM Islamic (Hijri) dates
@@ -27,7 +27,7 @@ MyCal is Malaysia's most complete calendar API. It gives you, from one endpoint,
 
 | | MyCal | Generic "holiday API" |
 |---|---|---|
-| State-level resolution | ✓ all 16 states | ✗ federal only |
+| State-level resolution | ✓ all 13 states + 3 FTs | ✗ federal only |
 | Correct weekend per state | ✓ Kumpulan A (Fri–Sat) handled | ✗ assumes Sat–Sun |
 | Cuti ganti | ✓ automatic | ✗ missing |
 | School + exam calendar | ✓ | ✗ |
